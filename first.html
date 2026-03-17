@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- 声明文档类型为HTML5 -->
+<html lang="zh-CN">
+    <!-- 设置网页语言为中文简体 -->
+    <head>
+        <!-- 内部样式表，定义页面元素的样式 -->
+        <style>
+            p {color:rgba(191, 11, 223, 0.692)} /* 设置段落文本颜色为半透明紫色 */
+            h4 {color:rgb(194, 212, 24)} /* 设置h4标题颜色为黄色 */
+        </style>
+        <title>title一个网页</title> <!-- 设置网页标题 -->
+    </head>
+    <body>
+        <!-- 页面主体内容 -->
+
+        <h1 id="title">这是我的第一个网页(标题)</h1><br> <!-- 一级标题，带有id属性用于JavaScript操作 -->
+        <button id="changeBtn">点击修改标题</button><br><br> <!-- 按钮，带有id属性用于JavaScript事件绑定 -->
+
+        <!-- 链接部分 -->
+        <a href = "https://www.baidu.com">这是一个去百度的链接</a><br><!-- 跳转到百度的外部链接 -->
+        <a href = "second.html">这是另一个网页（还有音乐听哦）</a><br> <!-- 跳转到同目录下的second.html页面 -->
+        <a href="#section1">跳转到第一部分</a><br><!-- 锚点链接，跳转到页面中id为section1的元素 -->
+        
+        <!-- 音频播放部分 -->
+        <audio autoplay loop><!-- 音频元素，设置自动播放和循环播放 -->
+            <source src="沦陷 - JuggShots.mp3" type="audio/mpeg"> <!-- 音频源文件1 -->
+            <source src="雨过后的风景 - 乐乐仔.mp3" type="audio/mpeg"> <!-- 音频源文件2（当第一个不可用时使用） -->
+            你的浏览器不支持 audio 元素。 <!-- 浏览器不支持时显示的文本 -->
+         </audio>
+        <audio controls><!-- 音频元素，显示播放控件 -->
+            <source src="沉溺 (你让我的心不再结冰） - 邹沛沛,Pank.mp3" type="audio/mpeg"> <!-- 音频源文件 -->
+            你的浏览器不支持 audio 元素。 <!-- 浏览器不支持时显示的文本 -->
+         </audio>
+        
+        <!-- 标题部分 -->
+        <h2>欢迎来到我的网页</h2> <!-- 二级标题 -->
+        <h2 id="section1">第一部分</h2> <!-- 二级标题，带有id属性作为锚点目标 -->
+        <h4>这是一个简单的HTML页面4</h4> <!-- 四级标题 -->
+        <h1>woc</h1> <!-- 一级标题 -->
+        
+        <!-- 段落部分 -->
+        <p>这是一个简单的HTML页面，用于展示基本的网页结构和元素。</p> <!-- 段落文本 -->
+        <p>你可以在这里添加更多的内容，比如图片、链接、表格等等。</p> <!-- 段落文本 -->
+        
+        <!-- 元数据部分 -->
+        <meta charset="utf-8"/> <!-- 设置字符编码为UTF-8 -->
+        <meta name="description" content="这是我的第一个网页"/> <!-- 网页描述信息 -->         
+        <meta name="keywords" content="HTML, CSS, JavaScript"/> <!-- 网页关键词 -->         
+        <meta name="author" content="你的名字"/> <!-- 网页作者信息 -->
+        
+        <!-- 引入外部JavaScript文件 -->
+        <script src="Untitled-1.js"></script> <!-- 引入同目录下的Untitled-1.js文件 -->              
+    </body>
+</html>
+
+
