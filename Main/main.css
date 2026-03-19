@@ -3,10 +3,12 @@
     padding:0;
     box-sizing: border-box;
 }
-header{
+h1{
+    display: flex;
+    justify-content: center;
     margin-top: 10vh;
     text-align: center;
-    font-size: 36px;
+    font-size: 56px;
     color: #d714a9;
 }
 
@@ -18,14 +20,6 @@ body{
 );
     background-size: cover;
     background-attachment: fixed;
-}
-.music{
-    display: flex;
-    justify-content: center;
-}
-.music audio{
-    width: 300px;
-    height: 50px;
 }
 footer{
     text-align: center;
