@@ -11,7 +11,7 @@ header{
 }
 
 body{
-    
+    flex-direction: column;
     background: linear-gradient(135deg, 
     rgb(253, 165, 179, 0.7),  /* pink 50%透明度 */
     rgba(0, 0, 255, 0.7)      /* blue 50%透明度 */
@@ -29,7 +29,13 @@ body{
 }
 footer{
     text-align: center;
-    margin-top: 10px;
+    position:fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    line-height: 5px;
+    color: #fff;
     font-size: 13px;
     color: rgba(85, 85, 85, 0.8);
 }
@@ -37,7 +43,10 @@ footer a{
     color: rgba(10, 24, 223, 0.8);
     text-decoration: none;
     display: inline-block;
-    padding: 2px;
+    
+}
+footer p{
+    margin: 10px;
 }
 footer a:hover{
     border-radius: 5px;
@@ -61,7 +70,7 @@ footer a:hover{
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px 20px;
     height: 50px;
-    width: 100px;
+    width: 120px;
     border-radius: 10px;
     transition: all 0.5s;
     cursor: pointer;
@@ -70,8 +79,8 @@ footer a:hover{
 }
 .guide ul li:hover{
     background-color: rgba(255, 255, 255, 0.5);
-    width: 150px;
-    height: 180px;
+    width: 250px;
+    height: 280px;
 }
 .guide ul li a{
     margin-top: 16px;
