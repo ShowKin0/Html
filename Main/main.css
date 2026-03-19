@@ -85,14 +85,19 @@ footer a:hover{
 .guide ul li a{
     margin-top: 16px;
     display: block;
-    text-align: center;
     padding: 5px;
-    border-radius: 15px;
+    text-align: center;
+    border-radius: 25px;
     text-decoration: none;
     background-color: purple;
     color: white;
     font-weight: 500;
     transition: all 0.5s;
+}
+.guide ul li a:hover{
+    color: #0cd11d;
+    scale: calc(1.2);
+    transition: 0.5s;
 }
 
 
