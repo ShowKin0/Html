@@ -48,7 +48,7 @@ footer a:hover{
     transition: 0.5s;
 }
 
-ul{
+.guide ul{
     display: flex;
     justify-content: center;
     list-style: none;
@@ -56,7 +56,7 @@ ul{
     text-align: center;
     font-size: 18px;
 }
-ul li{
+.guide ul li{
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px 20px;
     height: 50px;
@@ -67,12 +67,12 @@ ul li{
     justify-content: center;
     overflow: hidden;
 }
-ul li:hover{
+.guide ul li:hover{
     background-color: rgba(255, 255, 255, 0.5);
     width: 250px;
     height: 480px;
 }
-ul li a{
+.guide ul li a{
     margin-top: 16px;
     display: block;
     padding: 5px;
@@ -84,7 +84,7 @@ ul li a{
     font-weight: 500;
     transition: all 0.5s;
 }
-ul li a:hover{
+.guide ul li a:hover{
     color: #0cd11d;
     scale: calc(1.2);
     transition: 0.5s;
