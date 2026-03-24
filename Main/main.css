@@ -50,9 +50,12 @@ header button:hover{
 .active{
     scale: calc(1.5);
 }
+#work div{
+    visibility: hidden;
+}
 .work{
     margin-top: 25vh;
-    visibility: visible;
+    
 }
 .work ul{
     display: flex;
