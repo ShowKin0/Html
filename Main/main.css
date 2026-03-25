@@ -38,20 +38,31 @@ header button{
         height: 25px;
         width: 50px;
         border-radius: 10px;
-        transition: all 0.5s;
+        transition: scale 0.5s;
         cursor: pointer;
         justify-content: center;
         border: none;
 }
 header button:hover{
-    background-color: rgba(6, 231, 63, 0.5);
+    box-shadow: 0 0 5px rgba(16, 160, 226, 0.8);
     scale: calc(1.2);
 }
 .active{
     scale: calc(1.5);
+    background: linear-gradient(135deg, 
+    rgba(233, 9, 47, 0.3),  /* pink 50%透明度 */
+    rgba(0, 0, 255, 0.3)      /* blue 50%透明度 */
+    );
+    box-shadow: 0 0 5px rgba(223, 5, 150, 0.8);
 }
-#work div{
+.content{
+    opacity: 0;
+    transition:opacity 0.5s;
     visibility: hidden;
+}
+.content.visible{
+    visibility: visible;
+    opacity: 1;
 }
 .work{
     margin-top: 25vh;
@@ -71,7 +82,7 @@ header button:hover{
     height: 50px;
     width: 120px;
     border-radius: 10px;
-    transition: all 0.5s;
+    transition:all 0.5s;
     cursor: pointer;
     justify-content: center;
     overflow: hidden;
