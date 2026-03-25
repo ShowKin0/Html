@@ -1,4 +1,4 @@
-var btn = document.querySelectorAll('header button');
+var btn = document.querySelectorAll('nav button');
 var content = document.querySelectorAll('.content');
 var act = 0;
 for(let i = 0; i < btn.length; i++){

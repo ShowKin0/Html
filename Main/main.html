@@ -7,12 +7,12 @@
         <link rel="icon" href="../Avatar.jpg" type="image/x-icon">
     </head>
     <body>
-        <header>
+        <nav>
             <button class="active" id="work">项目</button>
             <button id="learn">学习</button>
             <button id="explore">探索</button>
             <button id="other">其它</button>
-        </header>
+        </nav>
         <div class="content visible" id="work">
             <div class="work">
                 <ul>
@@ -34,6 +34,14 @@
         <div class="content" id="learn"></div>
         <div class="content" id="explore"></div>
         <div class="content" id="other"></div>
+        <div class="music">
+            <h2>♫ 音乐</h2>
+            <button id="play" onclick="playMusic()">播放</button>
+            <audio id="music">
+                <source src="../UnicornPhantom - 独角.mp3" type="audio/mpeg"></source>
+            </audio>
+            
+        </div>
         <footer>
             <p>Copyright © 2026 SK的小站. All rights reserved.</p>
             <p>GitHub: <a class="link" href="https://github.com/ShowKin0" target="_blank">ShowKin</a></p>
