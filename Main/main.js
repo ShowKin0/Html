@@ -10,4 +10,15 @@ for(let i = 0; i < btn.length; i++){
     content[i].classList.add('visible');
 })
 }
+function playMusic(){
+    var music = document.getElementById('music');
+    var play = document.getElementById('play');
+    if(music.paused){
+        music.play();
+        play.innerHTML = '暂停';
+    }else{
+        music.pause();
+        play.innerHTML = '播放';
+    }
+}
 
