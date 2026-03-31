@@ -13,6 +13,7 @@ for(let i = 0; i < btn.length; i++){
 function playMusic(){
     var music = document.getElementById('music');
     var play = document.getElementById('playMusic');
+    music.loop = true; // 确保每次播放都循环
     if(music.paused){
         music.play();
         play.innerHTML = '暂停';
