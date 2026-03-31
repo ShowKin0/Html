@@ -12,7 +12,7 @@ for(let i = 0; i < btn.length; i++){
 }
 function playMusic(){
     var music = document.getElementById('music');
-    var play = document.getElementById('play');
+    var play = document.getElementById('playMusic');
     if(music.paused){
         music.play();
         play.innerHTML = '暂停';
