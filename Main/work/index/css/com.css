@@ -18,6 +18,34 @@ body {
     background-color: black;
     color: #fff;
     line-height: 60px;
+    position: relative;
+}
+.userName {
+    position: absolute;
+    font-size: 15px;
+    right: 25px;
+    text-align: center;
+    width: 80px;
+}
+.userName span {
+    cursor: pointer;
+}
+.userName ul {
+    display: none;
+    list-style: none;
+    z-index: 2;
+    background-color: rgb(78, 143, 118);
+    text-align: center;
+    position: absolute;
+    transform: translateX(20%);
+}
+.userName:hover ul {
+    display: block;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    border-radius: 5px;
+}
+.userName ul li {
+    cursor: pointer;
 }
 .aside {
     grid-area: aside;
