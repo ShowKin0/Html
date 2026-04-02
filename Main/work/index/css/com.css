@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "aside section"
+        "footer footer";
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 60px 1fr 40px;
+    min-height: 100vh;
+}
+.header {
+    grid-area: header;
+    background-color: black;
+    color: #fff;
+    line-height: 60px;
+    position: relative;
+}
+.userName {
+    position: absolute;
+    font-size: 15px;
+    right: 25px;
+    text-align: center;
+    width: 80px;
+}
+.userName span {
+    cursor: pointer;
+}
+.userName ul {
+    display: none;
+    list-style: none;
+    z-index: 2;
+    background-color: rgb(78, 143, 118);
+    text-align: center;
+    position: absolute;
+    transform: translateX(20%);
+}
+.userName:hover ul {
+    display: block;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    border-radius: 5px;
+    
+}
+.userName ul li {
+    cursor: pointer;
+}
+.aside {
+    grid-area: aside;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+.aside ul li{
+    padding: 10px;
+    cursor: pointer;
+}
+.aside .Menu ul {
+    list-style: none;
+    cursor: pointer;
+}
+.subMenu {
+    display: none;
+    list-style: none;
+    cursor: pointer;
+}
+.Menu.active .subMenu {
+    display: block;
+}
+.section {
+    grid-area: section;
+    height: 100vh;
+    background-color: #fff;
+}
+.section .title {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+}
+.section .function {
+    width: 100%;
+    height: 30px;
+    margin-top: 30px;
+    background-color: #b5cdf1;
+    color: #fff;
+    line-height: 30px;
+}
+.section .function button {
+    margin-left: 10px;
+    background-color: rgb(124, 124, 244);
+    border: none;
+    cursor: pointer;
+}
+.section .basicInformation {
+    background-color: #f0f0f0;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 15px;
+}
+.section .basicInformation input,
+.section .basicInformation select {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.footer {
+    grid-area: footer;
+    background-color: #333;
+    color: #fff;
+    line-height: 40px;
+    text-align: center;
+}
