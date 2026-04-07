@@ -13,7 +13,7 @@ h1{
 }
 
 body{
-    
+    display: grid;
     background: linear-gradient(135deg, 
     rgb(253, 165, 179, 0.7),  /* pink 50%透明度 */
     rgba(0, 0, 255, 0.7)      /* blue 50%透明度 */
