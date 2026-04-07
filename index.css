@@ -3,14 +3,7 @@
     padding:0;
     box-sizing: border-box;
 }
-h1{
-    display: flex;
-    justify-content: center;
-    margin-top: 10vh;
-    text-align: center;
-    font-size: 56px;
-    color: #d714a9;
-}
+
 
 body{
     display: grid;
