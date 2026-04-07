@@ -56,7 +56,7 @@ nav button:hover{
     box-shadow: 0 0 5px rgba(16, 160, 226, 0.8);
     scale: calc(1.2);
 }
-.active{
+.navActive{
     scale: calc(1.5);
     background: linear-gradient(135deg, 
     rgba(233, 9, 47, 0.3),  /* pink 50%透明度 */
@@ -74,6 +74,10 @@ nav button:hover{
     visibility: visible;
     opacity: 1;
 }
+
+
+                                            /* 工作区 */
+
 .content .work{
     margin-top: 25vh;
     
@@ -160,6 +164,9 @@ nav button:hover{
     box-shadow: 0 0 5px rgba(16, 160, 226, 0.8);
     scale: calc(1.2);
 }
+
+                                    /* 页脚 */
+
 
 footer {
     grid-area: footer;

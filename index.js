@@ -4,9 +4,9 @@ var act = 0;
 for(let i = 0; i < btn.length; i++){
     btn[i].addEventListener('click', function() {
     content[act].classList.remove('visible');
-    btn[act].classList.remove('active');
+    btn[act].classList.remove('navActive');
     act = i;
-    this.classList.add('active');
+    this.classList.add('navActive');
     content[i].classList.add('visible');
 })
 }
