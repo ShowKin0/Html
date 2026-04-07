@@ -13,22 +13,31 @@ h1{
 }
 
 body{
-    flex-direction: column;
+    
     background: linear-gradient(135deg, 
     rgb(253, 165, 179, 0.7),  /* pink 50%透明度 */
     rgba(0, 0, 255, 0.7)      /* blue 50%透明度 */
     );
     background-size: cover;
     background-attachment: fixed;
+    grid-template-areas: 
+    "nav"
+    "content"
+    "footer"
+    ;
+    grid-template-columns: 1fr;
+    grid-template-rows: 55px 1fr 55px;
+
 }
 nav{
+    grid-area: nav;
     background-color: rgba(202, 193, 193, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 10px 20px;
     position: fixed;
+    display: flex;
     top: 0;
     left: 0;
-    display: flex;
     border-radius: 1000px;
     gap: 20px;
     
@@ -56,6 +65,7 @@ nav button:hover{
     box-shadow: 0 0 5px rgba(223, 5, 150, 0.8);
 }
 .content{
+    grid-area: content;
     opacity: 0;
     transition:opacity 0.5s;
     visibility: hidden;
@@ -152,6 +162,7 @@ nav button:hover{
 }
 
 footer {
+    grid-area: footer;
     text-align: center;
     position: fixed;
     bottom: 10px;
