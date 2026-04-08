@@ -17,6 +17,7 @@ Menu.forEach(function(item){
 subMenuItems_1.forEach(function(item){
     item.addEventListener('click', function(e){
         e.stopPropagation();
+        titleSpans[0].textContent = this.parentElement.parentElement.querySelector('span').textContent;
         titleSpans[1].textContent = this.textContent;
         
     })
@@ -24,6 +25,7 @@ subMenuItems_1.forEach(function(item){
 subMenuItems_2.forEach(function(item){
     item.addEventListener('click', function(e){
         e.stopPropagation();
+        titleSpans[0].textContent = this.parentElement.parentElement.querySelector('span').textContent;
         titleSpans[1].textContent = this.textContent;
         
     })
@@ -31,6 +33,7 @@ subMenuItems_2.forEach(function(item){
 subMenuItems_3.forEach(function(item){
     item.addEventListener('click', function(e){
         e.stopPropagation();
+        titleSpans[0].textContent = this.parentElement.parentElement.querySelector('span').textContent;
         titleSpans[1].textContent = this.textContent;
         
     })
