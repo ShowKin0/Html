@@ -64,12 +64,12 @@ body {
     list-style: none;
     cursor: pointer;
 }
-.subMenu {
+.aside .subMenu {
     display: none;
     list-style: none;
     cursor: pointer;
 }
-.Menu.active .subMenu {
+.aside .Menu.active .subMenu {
     display: block;
 }
 .section {
