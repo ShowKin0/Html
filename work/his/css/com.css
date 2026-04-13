@@ -90,7 +90,7 @@ body {
     visibility: visible;
     opacity: 1;
 }
-.content .function {
+.Register_at_the_window .function {
     width: 100%;
     height: 30px;
     margin-top: 30px;
@@ -98,7 +98,7 @@ body {
     color: #fff;
     line-height: 30px;
 }
-.content .function button {
+.Register_at_the_window .function button {
     margin-left: 10px;
     padding: 4px 10px;
     background-color: rgb(124, 124, 244);
@@ -107,7 +107,7 @@ body {
     border: none;
     cursor: pointer;
 }
-.content .basicInformation {
+.Register_at_the_window .basicInformation {
     background-color: #f0f0f0;
     width: 100%;
     padding: 20px;
@@ -116,8 +116,8 @@ body {
     grid-template-rows: repeat(3, 1fr);
     gap: 15px;
 }
-.content .basicInformation input,
-.content .basicInformation select {
+.Register_at_the_window .basicInformation input,
+.Register_at_the_window .basicInformation select {
     margin-left: 10px;
     padding: 5px 10px;
     border: 1px solid #ccc;
