@@ -85,6 +85,8 @@ body {
 }
 .content {
     visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s;
 }
 .content.visible {
     visibility: visible;
