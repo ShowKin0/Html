@@ -1,5 +1,5 @@
 var Menu = document.querySelectorAll('.Menu');
-var btn = document.querySelectorAll('#btn');
+var btn = document.querySelectorAll('#nav');
 var content = document.querySelectorAll('.content');
 var subMenuItems_1 = document.querySelectorAll('.subMenu_1 li');
 var subMenuItems_2 = document.querySelectorAll('.subMenu_2 li');
@@ -7,8 +7,8 @@ var subMenuItems_3 = document.querySelectorAll('.subMenu_3 li');
 var titleSpans = document.querySelectorAll('.title h6 span');
 
 var act = 0;
-for(let i = 0; i < btn.length; i++){
-    btn[i].addEventListener('click', function() {
+for(let i = 0; i < nav.length; i++){
+    nav[i].addEventListener('click', function() {
         content[act].classList.remove('visible');
         act = i;
         content[i].classList.add('visible');
