@@ -19,7 +19,7 @@ for(let i = 0; i < nav.length; i++){
 }
 // 点击一级菜单切换标题显示
 Menu.forEach(function(item){
-    item.addEventListener('click', function(e){
+    item.addEventListener('click', function(){
         this.classList.toggle('active');
         titleSpans[0].textContent = this.querySelector('span').textContent;
         titleSpans[1].textContent = '';
