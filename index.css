@@ -63,6 +63,8 @@ nav button:hover{
     transition:opacity 0.5s;
     visibility: hidden;
     height: 100%;
+    min-height: calc(100vh - 110px);
+    margin-top: 0;
 }
 .content.visible{
     visibility: visible;
@@ -75,11 +77,6 @@ nav button:hover{
 .content .work{
     margin-top: 25vh;
     
-}
-.content .other {
-    margin-top: 0;
-    height: 100%;
-    min-height: calc(100vh - 110px);
 }
 iframe {
     width: 100%;
