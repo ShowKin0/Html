@@ -7,6 +7,8 @@
 
 body{
     display: grid;
+    height: 100vh;
+    width: 100vh;
     background: linear-gradient(135deg, 
     rgb(253, 165, 179, 0.7),  /* pink 50%透明度 */
     rgba(0, 0, 255, 0.7)      /* blue 50%透明度 */
@@ -62,9 +64,6 @@ nav button:hover{
     opacity: 0;
     transition:opacity 0.5s;
     visibility: hidden;
-    height: 100%;
-    min-height: calc(100vh - 110px);
-    margin-top: 0;
 }
 .content.visible{
     visibility: visible;
