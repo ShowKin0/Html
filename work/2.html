@@ -34,6 +34,12 @@
                 color: orange;
                 cursor: pointer;
             }
+            fieldset{
+                display: flexbox;
+                justify-self: center;
+                flex-direction: column;
+                background-image: image-set("box.png");
+            }
         </style>
     </head>
     <body>
@@ -45,6 +51,12 @@
                 <li><a>312</a></li>
             </ul>
         </nav>
+        <fieldset>
+            <legend>个人注册</legend>
+            <label>用户账号：<input type="text" name="userName"></input></label><br/>
+            <label>密码：<input type="text" name="password"></input></label><br/>
+            <input type="submit" style="display:flex;justify-self:center;margin-top: 10px;color: aliceblue;background-image: url('box.png');"></input><br/>
+        </fieldset>
     </body>
 </html>
     
