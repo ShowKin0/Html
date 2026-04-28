@@ -3,16 +3,18 @@
 
 <head>
     <style>
-        .left {
+        #left {
             position: absolute;
             top: 50%;
+            
         }
-        .right {
+        #right {
             position: absolute;
             top: 50%;
             right: 0%; 
+            
         }
-        button {
+        #left, #right {
             font-size: large;
             width: 40px;
             height: 40px;
@@ -20,27 +22,59 @@
             border: 0cap;
             cursor: pointer;
         }
-        button:hover {
+        .selcte {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            list-style: none;
+            display: flex;
+            gap: 10px;
+        }
+        .point button {
+            color: black;
+            width: 25px;
+            height: 25px;
+            border-radius: 100%;   
+        }
+        .selcte .active {
+            background-color: rgba(17, 15, 15, 0.8);
+            transform: scale(1.2);
+            color: white;
+            border-radius: 100%;
+        }
+
+        .point button:hover{
+            background-color: rgba(17, 15, 15, 0.8);
+            font-size: larger;
+            transform: scale(1.2);
+            color: white;
+        }
+        button {
+            z-index: 10;
+        }
+        #left:hover , #right:hover {
             background-color: rgba(17, 15, 15, 0.8);
             font-size: larger;
             transform: scaleY(1.5);
             color: white;
         }
 
-        ul {
+        .window {
             list-style: none;
             position: relative;
+            justify-self: center;
             width: 1000px;
             height: 600px;
             overflow: hidden;
         }
 
-        li {
+        .pic {
+            position: absolute;
             width: 100%;
             height: 100%;
             opacity: 0;
         }
-        ul .active {
+        .window .active {
             opacity: 1;
         }
     </style>
@@ -48,16 +82,106 @@
 </head>
 
 <body>
-    <ul>
-        <button class="left"><</button>
-        <button class="right">></button>
+    <ul class="window">
+        <button id="left"><</button>
+        <button id="right">></button>
         <li class="pic active"><img src="img1.jpg" alt=""></li>
         <li class="pic"><img src="img2.jpg" alt=""></li>
         <li class="pic"><img src="img3.jpg" alt=""></li>
         <li class="pic"><img src="img4.jpg" alt=""></li>
         <li class="pic"><img src="img5.jpg" alt=""></li>
+        <ul class="selcte">
+            <li class="point active"><button>1</button></li>
+            <li class="point"><button>2</button></li>
+            <li class="point"><button>3</button></li>
+            <li class="point"><button>4</button></li>
+            <li class="point"><button>5</button></li>    
+        </ul>
     </ul>
 
 </body>
+<script>
+window.onload=function(){
+    var pic=document.getElementsByClassName("pic");
+    var index=0;
+    var len=pic.length;
+    var left=document.getElementById("left");
+    var right=document.getElementById("right");
+    var slide=true;
+    left.onclick=function(){
+        if(index>0){
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index--;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }else{
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index=len-1;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }
+    }
+
+    right.onclick=function(){
+        if(index<len-1){
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index++;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }else{
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index=0;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }
+    }
+    var timer=null;
+    
+    right.onmouseover=function(){
+        clearInterval(timer);
+    }
+    left.onmouseover=function(){
+        clearInterval(timer);
+    }
+    right.onmouseout=function(){
+        timer = setInterval(autoPlay,5000);
+    }
+    left.onmouseout=function(){
+        timer = setInterval(autoPlay,5000);
+    }
+    var autoPlay=function(){
+        if(index<len-1){
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index++;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }else{
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index=0;
+            point[index].classList.add("active");
+            pic[index].classList.add("active");
+        }
+    }
+    timer = setInterval(autoPlay, 5000);
+    var point=document.getElementsByClassName("point");
+    for(let i=0;i<point.length;i++){
+        point[i].addEventListener("click",function(e){
+            point[index].classList.remove("active");
+            pic[index].classList.remove("active");
+            index=i;
+            pic[index].classList.add("active");
+            point[index].classList.add("active");
+        });
+
+    }
+
+}
+</script>
 
 </html>
