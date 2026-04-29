@@ -468,22 +468,6 @@ body {
 }
 .diary-pwd-master-btn:hover { opacity: 1; }
 
-/* ===== 万能密码 ===== */
-.master-section {
-  max-width: 500px; margin: 20px auto 0; text-align: center;
-}
-.master-info {
-  background: #E8F5E9; border-radius: var(--radius);
-  padding: 16px 20px; font-size: 0.9rem;
-}
-.master-activate {
-  background: #fff; border-radius: var(--radius);
-  padding: 24px; box-shadow: var(--shadow);
-}
-.master-activate h3 { margin-bottom: 10px; }
-.master-activate p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px; }
-.master-pw-input { width: 100%; margin-bottom: 10px; text-align: center; }
-
 /* ===== AI 聊天 - 新版 ===== */
 .chat-container {
   display: flex; gap: 0;
@@ -549,23 +533,6 @@ body {
   .chat-toggle-btn { display: block; }
 }
 
-/* ===== 忘记密码 / 重置弹窗 ===== */
-.diary-pwd-forgot-btn {
-  background: none; border: none; font-size: 0.78rem;
-  color: var(--text-light); cursor: pointer; margin-top: 8px;
-  text-decoration: underline; opacity: 0.6; display: inline-block;
-}
-.diary-pwd-forgot-btn:hover { opacity: 1; }
-
-.reset-modal-box {
-  background: #fff; border-radius: var(--radius);
-  padding: 32px; width: 320px; max-width: 90%;
-}
-.reset-modal-box h3 { text-align: center; margin-bottom: 8px; }
-.reset-input { width: 100%; margin-bottom: 10px; text-align: center; }
-.reset-btns { display: flex; gap: 8px; margin-top: 12px; }
-.reset-btns .btn { flex: 1; justify-content: center; }
-
 /* ===== 聊天历史操作按钮 ===== */
 .chat-history-item-wrap {
   display: flex; align-items: flex-start; gap: 4px;
@@ -584,3 +551,45 @@ body {
   border-radius: 4px; line-height: 1;
 }
 .chat-history-actions button:hover { opacity: 1; background: #FFF0F3; }
+
+/* ===== 倒计时 ===== */
+.tl-countdown {
+  font-size: 0.82rem; color: var(--pink-dark); font-weight: 600;
+  margin-top: 6px; padding-top: 6px; border-top: 1px dashed #F0E0E5;
+}
+.tl-countdown.urgent { color: #FF6B6B; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ===== 首页纪念日提醒 ===== */
+.hero-announce { margin-top: 20px; }
+.hero-announce-item {
+  display: inline-block;
+  background: linear-gradient(135deg, #FFF0F3, #FFE4E8);
+  border: 2px solid var(--pink);
+  border-radius: 20px;
+  padding: 10px 24px;
+  margin: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--pink-dark);
+  animation: announcePop 0.6s ease;
+  box-shadow: 0 2px 12px rgba(255, 107, 107, 0.2);
+}
+.hero-announce-item.urgent {
+  background: linear-gradient(135deg, #FFE4E8, #FFD0D6);
+  border-color: #FF6B6B;
+  color: #E04040;
+  animation: announcePop 0.6s ease, urgentPulse 1.5s ease-in-out infinite;
+}
+@keyframes announcePop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes urgentPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}

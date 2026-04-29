@@ -1,4 +1,4 @@
-// ====== API 工具 ======
+// ====== API ======
 async function api(method, url, body) {
   const opts = { method, headers: {} };
   if (body) opts.headers['Content-Type'] = 'application/json', opts.body = JSON.stringify(body);
@@ -14,18 +14,15 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 // ====== 密码系统 ======
 const TOKENS = { his: null, her: null };
-let resetPerson = null; // 记录正在重置的是谁的密码
 
 async function checkStatus(person) {
   try {
     const data = await api('GET', `/api/diary/${person}/status`);
     const pwMode = $(`#diary${cap(person)}PwMode`);
     const setupMode = $(`#diary${cap(person)}SetupMode`);
-    if (data.masterSet || data.individualSet) {
+    if (data.individualSet) {
       pwMode.style.display = 'block';
       setupMode.style.display = 'none';
-      if (data.masterSet) $('#masterInfo').style.display = 'block';
-      if (data.individualSet && !data.masterSet) checkMasterReady();
     } else {
       pwMode.style.display = 'none';
       setupMode.style.display = 'block';
@@ -42,7 +39,6 @@ async function setPw(person) {
     if (d.token) TOKENS[person] = d.token;
     alert('密码设置成功！');
     checkStatus(person);
-    checkMasterReady();
   } catch (e) { alert(e.message); }
 }
 
@@ -93,66 +89,52 @@ async function addEntry(person) {
   } catch { alert('保存失败'); }
 }
 
-// 忘记密码 → 显示重置弹窗
-function showReset(person) {
-  resetPerson = person;
-  $('#resetModalTitle').textContent = `🔑 重置${person === 'his' ? '他' : '她'}的密码`;
-  $('#resetMasterPw').value = '';
-  $('#resetNewPw').value = '';
-  $('#resetModal').classList.add('active');
+// ====== 倒计时 ======
+function calcDaysUntilNext(dateStr) {
+  const parts = dateStr.split('-');
+  const m = +parts[1], d = +parts[2];
+  const now = new Date();
+  const thisYear = new Date(now.getFullYear(), m - 1, d);
+  let next;
+  if (thisYear >= now) next = thisYear;
+  else next = new Date(now.getFullYear() + 1, m - 1, d);
+  return Math.ceil((next - now) / (1000 * 60 * 60 * 24));
 }
 
-async function confirmReset() {
-  const person = resetPerson;
-  const masterPw = $('#resetMasterPw').value.trim();
-  const newPw = $('#resetNewPw').value.trim();
-  if (!masterPw) { alert('请输入万能密码'); return; }
-  if (newPw.length < 4) { alert('新密码至少4位'); return; }
-  try {
-    const d = await api('POST', `/api/diary/${person}/reset-password`, { masterPassword: masterPw, newPassword: newPw });
-    if (d.token) TOKENS[person] = d.token;
-    alert('密码已重置！');
-    $('#resetModal').classList.remove('active');
-    unlockDiary(person);
-  } catch (e) { alert(e.message); }
+function fmtCountdown(days) {
+  if (days === 0) return '🎉 就是今天！';
+  if (days < 0) return '';
+  const months = Math.floor(days / 30);
+  const remain = days % 30;
+  let text = '';
+  if (months > 0) text += months + '个月';
+  text += remain + '天';
+  return '⏰ 距下次还有 ' + text;
 }
 
-// 万能密码
-async function checkMasterReady() {
-  try {
-    const h = await api('GET', '/api/diary/his/status');
-    const e = await api('GET', '/api/diary/her/status');
-    if (h.masterSet || e.masterSet) {
-      $('#masterActivate').style.display = 'none';
-      $('#masterInfo').style.display = 'block';
-      return;
-    }
-    $('#masterActivate').style.display = (h.individualSet && e.individualSet) ? 'block' : 'none';
-  } catch {}
-}
+function updateHeroAnnouncements(items) {
+  const container = $('#heroAnnounce');
+  const upcoming = items
+    .map(it => ({ ...it, days: calcDaysUntilNext(it.date) }))
+    .filter(it => it.days >= 0 && it.days <= 10)
+    .sort((a, b) => a.days - b.days);
 
-async function setMaster() {
-  const masterPw = $('#masterNewPw').value.trim();
-  const hisPw = $('#masterConfirmHisPw').value.trim();
-  const herPw = $('#masterConfirmHerPw').value.trim();
-  if (masterPw.length < 4) { alert('万能密码至少4位'); return; }
-  if (!hisPw || !herPw) { alert('请输入双方个人密码确认'); return; }
-  try {
-    await api('POST', '/api/diary/set-master', { masterPassword: masterPw, hisPassword: hisPw, herPassword: herPw });
-    alert('万能密码已激活！可用于重置忘记的个人密码。');
-    $('#masterActivate').style.display = 'none';
-    $('#masterInfo').style.display = 'block';
-  } catch (e) { alert(e.message); }
+  if (!upcoming.length) { container.innerHTML = ''; return; }
+
+  container.innerHTML = upcoming.map(it => {
+    const cls = it.days <= 3 ? 'hero-announce-item urgent' : 'hero-announce-item';
+    const label = it.days === 0 ? '今天' : it.days + '天后';
+    return `<div class="${cls}">💕 ${label}是「${esc(it.title)}」❤️</div>`;
+  }).join('');
 }
 
 // ====== 粒子 ======
 function createParticles() {
   const c = $('#particles');
-  const emojis = ['🌸', '💕', '✨', '💗', '🩷', '🦋', '⭐', '💖'];
-  for (let i = 0; i < 20; i++) {
+  for (const e of ['🌸','💕','✨','💗','🩷','🦋','⭐','💖']) {
     const el = document.createElement('span');
     el.className = 'particle';
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.textContent = e;
     el.style.left = Math.random() * 100 + '%';
     el.style.animationDuration = (5 + Math.random() * 8) + 's';
     el.style.animationDelay = Math.random() * 6 + 's';
@@ -173,11 +155,11 @@ function updateClock() {
 function initNav() {
   $('#navToggle').addEventListener('click', () => $('#navLinks').classList.toggle('open'));
   $$('[data-nav]').forEach(a => a.addEventListener('click', () => $('#navLinks').classList.remove('open')));
-  const sections = $$('section[id]'), navItems = $$('[data-nav]');
+  const ss = $$('section[id]'), ns = $$('[data-nav]');
   window.addEventListener('scroll', () => {
     let cur = '';
-    sections.forEach(s => { if (scrollY >= s.offsetTop - 200) cur = s.id; });
-    navItems.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+    ss.forEach(s => { if (scrollY >= s.offsetTop - 200) cur = s.id; });
+    ns.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
   });
 }
 
@@ -191,15 +173,20 @@ function initScrollAnim() {
 async function renderTimeline() {
   try {
     const items = await api('GET', '/api/timeline');
-    $('#timelineContainer').innerHTML = items.map(item =>
-      `<div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-date">${item.date}</div><div class="tl-title">${esc(item.title)}</div>${item.desc ? `<div class="tl-desc">${esc(item.desc)}</div>` : ''}<button class="tl-del" data-id="${item.id}">🗑</button></div></div>`
-    ).join('');
-    $('#timelineContainer').querySelectorAll('.tl-del').forEach(b => b.addEventListener('click', async e => {
+    const container = $('#timelineContainer');
+    container.innerHTML = items.map(item => {
+      const days = calcDaysUntilNext(item.date);
+      const cdText = fmtCountdown(days);
+      const urgentCls = days >= 0 && days <= 10 ? ' urgent' : '';
+      return `<div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-date">${item.date}</div><div class="tl-title">${esc(item.title)}</div>${item.desc ? `<div class="tl-desc">${esc(item.desc)}</div>` : ''}${cdText ? `<div class="tl-countdown${urgentCls}">${cdText}</div>` : ''}<button class="tl-del" data-id="${item.id}">🗑</button></div></div>`;
+    }).join('');
+    container.querySelectorAll('.tl-del').forEach(b => b.addEventListener('click', async e => {
       e.stopPropagation();
       await api('DELETE', `/api/timeline/${b.dataset.id}`);
       renderTimeline();
     }));
     initScrollAnim();
+    updateHeroAnnouncements(items);
   } catch {}
 }
 
@@ -221,10 +208,8 @@ async function renderPhotos() {
     const photos = await api('GET', '/api/photos');
     $('#photoGrid').innerHTML = photos.map(p => `<div class="photo-card" data-pid="${p.id}"><img src="${p.url}" alt="photo"></div>`).join('');
     $('#photoGrid').querySelectorAll('.photo-card').forEach(c => c.addEventListener('click', () => {
-      const pid = c.dataset.pid;
-      const img = c.querySelector('img').src;
-      $('#modalImg').src = img;
-      $('#photoModal')._pid = pid;
+      $('#modalImg').src = c.querySelector('img').src;
+      $('#photoModal')._pid = c.dataset.pid;
       $('#photoModal').classList.add('active');
       document.body.style.overflow = 'hidden';
     }));
@@ -289,11 +274,11 @@ async function switchConv(id) {
 }
 
 async function renameConv(id) {
-  const newTitle = prompt('请输入新标题：');
-  if (!newTitle || !newTitle.trim()) return;
+  const t = prompt('请输入新标题：');
+  if (!t || !t.trim()) return;
   try {
-    await api('PUT', `/api/chat/conversations/${id}`, { title: newTitle.trim() });
-    if (id === curConv) $('#chatTitle').textContent = newTitle.trim();
+    await api('PUT', `/api/chat/conversations/${id}`, { title: t.trim() });
+    if (id === curConv) $('#chatTitle').textContent = t.trim();
     loadConvs();
   } catch { alert('重命名失败'); }
 }
@@ -322,16 +307,13 @@ async function sendMsg() {
   const input = $('#chatInput'), text = input.value.trim();
   if (!text || chatLoading) return;
   if (!curConv) await newConv();
-
   const el = $('#chatMessages');
   el.innerHTML += `<div class="chat-msg user">${esc(text)}</div>`;
   el.scrollTop = el.scrollHeight;
   input.value = '';
-
   chatLoading = true;
   $('#chatLoading').style.display = 'block';
   el.scrollTop = el.scrollHeight;
-
   try {
     const d = await api('POST', `/api/chat/conversations/${curConv}/messages`, { role: 'user', content: text });
     $('#chatLoading').style.display = 'none';
@@ -341,11 +323,11 @@ async function sendMsg() {
       loadConvs();
       try { const c = await api('GET', `/api/chat/conversations/${curConv}`); $('#chatTitle').textContent = c.title; } catch {}
     } else {
-      el.innerHTML += '<div class="chat-msg bot">呜呜，小助手好像走神了…请稍后重试～ 💦</div>';
+      el.innerHTML += '<div class="chat-msg bot">呜呜，小助手好像走神了…💦</div>';
     }
   } catch {
     $('#chatLoading').style.display = 'none';
-    el.innerHTML += '<div class="chat-msg bot">呜呜，出错了…请稍后重试～ 💦</div>';
+    el.innerHTML += '<div class="chat-msg bot">呜呜，出错了…💦</div>';
   }
   chatLoading = false;
 }
@@ -372,14 +354,8 @@ function init() {
     checkStatus(p);
     $(`#diary${cap(p)}SetPwdBtn`).addEventListener('click', () => setPw(p));
     $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-btn').addEventListener('click', () => verifyPw(p));
-    $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-forgot-btn').addEventListener('click', () => showReset(p));
     $(`#diary${cap(p)}Add`).addEventListener('click', () => addEntry(p));
   });
-
-  $('#masterActivateBtn').addEventListener('click', setMaster);
-  $('#resetConfirmBtn').addEventListener('click', confirmReset);
-  $('#resetCancelBtn').addEventListener('click', () => $('#resetModal').classList.remove('active'));
-  $('#resetModal').addEventListener('click', e => { if (e.target === $('#resetModal')) $('#resetModal').classList.remove('active'); });
 
   initPhotos();
   renderPhotos();

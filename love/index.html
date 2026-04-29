@@ -14,7 +14,7 @@
   <!-- 顶部导航 -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
-      <a href="#hero" class="nav-brand">💕 我们的故事</a>
+      <a href="#hero" class="nav-brand">💕 昕昕和林林的爱情故事</a>
       <button class="nav-toggle" id="navToggle" aria-label="菜单">
         <span></span><span></span><span></span>
       </button>
@@ -36,12 +36,13 @@
         <div class="heart-beat">💖</div>
         <div class="avatar avatar-right">👧</div>
       </div>
-      <h1 class="hero-title">我们的故事</h1>
+      <h1 class="hero-title">昕昕和林林的爱情故事</h1>
       <p class="hero-subtitle">记录属于我们的每一个甜蜜瞬间</p>
       <div class="clock" id="clock">
         <div class="clock-date" id="clockDate"></div>
         <div class="clock-time" id="clockTime"></div>
       </div>
+      <div class="hero-announce" id="heroAnnounce"></div>
     </div>
     <div class="hero-floating">
       <span class="float-heart" style="left:10%;animation-delay:0s">💕</span>
@@ -71,7 +72,7 @@
     <div class="diary-dual">
       <!-- 他的日记 -->
       <div class="diary-panel diary-his">
-        <h3 class="diary-name">💙 他的日记</h3>
+        <h3 class="diary-name">💙 林林的日记</h3>
         <div class="diary-lock" id="diaryHisLock">
           <div class="diary-lock-inner" id="diaryHisLockInner">
             <div class="diary-lock-icon">🔒</div>
@@ -79,7 +80,6 @@
             <div id="diaryHisPwMode">
               <input type="password" class="input diary-pwd-input" id="diaryHisPwd" placeholder="密码">
               <button class="btn btn-blue diary-pwd-btn" data-diary="his">确认</button>
-              <button class="diary-pwd-forgot-btn" data-diary="his">忘记密码？</button>
             </div>
             <div id="diaryHisSetupMode" style="display:none">
               <p class="setup-hint">首次使用，请设置日记密码：</p>
@@ -99,7 +99,7 @@
       </div>
       <!-- 她的日记 -->
       <div class="diary-panel diary-her">
-        <h3 class="diary-name">💗 她的日记</h3>
+        <h3 class="diary-name">💗 昕昕的日记</h3>
         <div class="diary-lock" id="diaryHerLock">
           <div class="diary-lock-inner" id="diaryHerLockInner">
             <div class="diary-lock-icon">🔒</div>
@@ -107,7 +107,6 @@
             <div id="diaryHerPwMode">
               <input type="password" class="input diary-pwd-input" id="diaryHerPwd" placeholder="密码">
               <button class="btn btn-pink diary-pwd-btn" data-diary="her">确认</button>
-              <button class="diary-pwd-forgot-btn" data-diary="her">忘记密码？</button>
             </div>
             <div id="diaryHerSetupMode" style="display:none">
               <p class="setup-hint">首次使用，请设置日记密码：</p>
@@ -123,34 +122,6 @@
             <button class="btn btn-pink" id="diaryHerAdd">📝 写下心情</button>
           </div>
           <div class="diary-list" id="diaryHerList"></div>
-        </div>
-      </div>
-    </div>
-    <!-- 万能密码区域 -->
-    <div class="master-section" id="masterSection">
-      <div class="master-info" id="masterInfo" style="display:none">
-        <p>🔑 万能密码已激活，可用于重置忘记的个人密码</p>
-      </div>
-      <div class="master-activate" id="masterActivate" style="display:none">
-        <h3>🔑 设置万能密码</h3>
-        <p class="setup-hint">双方都已设置密码！设置万能密码后可用于重置忘记的个人密码（不可修改）</p>
-        <input type="password" class="input master-pw-input" id="masterNewPw" placeholder="设置万能密码（至少4位）">
-        <input type="password" class="input master-pw-input" id="masterConfirmHisPw" placeholder="输入他的密码确认">
-        <input type="password" class="input master-pw-input" id="masterConfirmHerPw" placeholder="输入她的密码确认">
-        <button class="btn btn-pink" id="masterActivateBtn">激活万能密码</button>
-      </div>
-    </div>
-
-    <!-- 重置密码弹窗 -->
-    <div class="modal" id="resetModal">
-      <div class="reset-modal-box">
-        <h3 id="resetModalTitle">🔑 重置密码</h3>
-        <p class="setup-hint">输入万能密码设置新密码</p>
-        <input type="password" class="input reset-input" id="resetMasterPw" placeholder="万能密码">
-        <input type="password" class="input reset-input" id="resetNewPw" placeholder="新密码（至少4位）">
-        <div class="reset-btns">
-          <button class="btn btn-blue" id="resetConfirmBtn">确认重置</button>
-          <button class="btn" id="resetCancelBtn" style="background:#eee">取消</button>
         </div>
       </div>
     </div>
@@ -206,7 +177,7 @@
 
   <!-- 页脚 -->
   <footer class="footer">
-    <p>Made with 💖 — 2026 我们的故事</p>
+    <p>Made with 💖 — 2026 昕昕和林林的爱情故事</p>
   </footer>
 
   <script src="index.js"></script>

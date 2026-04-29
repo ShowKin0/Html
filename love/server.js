@@ -86,12 +86,10 @@ app.get('/api/diary/:person/status', (req, res) => {
   const { person } = req.params;
   if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
   const pw = readJSON('passwords') || {};
-  const masterSet = !!(pw.master && pw.master.set);
-  const individualSet = !!(pw[person] && pw[person].set);
-  res.json({ individualSet, masterSet });
+  res.json({ individualSet: !!(pw[person] && pw[person].set) });
 });
 
-// 设置个人密码（首次设置，生成独立日记加密密钥）
+// 设置个人密码
 app.post('/api/diary/:person/set-password', async (req, res) => {
   const { person } = req.params;
   if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
@@ -99,7 +97,7 @@ app.post('/api/diary/:person/set-password', async (req, res) => {
   if (!password || password.length < 4) return res.status(400).json({ error: '密码至少4位' });
 
   let pw = readJSON('passwords') || {};
-  if (pw[person] && pw[person].set) return res.status(403).json({ error: '已设置密码，如需重置请用万能密码' });
+  if (pw[person] && pw[person].set) return res.status(403).json({ error: '已设置密码，不可修改' });
 
   const hash = await bcrypt.hash(password, 10);
   const salt = crypto.randomBytes(32).toString('hex');
@@ -123,50 +121,10 @@ app.post('/api/diary/:person/set-password', async (req, res) => {
 
   // 创建 session
   const token = newSession(person, diaryEncKey.toString('hex'));
-  res.json({ ok: true, token, message: '密码设置成功！请让另一方也设置密码。' });
+  res.json({ ok: true, token, message: '密码设置成功！' });
 });
 
-// 设置万能密码（双方都设置后，由前端触发，独立密码）
-app.post('/api/diary/set-master', async (req, res) => {
-  let pw = readJSON('passwords') || {};
-  if (pw.master && pw.master.set) return res.status(403).json({ error: '万能密码已存在' });
-  if (!pw.his || !pw.his.set || !pw.her || !pw.her.set) {
-    return res.status(400).json({ error: '双方需先设置个人密码' });
-  }
-
-  const { masterPassword, hisPassword, herPassword } = req.body;
-  if (!masterPassword || masterPassword.length < 4) return res.status(400).json({ error: '万能密码至少4位' });
-  if (!hisPassword || !herPassword) return res.status(400).json({ error: '需要双方个人密码确认' });
-
-  // 验证双方个人密码
-  const hisMatch = await bcrypt.compare(hisPassword, pw.his.hash);
-  const herMatch = await bcrypt.compare(herPassword, pw.her.hash);
-  if (!hisMatch || !herMatch) return res.status(403).json({ error: '个人密码验证失败' });
-
-  // 提取各日记加密密钥
-  const hisKeyFromPwd = deriveKey(hisPassword, pw.his.salt);
-  const herKeyFromPwd = deriveKey(herPassword, pw.her.salt);
-  const hisDiaryKey = decryptText(pw.his.wrappedKey, hisKeyFromPwd);
-  const herDiaryKey = decryptText(pw.her.wrappedKey, herKeyFromPwd);
-
-  // 用万能密码加密存储双方的日记密钥
-  const masterHash = await bcrypt.hash(masterPassword, 10);
-  const masterSalt = crypto.randomBytes(32).toString('hex');
-  const masterKey = deriveKey(masterPassword, masterSalt);
-
-  pw.master = {
-    set: true,
-    hash: masterHash,
-    salt: masterSalt,
-    wrappedHisKey: encryptText(hisDiaryKey, masterKey),
-    wrappedHerKey: encryptText(herDiaryKey, masterKey),
-  };
-
-  writeJSON('passwords', pw);
-  res.json({ ok: true, message: '万能密码已激活！可用于重置忘记的个人密码。' });
-});
-
-// 验证个人密码（仅验证个人密码，不能使用万能密码查看日记）
+// 验证个人密码
 app.post('/api/diary/:person/verify', async (req, res) => {
   const { person } = req.params;
   const { password } = req.body;
@@ -183,48 +141,6 @@ app.post('/api/diary/:person/verify', async (req, res) => {
   const token = newSession(person, diaryEncKey);
 
   res.json({ ok: true, token });
-});
-
-// 万能密码：重置个人密码（忘记密码时使用）
-app.post('/api/diary/:person/reset-password', async (req, res) => {
-  const { person } = req.params;
-  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
-
-  const pw = readJSON('passwords') || {};
-  if (!pw.master || !pw.master.set) return res.status(400).json({ error: '万能密码未设置' });
-
-  const { masterPassword, newPassword } = req.body;
-  if (!masterPassword) return res.status(400).json({ error: '请输入万能密码' });
-  if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: '新密码至少4位' });
-
-  // 验证万能密码
-  const masterMatch = await bcrypt.compare(masterPassword, pw.master.hash);
-  if (!masterMatch) return res.status(403).json({ error: '万能密码错误' });
-
-  // 用万能密码解密日记加密密钥
-  const masterKey = deriveKey(masterPassword, pw.master.salt);
-  const wrappedTarget = person === 'his' ? pw.master.wrappedHisKey : pw.master.wrappedHerKey;
-  if (!wrappedTarget) return res.status(400).json({ error: '万能密码中没有此日记的密钥' });
-
-  const diaryEncKey = decryptText(wrappedTarget, masterKey);
-
-  // 设置新密码并重新加密日记密钥
-  const newHash = await bcrypt.hash(newPassword, 10);
-  const newSalt = crypto.randomBytes(32).toString('hex');
-  const newKeyFromPwd = deriveKey(newPassword, newSalt);
-  const newWrappedKey = encryptText(diaryEncKey, newKeyFromPwd);
-
-  // 保留万能密码中的日记密钥不变（master 记录不动）
-  pw[person].hash = newHash;
-  pw[person].salt = newSalt;
-  pw[person].wrappedKey = newWrappedKey;
-  pw[person].set = true;
-
-  writeJSON('passwords', pw);
-
-  // 自动解锁
-  const token = newSession(person, diaryEncKey);
-  res.json({ ok: true, token, message: '密码已重置！' });
 });
 
 // ====== 日记 API（加密存储） ======
