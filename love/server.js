@@ -1,21 +1,528 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 解析 JSON body
-app.use(express.json());
+// ====== 目录初始化 ======
+const DATA_DIR = path.join(__dirname, 'data');
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
+[DATA_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d); });
 
-// 静态文件服务
+// ====== 工具函数 ======
+const ALGO = 'aes-256-gcm';
+const KEY_LEN = 32;
+const IV_LEN = 16;
+const ITERATIONS = 100000;
+const DIGEST = 'sha512';
+
+function uid() { return Date.now().toString(36) + crypto.randomBytes(4).toString('hex'); }
+function readJSON(name) {
+  const p = path.join(DATA_DIR, name + '.json');
+  if (!fs.existsSync(p)) return null;
+  try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return null; }
+}
+function writeJSON(name, data) {
+  fs.writeFileSync(path.join(DATA_DIR, name + '.json'), JSON.stringify(data, null, 2));
+}
+
+// 从密码派生 AES 密钥
+function deriveKey(password, saltHex) {
+  return crypto.pbkdf2Sync(password, Buffer.from(saltHex, 'hex'), ITERATIONS, KEY_LEN, DIGEST);
+}
+
+// AES-256-GCM 加密
+function encryptText(text, key) {
+  const iv = crypto.randomBytes(IV_LEN);
+  const cipher = crypto.createCipheriv(ALGO, key, iv);
+  let enc = cipher.update(text, 'utf8', 'hex');
+  enc += cipher.final('hex');
+  return { iv: iv.toString('hex'), tag: cipher.getAuthTag().toString('hex'), data: enc };
+}
+
+// AES-256-GCM 解密
+function decryptText(pkg, key) {
+  const decipher = crypto.createDecipheriv(ALGO, key, Buffer.from(pkg.iv, 'hex'));
+  decipher.setAuthTag(Buffer.from(pkg.tag, 'hex'));
+  let dec = decipher.update(pkg.data, 'hex', 'utf8');
+  dec += decipher.final('utf8');
+  return dec;
+}
+
+// ====== Session 管理（内存 + 持久化） ======
+let sessions = readJSON('sessions') || {};
+function saveSessions() { writeJSON('sessions', sessions); }
+function newSession(person, encKeyHex) {
+  const token = uid() + uid();
+  sessions[token] = { person, encKey: encKeyHex, createdAt: Date.now() };
+  saveSessions();
+  return token;
+}
+function getSession(token) { return sessions[token] || null; }
+function delSession(token) { delete sessions[token]; saveSessions(); }
+// 清理过期 session（24小时）
+setInterval(() => {
+  const now = Date.now();
+  let changed = false;
+  for (const [k, v] of Object.entries(sessions)) {
+    if (now - v.createdAt > 86400000) { delete sessions[k]; changed = true; }
+  }
+  if (changed) saveSessions();
+}, 3600000);
+
+// ====== 中间件 ======
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(__dirname));
+app.use('/uploads', express.static(UPLOADS_DIR));
 
-// AI Chat 代理 — key 只存在服务端
+// ====== 密码系统 API ======
+
+// 检查密码状态
+app.get('/api/diary/:person/status', (req, res) => {
+  const { person } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const pw = readJSON('passwords') || {};
+  const masterSet = !!(pw.master && pw.master.set);
+  const individualSet = !!(pw[person] && pw[person].set);
+  res.json({ individualSet, masterSet });
+});
+
+// 设置个人密码（首次设置，生成独立日记加密密钥）
+app.post('/api/diary/:person/set-password', async (req, res) => {
+  const { person } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const { password } = req.body;
+  if (!password || password.length < 4) return res.status(400).json({ error: '密码至少4位' });
+
+  let pw = readJSON('passwords') || {};
+  if (pw[person] && pw[person].set) return res.status(403).json({ error: '已设置密码，如需重置请用万能密码' });
+
+  const hash = await bcrypt.hash(password, 10);
+  const salt = crypto.randomBytes(32).toString('hex');
+  const keyFromPwd = deriveKey(password, salt);
+
+  // 生成独立的日记加密密钥，用密码派生密钥加密存储
+  const diaryEncKey = crypto.randomBytes(32);
+  const wrappedKey = encryptText(diaryEncKey.toString('hex'), keyFromPwd);
+
+  if (!pw[person]) pw[person] = {};
+  pw[person].set = true;
+  pw[person].hash = hash;
+  pw[person].salt = salt;
+  pw[person].wrappedKey = wrappedKey;
+
+  writeJSON('passwords', pw);
+
+  // 初始化空日记
+  const diaryKey = 'diary-' + person;
+  if (!readJSON(diaryKey)) writeJSON(diaryKey, []);
+
+  // 创建 session
+  const token = newSession(person, diaryEncKey.toString('hex'));
+  res.json({ ok: true, token, message: '密码设置成功！请让另一方也设置密码。' });
+});
+
+// 设置万能密码（双方都设置后，由前端触发，独立密码）
+app.post('/api/diary/set-master', async (req, res) => {
+  let pw = readJSON('passwords') || {};
+  if (pw.master && pw.master.set) return res.status(403).json({ error: '万能密码已存在' });
+  if (!pw.his || !pw.his.set || !pw.her || !pw.her.set) {
+    return res.status(400).json({ error: '双方需先设置个人密码' });
+  }
+
+  const { masterPassword, hisPassword, herPassword } = req.body;
+  if (!masterPassword || masterPassword.length < 4) return res.status(400).json({ error: '万能密码至少4位' });
+  if (!hisPassword || !herPassword) return res.status(400).json({ error: '需要双方个人密码确认' });
+
+  // 验证双方个人密码
+  const hisMatch = await bcrypt.compare(hisPassword, pw.his.hash);
+  const herMatch = await bcrypt.compare(herPassword, pw.her.hash);
+  if (!hisMatch || !herMatch) return res.status(403).json({ error: '个人密码验证失败' });
+
+  // 提取各日记加密密钥
+  const hisKeyFromPwd = deriveKey(hisPassword, pw.his.salt);
+  const herKeyFromPwd = deriveKey(herPassword, pw.her.salt);
+  const hisDiaryKey = decryptText(pw.his.wrappedKey, hisKeyFromPwd);
+  const herDiaryKey = decryptText(pw.her.wrappedKey, herKeyFromPwd);
+
+  // 用万能密码加密存储双方的日记密钥
+  const masterHash = await bcrypt.hash(masterPassword, 10);
+  const masterSalt = crypto.randomBytes(32).toString('hex');
+  const masterKey = deriveKey(masterPassword, masterSalt);
+
+  pw.master = {
+    set: true,
+    hash: masterHash,
+    salt: masterSalt,
+    wrappedHisKey: encryptText(hisDiaryKey, masterKey),
+    wrappedHerKey: encryptText(herDiaryKey, masterKey),
+  };
+
+  writeJSON('passwords', pw);
+  res.json({ ok: true, message: '万能密码已激活！可用于重置忘记的个人密码。' });
+});
+
+// 验证个人密码（仅验证个人密码，不能使用万能密码查看日记）
+app.post('/api/diary/:person/verify', async (req, res) => {
+  const { person } = req.params;
+  const { password } = req.body;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+
+  const pw = readJSON('passwords') || {};
+  if (!pw[person] || !pw[person].set) return res.status(400).json({ error: '未设置密码' });
+
+  const match = await bcrypt.compare(password, pw[person].hash);
+  if (!match) return res.status(403).json({ error: '密码错误' });
+
+  const keyFromPwd = deriveKey(password, pw[person].salt);
+  const diaryEncKey = decryptText(pw[person].wrappedKey, keyFromPwd);
+  const token = newSession(person, diaryEncKey);
+
+  res.json({ ok: true, token });
+});
+
+// 万能密码：重置个人密码（忘记密码时使用）
+app.post('/api/diary/:person/reset-password', async (req, res) => {
+  const { person } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+
+  const pw = readJSON('passwords') || {};
+  if (!pw.master || !pw.master.set) return res.status(400).json({ error: '万能密码未设置' });
+
+  const { masterPassword, newPassword } = req.body;
+  if (!masterPassword) return res.status(400).json({ error: '请输入万能密码' });
+  if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: '新密码至少4位' });
+
+  // 验证万能密码
+  const masterMatch = await bcrypt.compare(masterPassword, pw.master.hash);
+  if (!masterMatch) return res.status(403).json({ error: '万能密码错误' });
+
+  // 用万能密码解密日记加密密钥
+  const masterKey = deriveKey(masterPassword, pw.master.salt);
+  const wrappedTarget = person === 'his' ? pw.master.wrappedHisKey : pw.master.wrappedHerKey;
+  if (!wrappedTarget) return res.status(400).json({ error: '万能密码中没有此日记的密钥' });
+
+  const diaryEncKey = decryptText(wrappedTarget, masterKey);
+
+  // 设置新密码并重新加密日记密钥
+  const newHash = await bcrypt.hash(newPassword, 10);
+  const newSalt = crypto.randomBytes(32).toString('hex');
+  const newKeyFromPwd = deriveKey(newPassword, newSalt);
+  const newWrappedKey = encryptText(diaryEncKey, newKeyFromPwd);
+
+  // 保留万能密码中的日记密钥不变（master 记录不动）
+  pw[person].hash = newHash;
+  pw[person].salt = newSalt;
+  pw[person].wrappedKey = newWrappedKey;
+  pw[person].set = true;
+
+  writeJSON('passwords', pw);
+
+  // 自动解锁
+  const token = newSession(person, diaryEncKey);
+  res.json({ ok: true, token, message: '密码已重置！' });
+});
+
+// ====== 日记 API（加密存储） ======
+
+// 获取日记条目
+app.get('/api/diary/:person/entries', (req, res) => {
+  const { person } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const token = req.query.token;
+  const session = getSession(token);
+  if (!session) return res.status(401).json({ error: '未登录' });
+
+  if (session.person !== person) return res.status(403).json({ error: '无权限' });
+
+  const key = Buffer.from(session.encKey, 'hex');
+  const diaryKey = 'diary-' + person;
+  const entries = readJSON(diaryKey) || [];
+
+  // 解密所有条目
+  const decrypted = entries.map(e => {
+    try {
+      const content = decryptText(e.encrypted, key);
+      return { id: e.id, content, time: e.time };
+    } catch {
+      return { id: e.id, content: '（解密失败）', time: e.time };
+    }
+  });
+
+  decrypted.sort((a, b) => b.time.localeCompare(a.time));
+  res.json(decrypted);
+});
+
+// 添加日记条目
+app.post('/api/diary/:person/entries', (req, res) => {
+  const { person } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const token = req.body.token;
+  const session = getSession(token);
+  if (!session) return res.status(401).json({ error: '未登录' });
+
+  if (session.person !== person) return res.status(403).json({ error: '无权限' });
+
+  const { content } = req.body;
+  if (!content || !content.trim()) return res.status(400).json({ error: '内容不能为空' });
+
+  const key = Buffer.from(session.encKey, 'hex');
+  const diaryKey = 'diary-' + person;
+  const entries = readJSON(diaryKey) || [];
+
+  const now = new Date();
+  const time = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  const entry = {
+    id: uid(),
+    encrypted: encryptText(content, key),
+    time,
+  };
+
+  entries.push(entry);
+  writeJSON(diaryKey, entries);
+
+  res.json({ ok: true, id: entry.id, time });
+});
+
+// 删除日记条目
+app.delete('/api/diary/:person/entries/:id', (req, res) => {
+  const { person, id } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const token = req.query.token;
+  const session = getSession(token);
+  if (!session) return res.status(401).json({ error: '未登录' });
+
+  const diaryKey = 'diary-' + person;
+  let entries = readJSON(diaryKey) || [];
+  entries = entries.filter(e => e.id !== id);
+  writeJSON(diaryKey, entries);
+  res.json({ ok: true });
+});
+
+// ====== 时间线 API ======
+app.get('/api/timeline', (req, res) => {
+  const data = readJSON('timeline') || [];
+  data.sort((a, b) => new Date(b.date) - new Date(a.date));
+  res.json(data);
+});
+
+app.post('/api/timeline', (req, res) => {
+  const { date, title, desc } = req.body;
+  if (!date || !title) return res.status(400).json({ error: '需要日期和标题' });
+  const data = readJSON('timeline') || [];
+  data.push({ id: uid(), date, title, desc: desc || '' });
+  writeJSON('timeline', data);
+  res.json({ ok: true });
+});
+
+app.delete('/api/timeline/:id', (req, res) => {
+  const { id } = req.params;
+  let data = readJSON('timeline') || [];
+  data = data.filter(d => d.id !== id);
+  writeJSON('timeline', data);
+  res.json({ ok: true });
+});
+
+// ====== 照片墙 API ======
+app.get('/api/photos', (req, res) => {
+  const data = readJSON('photos') || [];
+  res.json(data);
+});
+
+app.post('/api/photos/upload', (req, res) => {
+  const { data: base64Data } = req.body;
+  if (!base64Data) return res.status(400).json({ error: 'no data' });
+
+  // base64 保存为文件
+  const matches = base64Data.match(/^data:image\/(\w+);base64,(.+)$/);
+  if (!matches) return res.status(400).json({ error: 'invalid image data' });
+
+  const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
+  const fileName = uid() + '.' + ext;
+  const filePath = path.join(UPLOADS_DIR, fileName);
+
+  fs.writeFileSync(filePath, Buffer.from(matches[2], 'base64'));
+
+  const photos = readJSON('photos') || [];
+  const photo = {
+    id: uid(),
+    url: '/uploads/' + fileName,
+    time: new Date().toISOString(),
+  };
+  photos.push(photo);
+  writeJSON('photos', photos);
+
+  res.json({ ok: true, photo });
+});
+
+app.delete('/api/photos/:id', (req, res) => {
+  const { id } = req.params;
+  let photos = readJSON('photos') || [];
+  const photo = photos.find(p => p.id === id);
+  if (photo) {
+    const filePath = path.join(__dirname, photo.url);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  }
+  photos = photos.filter(p => p.id !== id);
+  writeJSON('photos', photos);
+  res.json({ ok: true });
+});
+
+// ====== AI 聊天 — 历史对话 ======
+
+// 获取所有对话
+app.get('/api/chat/conversations', (req, res) => {
+  const data = readJSON('chat-conversations') || [];
+  // 只返回摘要（不含完整 messages）
+  const summary = data.map(c => ({
+    id: c.id,
+    title: c.title,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+    msgCount: c.messages ? c.messages.length : 0,
+  }));
+  summary.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  res.json(summary);
+});
+
+// 创建新对话
+app.post('/api/chat/conversations', (req, res) => {
+  const data = readJSON('chat-conversations') || [];
+  const now = new Date().toISOString();
+  const conv = {
+    id: uid(),
+    title: req.body.title || '新对话 ' + now.slice(0, 16).replace('T', ' '),
+    messages: [],
+    createdAt: now,
+    updatedAt: now,
+  };
+  data.push(conv);
+  writeJSON('chat-conversations', data);
+  res.json(conv);
+});
+
+// 获取单个对话完整内容
+app.get('/api/chat/conversations/:id', (req, res) => {
+  const data = readJSON('chat-conversations') || [];
+  const conv = data.find(c => c.id === req.params.id);
+  if (!conv) return res.status(404).json({ error: 'not found' });
+  res.json(conv);
+});
+
+// 添加消息到对话
+app.post('/api/chat/conversations/:id/messages', async (req, res) => {
+  const data = readJSON('chat-conversations') || [];
+  const conv = data.find(c => c.id === req.params.id);
+  if (!conv) return res.status(404).json({ error: 'not found' });
+
+  const { role, content } = req.body;
+  if (!role || !content) return res.status(400).json({ error: 'need role and content' });
+
+  conv.messages.push({ role, content });
+  conv.updatedAt = new Date().toISOString();
+
+  // 自动生成标题（第一条用户消息）
+  if (conv.title === '新对话 ' + conv.createdAt.slice(0, 16).replace('T', ' ') && role === 'user') {
+    conv.title = content.slice(0, 30) + (content.length > 30 ? '...' : '');
+  }
+
+  writeJSON('chat-conversations', data);
+
+  // 如果是用户消息，调用 AI
+  if (role === 'user') {
+    const systemPrompt = {
+      role: 'system',
+      content: '你是一个温暖贴心的情侣助手，用中文回复，语气可爱温柔，像朋友一样。回复尽量简短在100字以内，适当加一些emoji。',
+    };
+
+    try {
+      const apiRes = await fetch(process.env.API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: process.env.API_MODEL,
+          messages: [systemPrompt, ...conv.messages],
+          max_tokens: 300,
+          temperature: 0.9,
+        }),
+      });
+
+      if (!apiRes.ok) {
+        const err = await apiRes.text();
+        console.error('AI API error:', err);
+        return res.json({ reply: null, error: 'upstream error' });
+      }
+
+      const apiData = await apiRes.json();
+      const reply = apiData.choices[0].message.content;
+
+      conv.messages.push({ role: 'assistant', content: reply });
+      conv.updatedAt = new Date().toISOString();
+      writeJSON('chat-conversations', data);
+
+      res.json({ reply, conversationId: conv.id });
+    } catch (e) {
+      console.error('Proxy error:', e);
+      res.json({ reply: null, error: 'proxy error' });
+    }
+  } else {
+    res.json({ ok: true, conversationId: conv.id });
+  }
+});
+
+// 删除对话
+app.delete('/api/chat/conversations/:id', (req, res) => {
+  let data = readJSON('chat-conversations') || [];
+  data = data.filter(c => c.id !== req.params.id);
+  writeJSON('chat-conversations', data);
+  res.json({ ok: true });
+});
+
+// 重命名对话
+app.put('/api/chat/conversations/:id', (req, res) => {
+  const data = readJSON('chat-conversations') || [];
+  const conv = data.find(c => c.id === req.params.id);
+  if (!conv) return res.status(404).json({ error: 'not found' });
+  const { title } = req.body;
+  if (!title || !title.trim()) return res.status(400).json({ error: '标题不能为空' });
+  conv.title = title.trim();
+  conv.updatedAt = new Date().toISOString();
+  writeJSON('chat-conversations', data);
+  res.json({ ok: true, title: conv.title });
+});
+
+// AI Chat 兼容旧端点
 app.post('/api/chat', async (req, res) => {
-  const { messages } = req.body;
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'invalid messages' });
+  const { messages, conversationId } = req.body;
+  if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'invalid messages' });
+
+  // 找或创建对话
+  let data = readJSON('chat-conversations') || [];
+  let conv;
+  if (conversationId) {
+    conv = data.find(c => c.id === conversationId);
+  }
+  if (!conv) {
+    const now = new Date().toISOString();
+    conv = { id: uid(), title: '对话 ' + now.slice(0, 16).replace('T', ' '), messages: [], createdAt: now, updatedAt: now };
+    data.push(conv);
+  }
+
+  // 追加用户消息
+  const userMsg = messages[messages.length - 1];
+  if (userMsg && userMsg.role === 'user') {
+    conv.messages.push(userMsg);
+    if (conv.title.startsWith('对话 ') && userMsg.content) {
+      conv.title = userMsg.content.slice(0, 30) + (userMsg.content.length > 30 ? '...' : '');
+    }
   }
 
   const systemPrompt = {
@@ -26,13 +533,10 @@ app.post('/api/chat', async (req, res) => {
   try {
     const apiRes = await fetch(process.env.API_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.API_KEY}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.API_KEY}` },
       body: JSON.stringify({
         model: process.env.API_MODEL,
-        messages: [systemPrompt, ...messages],
+        messages: [systemPrompt, ...conv.messages],
         max_tokens: 300,
         temperature: 0.9,
       }),
@@ -44,15 +548,20 @@ app.post('/api/chat', async (req, res) => {
       return res.status(502).json({ error: 'upstream error' });
     }
 
-    const data = await apiRes.json();
-    res.json({ reply: data.choices[0].message.content });
+    const apiData = await apiRes.json();
+    const reply = apiData.choices[0].message.content;
+    conv.messages.push({ role: 'assistant', content: reply });
+    conv.updatedAt = new Date().toISOString();
+    writeJSON('chat-conversations', data);
+
+    res.json({ reply, conversationId: conv.id });
   } catch (e) {
     console.error('Proxy error:', e);
     res.status(502).json({ error: 'proxy error' });
   }
 });
 
-// SPA fallback — 所有其他路由返回 index.html
+// ====== 静态文件服务 ======
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

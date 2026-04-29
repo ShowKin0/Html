@@ -452,3 +452,135 @@ body {
   .chat-messages { height: 280px; }
   .chat-msg { max-width: 90%; }
 }
+
+/* ===== 日记 - 新样式 ===== */
+.diary-unlocked-bar {
+  font-size: 0.78rem; color: #4CAF50; text-align: center;
+  padding: 4px 0; margin-bottom: 12px; font-weight: 600;
+}
+.setup-hint {
+  font-size: 0.85rem; color: var(--text-light); margin-bottom: 10px;
+}
+.diary-pwd-master-btn {
+  background: none; border: none; font-size: 0.78rem;
+  color: var(--text-light); cursor: pointer; margin-top: 8px;
+  text-decoration: underline; opacity: 0.6; display: inline-block;
+}
+.diary-pwd-master-btn:hover { opacity: 1; }
+
+/* ===== 万能密码 ===== */
+.master-section {
+  max-width: 500px; margin: 20px auto 0; text-align: center;
+}
+.master-info {
+  background: #E8F5E9; border-radius: var(--radius);
+  padding: 16px 20px; font-size: 0.9rem;
+}
+.master-activate {
+  background: #fff; border-radius: var(--radius);
+  padding: 24px; box-shadow: var(--shadow);
+}
+.master-activate h3 { margin-bottom: 10px; }
+.master-activate p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 16px; }
+.master-pw-input { width: 100%; margin-bottom: 10px; text-align: center; }
+
+/* ===== AI 聊天 - 新版 ===== */
+.chat-container {
+  display: flex; gap: 0;
+  max-width: 850px; margin: 0 auto;
+  background: #fff; border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.chat-sidebar {
+  width: 200px; background: #FFF9FA;
+  border-right: 1px solid #F0E0E5;
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+.chat-new-btn { margin: 12px; justify-content: center; font-size: 0.85rem; }
+.chat-history { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
+.chat-history-item {
+  padding: 10px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 0.82rem; margin-bottom: 4px;
+  transition: background 0.2s; word-break: break-all;
+  line-height: 1.3;
+}
+.chat-history-item:hover { background: #FFF0F3; }
+.chat-history-item.active { background: var(--pink); color: #fff; }
+.chat-history-item .h-time { font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+
+.chat-main { flex: 1; min-width: 0; }
+.chat-box { max-width: 100%; box-shadow: none; border-radius: 0; }
+.chat-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px; border-bottom: 1px solid #F0E0E5;
+  font-weight: 600; font-size: 0.9rem;
+}
+.chat-toggle-btn {
+  background: none; border: none; font-size: 1.2rem;
+  cursor: pointer; display: none; padding: 4px;
+}
+
+/* 加载动画 */
+.chat-loading {
+  align-self: flex-start;
+  background: #F5F0FF; border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  padding: 14px 20px; font-size: 1.5rem;
+  line-height: 1; letter-spacing: 2px;
+  margin: 0 20px;
+}
+.chat-loading span { animation: dotPulse 1.4s ease-in-out infinite; }
+.chat-loading .dot-2 { animation-delay: 0.2s; }
+.chat-loading .dot-3 { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+/* 响应式 - 聊天 */
+@media (max-width: 768px) {
+  .chat-container { flex-direction: column; }
+  .chat-sidebar {
+    width: 100%; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s;
+  }
+  .chat-sidebar.open { max-height: 300px; }
+  .chat-toggle-btn { display: block; }
+}
+
+/* ===== 忘记密码 / 重置弹窗 ===== */
+.diary-pwd-forgot-btn {
+  background: none; border: none; font-size: 0.78rem;
+  color: var(--text-light); cursor: pointer; margin-top: 8px;
+  text-decoration: underline; opacity: 0.6; display: inline-block;
+}
+.diary-pwd-forgot-btn:hover { opacity: 1; }
+
+.reset-modal-box {
+  background: #fff; border-radius: var(--radius);
+  padding: 32px; width: 320px; max-width: 90%;
+}
+.reset-modal-box h3 { text-align: center; margin-bottom: 8px; }
+.reset-input { width: 100%; margin-bottom: 10px; text-align: center; }
+.reset-btns { display: flex; gap: 8px; margin-top: 12px; }
+.reset-btns .btn { flex: 1; justify-content: center; }
+
+/* ===== 聊天历史操作按钮 ===== */
+.chat-history-item-wrap {
+  display: flex; align-items: flex-start; gap: 4px;
+  margin-bottom: 4px; position: relative;
+}
+.chat-history-item-wrap .chat-history-item {
+  flex: 1; margin-bottom: 0;
+}
+.chat-history-actions {
+  display: none; gap: 2px; padding-top: 8px; flex-shrink: 0;
+}
+.chat-history-item-wrap:hover .chat-history-actions { display: flex; }
+.chat-history-actions button {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.75rem; opacity: 0.5; padding: 2px 4px;
+  border-radius: 4px; line-height: 1;
+}
+.chat-history-actions button:hover { opacity: 1; background: #FFF0F3; }

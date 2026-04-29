@@ -1,106 +1,153 @@
-// ===== 存储键 =====
-const KEYS = {
-  timeline: 'love_timeline',
-  diaryHis: 'love_diary_his',
-  diaryHer: 'love_diary_her',
-  photos: 'love_photos',
-};
-
-// ===== 工具函数 =====
-function $(sel) { return document.querySelector(sel); }
-function $$(sel) { return document.querySelectorAll(sel); }
-
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-
-function load(key) {
-  try { return JSON.parse(localStorage.getItem(key)) || []; }
-  catch { return []; }
+// ====== API 工具 ======
+async function api(method, url, body) {
+  const opts = { method, headers: {} };
+  if (body) opts.headers['Content-Type'] = 'application/json', opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  const d = await r.json();
+  if (!r.ok && d.error) throw new Error(d.error);
+  return d;
 }
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-function save(key, data) {
-  try { localStorage.setItem(key, JSON.stringify(data)); }
-  catch (e) { alert('存储空间不足，请删除一些旧内容～'); }
-}
+// ====== 密码系统 ======
+const TOKENS = { his: null, her: null };
+let resetPerson = null; // 记录正在重置的是谁的密码
 
-function formatTime() {
-  const d = new Date();
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function pad(n) { return String(n).padStart(2, '0'); }
-function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-// ===== 日记密码系统（SHA-256 哈希，明文不存储） =====
-const MASTER_PWD = '406618';
-const PWD_KEYS = { his: 'love_diary_his_pwd', her: 'love_diary_her_pwd' };
-
-async function hashPassword(pwd) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function initDiaryLock() {
-  ['his', 'her'].forEach(person => {
-    const lockEl = $(`#diary${capital(person)}Lock`);
-    const titleEl = $(`#diary${capital(person)}LockTitle`);
-    const pwdInput = $(`#diary${capital(person)}Pwd`);
-    const confirmBtn = lockEl.querySelector('.diary-pwd-btn');
-    const resetBtn = lockEl.querySelector('.diary-pwd-reset');
-    const contentEl = $(`#diary${capital(person)}Content`);
-
-    const storedHash = localStorage.getItem(PWD_KEYS[person]);
-    if (!storedHash) {
-      titleEl.textContent = '设置日记密码 🔒';
-      pwdInput.placeholder = '设置密码';
+async function checkStatus(person) {
+  try {
+    const data = await api('GET', `/api/diary/${person}/status`);
+    const pwMode = $(`#diary${cap(person)}PwMode`);
+    const setupMode = $(`#diary${cap(person)}SetupMode`);
+    if (data.masterSet || data.individualSet) {
+      pwMode.style.display = 'block';
+      setupMode.style.display = 'none';
+      if (data.masterSet) $('#masterInfo').style.display = 'block';
+      if (data.individualSet && !data.masterSet) checkMasterReady();
+    } else {
+      pwMode.style.display = 'none';
+      setupMode.style.display = 'block';
     }
+  } catch {}
+}
 
-    confirmBtn.addEventListener('click', async () => {
-      const pwd = pwdInput.value.trim();
-      if (!pwd) return;
-      const hash = await hashPassword(pwd);
+async function setPw(person) {
+  const input = $(`#diary${cap(person)}NewPwd`);
+  const pwd = input.value.trim();
+  if (pwd.length < 4) { alert('密码至少4位'); return; }
+  try {
+    const d = await api('POST', `/api/diary/${person}/set-password`, { password: pwd });
+    if (d.token) TOKENS[person] = d.token;
+    alert('密码设置成功！');
+    checkStatus(person);
+    checkMasterReady();
+  } catch (e) { alert(e.message); }
+}
 
-      if (!localStorage.getItem(PWD_KEYS[person])) {
-        // 首次设置
-        localStorage.setItem(PWD_KEYS[person], hash);
-        unlockDiary(person);
-      } else if (hash === localStorage.getItem(PWD_KEYS[person])) {
-        // 密码正确
-        unlockDiary(person);
-      } else if (pwd === MASTER_PWD) {
-        // 万能密码：清除旧密码，进入设置模式
-        localStorage.removeItem(PWD_KEYS[person]);
-        titleEl.textContent = '请设置新密码 🔒';
-        pwdInput.value = '';
-        pwdInput.placeholder = '设置新密码';
-        alert('🔑 万能密码验证通过，请设置新密码');
-      } else {
-        alert('❌ 密码错误～');
-      }
-    });
-
-    resetBtn.addEventListener('click', () => {
-      const input = prompt('请输入万能密码以重置：');
-      if (input === MASTER_PWD) {
-        localStorage.removeItem(PWD_KEYS[person]);
-        titleEl.textContent = '请设置新密码 🔒';
-        pwdInput.value = '';
-        pwdInput.placeholder = '设置新密码';
-        alert('✅ 密码已重置，请设置新密码');
-      } else if (input !== null) {
-        alert('❌ 万能密码错误');
-      }
-    });
-  });
+async function verifyPw(person) {
+  const input = $(`#diary${cap(person)}Pwd`);
+  const pwd = input.value.trim();
+  if (!pwd) return;
+  try {
+    const d = await api('POST', `/api/diary/${person}/verify`, { password: pwd });
+    TOKENS[person] = d.token;
+    unlockDiary(person);
+  } catch { alert('密码错误'); }
 }
 
 function unlockDiary(person) {
-  $(`#diary${capital(person)}Lock`).classList.add('unlocked');
-  $(`#diary${capital(person)}Content`).classList.add('unlocked');
-  renderDiary(person, $(`#diary${capital(person)}List`));
+  $(`#diary${cap(person)}Lock`).classList.add('unlocked');
+  $(`#diary${cap(person)}Content`).classList.add('unlocked');
+  loadDiary(person);
 }
 
-// ===== 浮动粒子 =====
+async function loadDiary(person) {
+  const token = TOKENS[person];
+  if (!token) return;
+  try {
+    const entries = await api('GET', `/api/diary/${person}/entries?token=${token}`);
+    const list = $(`#diary${cap(person)}List`);
+    list.innerHTML = entries.map(e =>
+      `<div class="diary-entry"><div class="de-time">${esc(e.time)}</div><div class="de-content">${esc(e.content)}</div><button class="de-del" data-p="${person}" data-id="${e.id}">🗑</button></div>`
+    ).join('');
+    list.querySelectorAll('.de-del').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('确定删除？')) return;
+      await api('DELETE', `/api/diary/${b.dataset.p}/entries/${b.dataset.id}?token=${TOKENS[b.dataset.p]}`);
+      loadDiary(b.dataset.p);
+    }));
+  } catch {}
+}
+
+async function addEntry(person) {
+  const token = TOKENS[person];
+  if (!token) { alert('请先解锁'); return; }
+  const input = $(`#diary${cap(person)}Input`);
+  const content = input.value.trim();
+  if (!content) { alert('写点什么吧～'); return; }
+  try {
+    await api('POST', `/api/diary/${person}/entries`, { token, content });
+    input.value = '';
+    loadDiary(person);
+  } catch { alert('保存失败'); }
+}
+
+// 忘记密码 → 显示重置弹窗
+function showReset(person) {
+  resetPerson = person;
+  $('#resetModalTitle').textContent = `🔑 重置${person === 'his' ? '他' : '她'}的密码`;
+  $('#resetMasterPw').value = '';
+  $('#resetNewPw').value = '';
+  $('#resetModal').classList.add('active');
+}
+
+async function confirmReset() {
+  const person = resetPerson;
+  const masterPw = $('#resetMasterPw').value.trim();
+  const newPw = $('#resetNewPw').value.trim();
+  if (!masterPw) { alert('请输入万能密码'); return; }
+  if (newPw.length < 4) { alert('新密码至少4位'); return; }
+  try {
+    const d = await api('POST', `/api/diary/${person}/reset-password`, { masterPassword: masterPw, newPassword: newPw });
+    if (d.token) TOKENS[person] = d.token;
+    alert('密码已重置！');
+    $('#resetModal').classList.remove('active');
+    unlockDiary(person);
+  } catch (e) { alert(e.message); }
+}
+
+// 万能密码
+async function checkMasterReady() {
+  try {
+    const h = await api('GET', '/api/diary/his/status');
+    const e = await api('GET', '/api/diary/her/status');
+    if (h.masterSet || e.masterSet) {
+      $('#masterActivate').style.display = 'none';
+      $('#masterInfo').style.display = 'block';
+      return;
+    }
+    $('#masterActivate').style.display = (h.individualSet && e.individualSet) ? 'block' : 'none';
+  } catch {}
+}
+
+async function setMaster() {
+  const masterPw = $('#masterNewPw').value.trim();
+  const hisPw = $('#masterConfirmHisPw').value.trim();
+  const herPw = $('#masterConfirmHerPw').value.trim();
+  if (masterPw.length < 4) { alert('万能密码至少4位'); return; }
+  if (!hisPw || !herPw) { alert('请输入双方个人密码确认'); return; }
+  try {
+    await api('POST', '/api/diary/set-master', { masterPassword: masterPw, hisPassword: hisPw, herPassword: herPw });
+    alert('万能密码已激活！可用于重置忘记的个人密码。');
+    $('#masterActivate').style.display = 'none';
+    $('#masterInfo').style.display = 'block';
+  } catch (e) { alert(e.message); }
+}
+
+// ====== 粒子 ======
 function createParticles() {
-  const container = $('#particles');
+  const c = $('#particles');
   const emojis = ['🌸', '💕', '✨', '💗', '🩷', '🦋', '⭐', '💖'];
   for (let i = 0; i < 20; i++) {
     const el = document.createElement('span');
@@ -110,317 +157,230 @@ function createParticles() {
     el.style.animationDuration = (5 + Math.random() * 8) + 's';
     el.style.animationDelay = Math.random() * 6 + 's';
     el.style.fontSize = (14 + Math.random() * 18) + 'px';
-    container.appendChild(el);
+    c.appendChild(el);
   }
 }
 
-// ===== 实时时钟 =====
+// ====== 时钟 ======
 function updateClock() {
   const now = new Date();
-  const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-  const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 星期${weekDays[now.getDay()]}`;
-  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  if ($('#clockDate')) $('#clockDate').textContent = dateStr;
-  if ($('#clockTime')) $('#clockTime').textContent = timeStr;
+  const wd = ['日','一','二','三','四','五','六'];
+  if ($('#clockDate')) $('#clockDate').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${wd[now.getDay()]}`;
+  if ($('#clockTime')) $('#clockTime').textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 }
 
-// ===== 导航 =====
+// ====== 导航 ======
 function initNav() {
-  const toggle = $('#navToggle');
-  const links = $('#navLinks');
-  toggle.addEventListener('click', () => links.classList.toggle('open'));
-
-  $$('[data-nav]').forEach(a => {
-    a.addEventListener('click', () => links.classList.remove('open'));
-  });
-
-  const sections = $$('section[id]');
-  const navItems = $$('[data-nav]');
+  $('#navToggle').addEventListener('click', () => $('#navLinks').classList.toggle('open'));
+  $$('[data-nav]').forEach(a => a.addEventListener('click', () => $('#navLinks').classList.remove('open')));
+  const sections = $$('section[id]'), navItems = $$('[data-nav]');
   window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (scrollY >= s.offsetTop - 200) current = s.id;
-    });
-    navItems.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+    let cur = '';
+    sections.forEach(s => { if (scrollY >= s.offsetTop - 200) cur = s.id; });
+    navItems.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
   });
 }
 
-// ===== 滚动动画 =====
+// ====== 滚动动画 ======
 function initScrollAnim() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.tl-item, .fade-up').forEach(el => observer.observe(el));
+  const ob = new IntersectionObserver(e => { e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }); }, { threshold: 0.15 });
+  document.querySelectorAll('.tl-item, .fade-up').forEach(el => ob.observe(el));
 }
 
-// ===== 时间线 =====
-function renderTimeline() {
-  const items = load(KEYS.timeline);
-  items.sort((a, b) => new Date(b.date) - new Date(a.date));
-  const container = $('#timelineContainer');
-  container.innerHTML = items.map(item => `
-    <div class="tl-item">
-      <div class="tl-dot"></div>
-      <div class="tl-card">
-        <div class="tl-date">${item.date}</div>
-        <div class="tl-title">${escHtml(item.title)}</div>
-        ${item.desc ? `<div class="tl-desc">${escHtml(item.desc)}</div>` : ''}
-        <button class="tl-del" data-tl-id="${item.id}">🗑</button>
-      </div>
-    </div>
-  `).join('');
-
-  container.querySelectorAll('.tl-del').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+// ====== 时间线 ======
+async function renderTimeline() {
+  try {
+    const items = await api('GET', '/api/timeline');
+    $('#timelineContainer').innerHTML = items.map(item =>
+      `<div class="tl-item"><div class="tl-dot"></div><div class="tl-card"><div class="tl-date">${item.date}</div><div class="tl-title">${esc(item.title)}</div>${item.desc ? `<div class="tl-desc">${esc(item.desc)}</div>` : ''}<button class="tl-del" data-id="${item.id}">🗑</button></div></div>`
+    ).join('');
+    $('#timelineContainer').querySelectorAll('.tl-del').forEach(b => b.addEventListener('click', async e => {
       e.stopPropagation();
-      const id = btn.dataset.tlId;
-      const items = load(KEYS.timeline);
-      save(KEYS.timeline, items.filter(it => it.id !== id));
+      await api('DELETE', `/api/timeline/${b.dataset.id}`);
       renderTimeline();
-      initScrollAnim();
-    });
-  });
-
-  document.querySelectorAll('.tl-item').forEach(el => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.15 });
-    observer.observe(el);
-  });
-}
-
-function initTimelineAdd() {
-  $('#tlAddBtn').addEventListener('click', () => {
-    const date = $('#tlDate').value;
-    const title = $('#tlTitle').value.trim();
-    const desc = $('#tlDesc').value.trim();
-
-    if (!date || !title) { alert('请填写日期和标题～'); return; }
-
-    const items = load(KEYS.timeline);
-    items.push({ id: uid(), date, title, desc });
-    save(KEYS.timeline, items);
-    renderTimeline();
+    }));
     initScrollAnim();
-    $('#tlDate').value = '';
-    $('#tlTitle').value = '';
-    $('#tlDesc').value = '';
+  } catch {}
+}
+
+function initTL() {
+  $('#tlAddBtn').addEventListener('click', async () => {
+    const date = $('#tlDate').value, title = $('#tlTitle').value.trim(), desc = $('#tlDesc').value.trim();
+    if (!date || !title) { alert('请填写日期和标题～'); return; }
+    try {
+      await api('POST', '/api/timeline', { date, title, desc });
+      renderTimeline();
+      $('#tlDate').value = ''; $('#tlTitle').value = ''; $('#tlDesc').value = '';
+    } catch { alert('添加失败'); }
   });
 }
 
-// ===== 双人日记 =====
-function renderDiary(person, listEl) {
-  const key = person === 'his' ? KEYS.diaryHis : KEYS.diaryHer;
-  const entries = load(key);
-  entries.sort((a, b) => b.time.localeCompare(a.time));
-  listEl.innerHTML = entries.map(e => `
-    <div class="diary-entry">
-      <div class="de-time">${e.time}</div>
-      <div class="de-content">${escHtml(e.content)}</div>
-      <button class="de-del" data-did="${e.id}">🗑</button>
-    </div>
-  `).join('');
-
-  listEl.querySelectorAll('.de-del').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.did;
-      const items = load(key);
-      save(key, items.filter(it => it.id !== id));
-      renderDiary(person, listEl);
-    });
-  });
-}
-
-function initDiary(person, inputEl, addBtn, listEl) {
-  addBtn.addEventListener('click', () => {
-    const content = inputEl.value.trim();
-    if (!content) { alert('写点什么吧～'); return; }
-    const key = person === 'his' ? KEYS.diaryHis : KEYS.diaryHer;
-    const entries = load(key);
-    entries.push({ id: uid(), content, time: formatTime() });
-    save(key, entries);
-    renderDiary(person, listEl);
-    inputEl.value = '';
-  });
-}
-
-// ===== 照片墙 =====
-function renderPhotos() {
-  const photos = load(KEYS.photos);
-  const grid = $('#photoGrid');
-  grid.innerHTML = photos.map(p => `
-    <div class="photo-card" data-pid="${p.id}">
-      <img src="${p.data}" alt="photo">
-    </div>
-  `).join('');
-
-  grid.querySelectorAll('.photo-card').forEach(card => {
-    card.addEventListener('click', () => openPhotoModal(card.dataset.pid));
-  });
-}
-
-function openPhotoModal(pid) {
-  const photos = load(KEYS.photos);
-  const photo = photos.find(p => p.id === pid);
-  if (!photo) return;
-  const modal = $('#photoModal');
-  $('#modalImg').src = photo.data;
-  modal.classList.add('active');
-  modal._photoId = pid;
-  document.body.style.overflow = 'hidden';
+// ====== 照片墙 ======
+async function renderPhotos() {
+  try {
+    const photos = await api('GET', '/api/photos');
+    $('#photoGrid').innerHTML = photos.map(p => `<div class="photo-card" data-pid="${p.id}"><img src="${p.url}" alt="photo"></div>`).join('');
+    $('#photoGrid').querySelectorAll('.photo-card').forEach(c => c.addEventListener('click', () => {
+      const pid = c.dataset.pid;
+      const img = c.querySelector('img').src;
+      $('#modalImg').src = img;
+      $('#photoModal')._pid = pid;
+      $('#photoModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }));
+  } catch {}
 }
 
 function initPhotos() {
-  $('#photoInput').addEventListener('change', (e) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
-
-    const photos = load(KEYS.photos);
-    if (photos.length + files.length > 50) {
-      alert('照片太多啦，最多存储50张～');
-      return;
+  $('#photoInput').addEventListener('change', async e => {
+    for (const f of Array.from(e.target.files)) {
+      const r = new FileReader();
+      r.onload = async () => { try { await api('POST', '/api/photos/upload', { data: r.result }); renderPhotos(); } catch {} };
+      r.readAsDataURL(f);
     }
-
-    let loaded = 0;
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        photos.push({ id: uid(), data: reader.result, time: formatTime() });
-        loaded++;
-        if (loaded === files.length) {
-          save(KEYS.photos, photos);
-          renderPhotos();
-        }
-      };
-      reader.readAsDataURL(file);
-    });
     e.target.value = '';
   });
-
-  $('#modalClose').addEventListener('click', closeModal);
-  $('#photoModal').addEventListener('click', (e) => {
-    if (e.target === $('#photoModal')) closeModal();
-  });
-  $('#modalDel').addEventListener('click', () => {
-    if (!confirm('确定删除这张照片吗？')) return;
-    const photos = load(KEYS.photos);
-    save(KEYS.photos, photos.filter(p => p.id !== $('#photoModal')._photoId));
+  $('#modalClose').addEventListener('click', () => { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; });
+  $('#photoModal').addEventListener('click', e => { if (e.target === $('#photoModal')) { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; } });
+  $('#modalDel').addEventListener('click', async () => {
+    if (!confirm('确定删除？')) return;
+    await api('DELETE', `/api/photos/${$('#photoModal')._pid}`);
     renderPhotos();
-    closeModal();
+    $('#photoModal').classList.remove('active');
+    document.body.style.overflow = '';
   });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; } });
 }
 
-function closeModal() {
-  $('#photoModal').classList.remove('active');
-  document.body.style.overflow = '';
+// ====== AI 聊天 ======
+let curConv = null, chatLoading = false;
+
+async function loadConvs() {
+  try {
+    const list = await api('GET', '/api/chat/conversations');
+    $('#chatHistoryList').innerHTML = list.map(c => `
+      <div class="chat-history-item-wrap">
+        <div class="chat-history-item ${c.id === curConv ? 'active' : ''}" data-cid="${c.id}">
+          ${esc(c.title)}
+          <div class="h-time">${c.createdAt.slice(0,16).replace('T',' ')}</div>
+        </div>
+        <div class="chat-history-actions">
+          <button class="ch-rename" data-cid="${c.id}" title="重命名">✏️</button>
+          <button class="ch-delete" data-cid="${c.id}" title="删除">🗑</button>
+        </div>
+      </div>
+    `).join('');
+    $('#chatHistoryList').querySelectorAll('.chat-history-item').forEach(el => el.addEventListener('click', () => switchConv(el.dataset.cid)));
+    $('#chatHistoryList').querySelectorAll('.ch-rename').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); renameConv(b.dataset.cid); }));
+    $('#chatHistoryList').querySelectorAll('.ch-delete').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); deleteConv(b.dataset.cid); }));
+  } catch {}
 }
 
-// ===== AI Chat =====
-function initChat() {
-  const messages = $('#chatMessages');
-  const input = $('#chatInput');
-  const sendBtn = $('#chatSend');
+async function switchConv(id) {
+  try {
+    const conv = await api('GET', `/api/chat/conversations/${id}`);
+    curConv = conv.id;
+    const el = $('#chatMessages');
+    el.innerHTML = conv.messages.map(m => `<div class="chat-msg ${m.role === 'user' ? 'user' : 'bot'}">${esc(m.content)}</div>`).join('');
+    el.scrollTop = el.scrollHeight;
+    $('#chatTitle').textContent = conv.title;
+    loadConvs();
+  } catch {}
+}
 
-  function addMessage(text, type) {
-    const div = document.createElement('div');
-    div.className = `chat-msg ${type}`;
-    div.textContent = text;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
+async function renameConv(id) {
+  const newTitle = prompt('请输入新标题：');
+  if (!newTitle || !newTitle.trim()) return;
+  try {
+    await api('PUT', `/api/chat/conversations/${id}`, { title: newTitle.trim() });
+    if (id === curConv) $('#chatTitle').textContent = newTitle.trim();
+    loadConvs();
+  } catch { alert('重命名失败'); }
+}
 
-  function showTyping() {
-    const div = document.createElement('div');
-    div.className = 'chat-typing';
-    div.id = 'chatTyping';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
+async function deleteConv(id) {
+  if (!confirm('确定删除此对话？')) return;
+  try {
+    await api('DELETE', `/api/chat/conversations/${id}`);
+    if (id === curConv) newConv();
+    else loadConvs();
+  } catch {}
+}
 
-  function hideTyping() {
-    const el = $('#chatTyping');
-    if (el) el.remove();
-  }
+async function newConv() {
+  const title = '新对话 ' + new Date().toISOString().slice(0, 16).replace('T', ' ');
+  try {
+    const conv = await api('POST', '/api/chat/conversations', { title });
+    curConv = conv.id;
+    $('#chatMessages').innerHTML = '<div class="chat-msg bot">你好呀！我是你们的小助手 💕 有什么我可以帮忙的吗？</div>';
+    $('#chatTitle').textContent = conv.title;
+    loadConvs();
+  } catch {}
+}
 
-  async function sendMessage() {
-    const text = input.value.trim();
-    if (!text) return;
-    addMessage(text, 'user');
-    input.value = '';
-    input.disabled = true;
-    sendBtn.disabled = true;
-    showTyping();
-    try {
-      const reply = await sendToAI(text);
-      hideTyping();
-      addMessage(reply, 'bot');
-    } catch {
-      hideTyping();
-      addMessage('呜呜，小助手好像走神了…请稍后重试～ 💦', 'bot');
+async function sendMsg() {
+  const input = $('#chatInput'), text = input.value.trim();
+  if (!text || chatLoading) return;
+  if (!curConv) await newConv();
+
+  const el = $('#chatMessages');
+  el.innerHTML += `<div class="chat-msg user">${esc(text)}</div>`;
+  el.scrollTop = el.scrollHeight;
+  input.value = '';
+
+  chatLoading = true;
+  $('#chatLoading').style.display = 'block';
+  el.scrollTop = el.scrollHeight;
+
+  try {
+    const d = await api('POST', `/api/chat/conversations/${curConv}/messages`, { role: 'user', content: text });
+    $('#chatLoading').style.display = 'none';
+    if (d.reply) {
+      el.innerHTML += `<div class="chat-msg bot">${esc(d.reply)}</div>`;
+      el.scrollTop = el.scrollHeight;
+      loadConvs();
+      try { const c = await api('GET', `/api/chat/conversations/${curConv}`); $('#chatTitle').textContent = c.title; } catch {}
+    } else {
+      el.innerHTML += '<div class="chat-msg bot">呜呜，小助手好像走神了…请稍后重试～ 💦</div>';
     }
-    input.disabled = false;
-    sendBtn.disabled = false;
-    input.focus();
+  } catch {
+    $('#chatLoading').style.display = 'none';
+    el.innerHTML += '<div class="chat-msg bot">呜呜，出错了…请稍后重试～ 💦</div>';
   }
-
-  sendBtn.addEventListener('click', sendMessage);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
+  chatLoading = false;
 }
 
-// 🤖 AI Chat — 调后端 /api/chat 代理（key 在后端 .env 中，不暴露到前端）
-const chatHistory = [];
-
-async function sendToAI(message) {
-  chatHistory.push({ role: 'user', content: message });
-  while (chatHistory.length > 20) chatHistory.shift();
-
-  const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: chatHistory }),
-  });
-
-  if (!res.ok) {
-    chatHistory.pop();
-    return '呜呜，小助手好像走神了…请稍后重试～ 💦';
-  }
-
-  const data = await res.json();
-  chatHistory.push({ role: 'assistant', content: data.reply });
-  return data.reply;
+function initChat() {
+  $('#chatSend').addEventListener('click', sendMsg);
+  $('#chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+  $('#chatNewBtn').addEventListener('click', newConv);
+  $('#chatToggleBtn').addEventListener('click', () => $('#chatSidebar').classList.toggle('open'));
+  newConv();
 }
 
-// ===== 工具：转义 HTML =====
-function escHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-// ===== 启动 =====
+// ====== 启动 ======
 function init() {
   createParticles();
   updateClock();
   setInterval(updateClock, 1000);
   initNav();
   initScrollAnim();
-  initTimelineAdd();
+  initTL();
   renderTimeline();
-  initDiary('his', $('#diaryHisInput'), $('#diaryHisAdd'), $('#diaryHisList'));
-  initDiary('her', $('#diaryHerInput'), $('#diaryHerAdd'), $('#diaryHerList'));
-  initDiaryLock();
+
+  ['his', 'her'].forEach(p => {
+    checkStatus(p);
+    $(`#diary${cap(p)}SetPwdBtn`).addEventListener('click', () => setPw(p));
+    $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-btn').addEventListener('click', () => verifyPw(p));
+    $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-forgot-btn').addEventListener('click', () => showReset(p));
+    $(`#diary${cap(p)}Add`).addEventListener('click', () => addEntry(p));
+  });
+
+  $('#masterActivateBtn').addEventListener('click', setMaster);
+  $('#resetConfirmBtn').addEventListener('click', confirmReset);
+  $('#resetCancelBtn').addEventListener('click', () => $('#resetModal').classList.remove('active'));
+  $('#resetModal').addEventListener('click', e => { if (e.target === $('#resetModal')) $('#resetModal').classList.remove('active'); });
+
   initPhotos();
   renderPhotos();
   initChat();

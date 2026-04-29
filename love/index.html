@@ -73,15 +73,23 @@
       <div class="diary-panel diary-his">
         <h3 class="diary-name">💙 他的日记</h3>
         <div class="diary-lock" id="diaryHisLock">
-          <div class="diary-lock-inner">
+          <div class="diary-lock-inner" id="diaryHisLockInner">
             <div class="diary-lock-icon">🔒</div>
-            <div class="diary-lock-title" id="diaryHisLockTitle">请输入密码</div>
-            <input type="password" class="input diary-pwd-input" id="diaryHisPwd" placeholder="密码">
-            <button class="btn btn-blue diary-pwd-btn" data-diary="his">确认</button>
-            <button class="diary-pwd-reset" data-diary="his">万能密码重置</button>
+            <div class="diary-lock-title" id="diaryHisLockTitle">日记已加密</div>
+            <div id="diaryHisPwMode">
+              <input type="password" class="input diary-pwd-input" id="diaryHisPwd" placeholder="密码">
+              <button class="btn btn-blue diary-pwd-btn" data-diary="his">确认</button>
+              <button class="diary-pwd-forgot-btn" data-diary="his">忘记密码？</button>
+            </div>
+            <div id="diaryHisSetupMode" style="display:none">
+              <p class="setup-hint">首次使用，请设置日记密码：</p>
+              <input type="password" class="input diary-pwd-input" id="diaryHisNewPwd" placeholder="新密码（至少4位）">
+              <button class="btn btn-blue" id="diaryHisSetPwdBtn">设置密码</button>
+            </div>
           </div>
         </div>
         <div class="diary-content" id="diaryHisContent">
+          <div class="diary-unlocked-bar">🔓 已解锁</div>
           <div class="diary-form">
             <textarea id="diaryHisInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
             <button class="btn btn-blue" id="diaryHisAdd">📝 写下心情</button>
@@ -93,20 +101,56 @@
       <div class="diary-panel diary-her">
         <h3 class="diary-name">💗 她的日记</h3>
         <div class="diary-lock" id="diaryHerLock">
-          <div class="diary-lock-inner">
+          <div class="diary-lock-inner" id="diaryHerLockInner">
             <div class="diary-lock-icon">🔒</div>
-            <div class="diary-lock-title" id="diaryHerLockTitle">请输入密码</div>
-            <input type="password" class="input diary-pwd-input" id="diaryHerPwd" placeholder="密码">
-            <button class="btn btn-pink diary-pwd-btn" data-diary="her">确认</button>
-            <button class="diary-pwd-reset" data-diary="her">万能密码重置</button>
+            <div class="diary-lock-title" id="diaryHerLockTitle">日记已加密</div>
+            <div id="diaryHerPwMode">
+              <input type="password" class="input diary-pwd-input" id="diaryHerPwd" placeholder="密码">
+              <button class="btn btn-pink diary-pwd-btn" data-diary="her">确认</button>
+              <button class="diary-pwd-forgot-btn" data-diary="her">忘记密码？</button>
+            </div>
+            <div id="diaryHerSetupMode" style="display:none">
+              <p class="setup-hint">首次使用，请设置日记密码：</p>
+              <input type="password" class="input diary-pwd-input" id="diaryHerNewPwd" placeholder="新密码（至少4位）">
+              <button class="btn btn-pink" id="diaryHerSetPwdBtn">设置密码</button>
+            </div>
           </div>
         </div>
         <div class="diary-content" id="diaryHerContent">
+          <div class="diary-unlocked-bar">🔓 已解锁</div>
           <div class="diary-form">
             <textarea id="diaryHerInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
             <button class="btn btn-pink" id="diaryHerAdd">📝 写下心情</button>
           </div>
           <div class="diary-list" id="diaryHerList"></div>
+        </div>
+      </div>
+    </div>
+    <!-- 万能密码区域 -->
+    <div class="master-section" id="masterSection">
+      <div class="master-info" id="masterInfo" style="display:none">
+        <p>🔑 万能密码已激活，可用于重置忘记的个人密码</p>
+      </div>
+      <div class="master-activate" id="masterActivate" style="display:none">
+        <h3>🔑 设置万能密码</h3>
+        <p class="setup-hint">双方都已设置密码！设置万能密码后可用于重置忘记的个人密码（不可修改）</p>
+        <input type="password" class="input master-pw-input" id="masterNewPw" placeholder="设置万能密码（至少4位）">
+        <input type="password" class="input master-pw-input" id="masterConfirmHisPw" placeholder="输入他的密码确认">
+        <input type="password" class="input master-pw-input" id="masterConfirmHerPw" placeholder="输入她的密码确认">
+        <button class="btn btn-pink" id="masterActivateBtn">激活万能密码</button>
+      </div>
+    </div>
+
+    <!-- 重置密码弹窗 -->
+    <div class="modal" id="resetModal">
+      <div class="reset-modal-box">
+        <h3 id="resetModalTitle">🔑 重置密码</h3>
+        <p class="setup-hint">输入万能密码设置新密码</p>
+        <input type="password" class="input reset-input" id="resetMasterPw" placeholder="万能密码">
+        <input type="password" class="input reset-input" id="resetNewPw" placeholder="新密码（至少4位）">
+        <div class="reset-btns">
+          <button class="btn btn-blue" id="resetConfirmBtn">确认重置</button>
+          <button class="btn" id="resetCancelBtn" style="background:#eee">取消</button>
         </div>
       </div>
     </div>
@@ -127,14 +171,28 @@
   <!-- AI 聊天 -->
   <section class="section chat-section" id="chat">
     <h2 class="section-title">🤖 AI 小助手</h2>
-    <p class="chat-hint">为你们的感情问题提供温暖的建议（接口预留）</p>
-    <div class="chat-box" id="chatBox">
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-msg bot">你好呀！我是你们的小助手 💕 有什么我可以帮忙的吗？</div>
+    <div class="chat-container">
+      <div class="chat-sidebar" id="chatSidebar">
+        <button class="btn btn-pink chat-new-btn" id="chatNewBtn">➕ 新对话</button>
+        <div class="chat-history" id="chatHistoryList"></div>
       </div>
-      <div class="chat-input-row">
-        <input type="text" id="chatInput" class="input" placeholder="输入消息...">
-        <button class="btn btn-pink" id="chatSend">发送</button>
+      <div class="chat-main">
+        <div class="chat-box">
+          <div class="chat-header">
+            <span id="chatTitle">当前对话</span>
+            <button class="chat-toggle-btn" id="chatToggleBtn">☰</button>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">你好呀！我是你们的小助手 💕 有什么我可以帮忙的吗？</div>
+          </div>
+          <div class="chat-loading" id="chatLoading" style="display:none">
+            <span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" class="input" placeholder="输入消息...">
+            <button class="btn btn-pink" id="chatSend">发送</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
