@@ -26,73 +26,62 @@ if %errorlevel% neq 0 (
 
 :: 安装依赖
 if not exist "node_modules\" (
-    echo 📦 首次运行，安装依赖中...
+    echo 📦 安装依赖中...
     call npm install
 )
 
-:: 启动 Node 服务（新窗口）
+echo.
+
+:: 启动服务
 echo 🚀 启动 Web 服务...
 start "Love Server" cmd /c "node server.js & pause"
 
-:: 等待服务启动
-timeout /t 2 /nobreak >nul
+:: 等待端口就绪
+:wait
+timeout /t 1 /nobreak >nul
+netstat -an | find ":3000 " >nul 2>nul
+if %errorlevel% neq 0 goto wait
 
-:: 启动 ngrok 内网穿透（新窗口）
+:: 打开本地网站
+start "" "http://localhost:3000"
+
+:: 启动 ngrok
 echo 🌐 启动内网穿透...
-start "Ngrok Tunnel" cmd /c "ngrok http 3000 --log=stdout"
+start "Ngrok Tunnel" cmd /c "ngrok http 3000"
 
-:: 等待 ngrok 就绪
-timeout /t 3 /nobreak >nul
+:: 获取公网地址
+echo ⏳ 获取公网地址（约需 10 秒）...
+node get-ngrok-url.js > .ngrok.tmp
+set /p NGROK_URL=<.ngrok.tmp
+del .ngrok.tmp
 
-:: 获取 ngrok 公网地址
+:: 显示结果
+cls
 echo.
-echo ⏳ 获取公网地址...
-node -e "
-const http = require('http');
-const MAX_ATTEMPTS = 5;
-function tryFetch(attempt) {
-  http.get('http://localhost:4040/api/tunnels', (res) => {
-    let data = '';
-    res.on('data', (c) => data += c);
-    res.on('end', () => {
-      try {
-        const tunnels = JSON.parse(data).tunnels || [];
-        const url = tunnels.find(t => t.public_url?.startsWith('https'))?.public_url || tunnels[0]?.public_url;
-        if (url) {
-          console.log('🌍 公网地址: ' + url);
-        } else if (attempt < MAX_ATTEMPTS) {
-          setTimeout(() => tryFetch(attempt+1), 2000);
-        } else {
-          console.log('⚠️  获取超时，请查看 Ngrok Tunnel 窗口');
-        }
-      } catch { console.log('⚠️  获取失败，请查看 Ngrok Tunnel 窗口'); }
-    });
-  }).on('error', () => {
-    if (attempt < MAX_ATTEMPTS) {
-      setTimeout(() => tryFetch(attempt+1), 2000);
-    } else {
-      console.log('⚠️  获取超时，请查看 Ngrok Tunnel 窗口');
-    }
-  });
-}
-tryFetch(0);
-"
-
-echo.
-echo ╔════════════════════════════════════════╗
-echo ║  ✅  部署完成！                        ║
-echo ║  把下面的公网地址发给你的朋友吧 💕      ║
-echo ║                                        ║
-echo ║  📍 本地地址: http://localhost:3000    ║
-echo ╚════════════════════════════════════════╝
+echo ╔══════════════════════════════════════════╗
+echo ║                                          ║
+echo ║     💕 部署成功！                        ║
+echo ║                                          ║
+echo ║  📍 本地: http://localhost:3000          ║
+echo ║                                          ║
+if defined NGROK_URL (
+    echo ║  🌍 发给朋友:                          ║
+    echo ║     %NGROK_URL%                       ║
+) else (
+    echo ║  ⚠️  获取公网地址失败                  ║
+    echo ║  请查看 "Ngrok Tunnel" 窗口中的地址    ║
+)
+echo ║                                          ║
+echo ║  浏览器已自动打开                        ║
+echo ╚══════════════════════════════════════════╝
 echo.
 echo 按任意键关闭所有服务...
 pause >nul
 
-:: 清理：关闭服务
+:: 关闭
 echo.
 echo 🛑 正在关闭服务...
 taskkill /fi "WindowTitle eq Love Server" /f >nul 2>nul
 taskkill /fi "WindowTitle eq Ngrok Tunnel" /f >nul 2>nul
-echo ✅ 已关闭所有服务
-timeout /t 1 /nobreak >nul
+echo ✅ 已关闭
+timeout /t 2 /nobreak >nul
