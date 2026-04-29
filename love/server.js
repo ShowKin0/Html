@@ -57,6 +57,17 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`💕 情侣网站已启动: http://localhost:${PORT}`);
+  console.log(`📡 局域网访问: http://${getLANIP()}:${PORT}`);
 });
+
+function getLANIP() {
+  const nets = require('os').networkInterfaces();
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === 'IPv4' && !net.internal) return net.address;
+    }
+  }
+  return '0.0.0.0';
+}
