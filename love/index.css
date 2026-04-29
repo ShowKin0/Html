@@ -567,6 +567,7 @@ body {
 .hero-announce { margin-top: 20px; }
 .hero-announce-item {
   display: inline-block;
+  cursor: pointer;
   background: linear-gradient(135deg, #FFF0F3, #FFE4E8);
   border: 2px solid var(--pink);
   border-radius: 20px;

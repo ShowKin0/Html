@@ -124,7 +124,7 @@ function updateHeroAnnouncements(items) {
   container.innerHTML = upcoming.map(it => {
     const cls = it.days <= 3 ? 'hero-announce-item urgent' : 'hero-announce-item';
     const label = it.days === 0 ? '今天' : it.days + '天后';
-    return `<div class="${cls}">💕 ${label}是「${esc(it.title)}」❤️</div>`;
+    return `<div class="${cls}" onclick="document.getElementById('timeline').scrollIntoView({behavior:'smooth'})">💕 ${label}是「${esc(it.title)}」❤️</div>`;
   }).join('');
 }
 
