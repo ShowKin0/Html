@@ -27,6 +27,76 @@ function formatTime() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 function pad(n) { return String(n).padStart(2, '0'); }
+function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// ===== 日记密码系统（SHA-256 哈希，明文不存储） =====
+const MASTER_PWD = '406618';
+const PWD_KEYS = { his: 'love_diary_his_pwd', her: 'love_diary_her_pwd' };
+
+async function hashPassword(pwd) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function initDiaryLock() {
+  ['his', 'her'].forEach(person => {
+    const lockEl = $(`#diary${capital(person)}Lock`);
+    const titleEl = $(`#diary${capital(person)}LockTitle`);
+    const pwdInput = $(`#diary${capital(person)}Pwd`);
+    const confirmBtn = lockEl.querySelector('.diary-pwd-btn');
+    const resetBtn = lockEl.querySelector('.diary-pwd-reset');
+    const contentEl = $(`#diary${capital(person)}Content`);
+
+    const storedHash = localStorage.getItem(PWD_KEYS[person]);
+    if (!storedHash) {
+      titleEl.textContent = '设置日记密码 🔒';
+      pwdInput.placeholder = '设置密码';
+    }
+
+    confirmBtn.addEventListener('click', async () => {
+      const pwd = pwdInput.value.trim();
+      if (!pwd) return;
+      const hash = await hashPassword(pwd);
+
+      if (!localStorage.getItem(PWD_KEYS[person])) {
+        // 首次设置
+        localStorage.setItem(PWD_KEYS[person], hash);
+        unlockDiary(person);
+      } else if (hash === localStorage.getItem(PWD_KEYS[person])) {
+        // 密码正确
+        unlockDiary(person);
+      } else if (pwd === MASTER_PWD) {
+        // 万能密码：清除旧密码，进入设置模式
+        localStorage.removeItem(PWD_KEYS[person]);
+        titleEl.textContent = '请设置新密码 🔒';
+        pwdInput.value = '';
+        pwdInput.placeholder = '设置新密码';
+        alert('🔑 万能密码验证通过，请设置新密码');
+      } else {
+        alert('❌ 密码错误～');
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      const input = prompt('请输入万能密码以重置：');
+      if (input === MASTER_PWD) {
+        localStorage.removeItem(PWD_KEYS[person]);
+        titleEl.textContent = '请设置新密码 🔒';
+        pwdInput.value = '';
+        pwdInput.placeholder = '设置新密码';
+        alert('✅ 密码已重置，请设置新密码');
+      } else if (input !== null) {
+        alert('❌ 万能密码错误');
+      }
+    });
+  });
+}
+
+function unlockDiary(person) {
+  $(`#diary${capital(person)}Lock`).classList.add('unlocked');
+  $(`#diary${capital(person)}Content`).classList.add('unlocked');
+  renderDiary(person, $(`#diary${capital(person)}List`));
+}
 
 // ===== 浮动粒子 =====
 function createParticles() {
@@ -268,12 +338,39 @@ function initChat() {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function sendMessage() {
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'chat-typing';
+    div.id = 'chatTyping';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const el = $('#chatTyping');
+    if (el) el.remove();
+  }
+
+  async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
     addMessage(text, 'user');
     input.value = '';
-    sendToAI(text).then(reply => addMessage(reply, 'bot'));
+    input.disabled = true;
+    sendBtn.disabled = true;
+    showTyping();
+    try {
+      const reply = await sendToAI(text);
+      hideTyping();
+      addMessage(reply, 'bot');
+    } catch {
+      hideTyping();
+      addMessage('呜呜，小助手好像走神了…请稍后重试～ 💦', 'bot');
+    }
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
   }
 
   sendBtn.addEventListener('click', sendMessage);
@@ -323,8 +420,7 @@ function init() {
   renderTimeline();
   initDiary('his', $('#diaryHisInput'), $('#diaryHisAdd'), $('#diaryHisList'));
   initDiary('her', $('#diaryHerInput'), $('#diaryHerAdd'), $('#diaryHerList'));
-  renderDiary('his', $('#diaryHisList'));
-  renderDiary('her', $('#diaryHerList'));
+  initDiaryLock();
   initPhotos();
   renderPhotos();
   initChat();

@@ -72,20 +72,42 @@
       <!-- 他的日记 -->
       <div class="diary-panel diary-his">
         <h3 class="diary-name">💙 他的日记</h3>
-        <div class="diary-form">
-          <textarea id="diaryHisInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
-          <button class="btn btn-blue" id="diaryHisAdd">📝 写下心情</button>
+        <div class="diary-lock" id="diaryHisLock">
+          <div class="diary-lock-inner">
+            <div class="diary-lock-icon">🔒</div>
+            <div class="diary-lock-title" id="diaryHisLockTitle">请输入密码</div>
+            <input type="password" class="input diary-pwd-input" id="diaryHisPwd" placeholder="密码">
+            <button class="btn btn-blue diary-pwd-btn" data-diary="his">确认</button>
+            <button class="diary-pwd-reset" data-diary="his">万能密码重置</button>
+          </div>
         </div>
-        <div class="diary-list" id="diaryHisList"></div>
+        <div class="diary-content" id="diaryHisContent">
+          <div class="diary-form">
+            <textarea id="diaryHisInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
+            <button class="btn btn-blue" id="diaryHisAdd">📝 写下心情</button>
+          </div>
+          <div class="diary-list" id="diaryHisList"></div>
+        </div>
       </div>
       <!-- 她的日记 -->
       <div class="diary-panel diary-her">
         <h3 class="diary-name">💗 她的日记</h3>
-        <div class="diary-form">
-          <textarea id="diaryHerInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
-          <button class="btn btn-pink" id="diaryHerAdd">📝 写下心情</button>
+        <div class="diary-lock" id="diaryHerLock">
+          <div class="diary-lock-inner">
+            <div class="diary-lock-icon">🔒</div>
+            <div class="diary-lock-title" id="diaryHerLockTitle">请输入密码</div>
+            <input type="password" class="input diary-pwd-input" id="diaryHerPwd" placeholder="密码">
+            <button class="btn btn-pink diary-pwd-btn" data-diary="her">确认</button>
+            <button class="diary-pwd-reset" data-diary="her">万能密码重置</button>
+          </div>
         </div>
-        <div class="diary-list" id="diaryHerList"></div>
+        <div class="diary-content" id="diaryHerContent">
+          <div class="diary-form">
+            <textarea id="diaryHerInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
+            <button class="btn btn-pink" id="diaryHerAdd">📝 写下心情</button>
+          </div>
+          <div class="diary-list" id="diaryHerList"></div>
+        </div>
       </div>
     </div>
   </section>
