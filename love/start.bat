@@ -2,6 +2,12 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 
+:: 静默启动（无参数时自我最小化重启）
+if "%1"=="" (
+    start /min "" cmd /c "%~f0" _minimized_
+    exit /b
+)
+
 echo.
 echo ╔══════════════════════════════════╗
 echo ║    💕 情侣网站 — 一键部署        ║
@@ -34,7 +40,7 @@ echo.
 
 :: 启动服务
 echo 🚀 启动 Web 服务...
-start "Love Server" cmd /c "node server.js & pause"
+start /min "Love Server" cmd /c "node server.js & pause"
 
 :: 等待端口就绪
 :wait
@@ -47,7 +53,7 @@ if %errorlevel% neq 0 goto wait
 
 :: 启动 ngrok
 echo 🌐 启动内网穿透...
-start "Ngrok Tunnel" cmd /c "ngrok http 3000"
+start /min "Ngrok Tunnel" cmd /c "ngrok http 3000"
 
 :: 获取公网地址
 echo ⏳ 获取公网地址（约需 10 秒）...
