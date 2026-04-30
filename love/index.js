@@ -20,7 +20,6 @@ async function checkStatus(person) {
   try {
     const data = await api('GET', `/api/diary/${person}/status`);
     const lockEl = $(`#diary${cap(person)}Lock`);
-    // 已解锁就不重复切换
     if (lockEl.classList.contains('unlocked')) return;
 
     const pwMode = $(`#diary${cap(person)}PwMode`);
@@ -35,19 +34,21 @@ async function checkStatus(person) {
   } catch {}
 }
 
-// 每3秒自动同步对方密码状态
-function startStatusPoll() {
-  setInterval(() => { ['his', 'her'].forEach(checkStatus); }, 3000);
+// 滚动到日记区域时刷新状态
+function initStatusOnScroll() {
+  const diarySec = document.getElementById('diary');
+  if (!diarySec) return;
+  let checked = false;
+  const ob = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !checked) {
+      checked = true;
+      checkStatus('his');
+      checkStatus('her');
+    }
+  }, { threshold: 0.3 });
+  ob.observe(diarySec);
 }
 
-// 每5秒同步共享数据（时间线、照片墙、聊天列表）
-function startDataSync() {
-  setInterval(() => {
-    renderTimeline();
-    renderPhotos();
-    loadConvs();
-  }, 5000);
-}
 
 async function setPw(person) {
   const input = $(`#diary${cap(person)}NewPwd`);
@@ -390,8 +391,7 @@ function init() {
     $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-btn').addEventListener('click', () => verifyPw(p));
     $(`#diary${cap(p)}Add`).addEventListener('click', () => addEntry(p));
   });
-  startStatusPoll();
-  startDataSync();
+  initStatusOnScroll();
 
   initPhotos();
   renderPhotos();

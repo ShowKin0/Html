@@ -515,6 +515,7 @@ body {
   margin: 0 20px;
 }
 .chat-loading span { animation: dotPulse 1.4s ease-in-out infinite; }
+.chat-loading .dot-1 { animation-delay: 0s; }
 .chat-loading .dot-2 { animation-delay: 0.2s; }
 .chat-loading .dot-3 { animation-delay: 0.4s; }
 @keyframes dotPulse {
