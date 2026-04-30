@@ -267,16 +267,18 @@ body {
 }
 
 /* 日记密码锁 */
+.diary-panel { overflow: hidden; }
 .diary-lock {
-  position: absolute; inset: 0;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border-radius: var(--radius);
   display: flex; align-items: center; justify-content: center;
   z-index: 2;
 }
 .diary-lock.unlocked { display: none; }
-.diary-lock-inner { text-align: center; padding: 20px; max-width: 260px; }
+.diary-lock-inner { text-align: center; padding: 24px 20px; max-width: 280px; width: 100%; }
 .diary-lock-icon { font-size: 48px; margin-bottom: 8px; }
 .diary-lock-title { font-size: 1rem; font-weight: 600; margin-bottom: 14px; color: var(--text); }
 .diary-pwd-input { width: 100%; margin-bottom: 10px; text-align: center; }
@@ -601,7 +603,8 @@ body {
 
   .diary-pwd-btn, .btn { min-height: 44px; }
   .diary-pwd-input, .input { font-size: 16px; padding: 12px 14px; }
-  .diary-panel { padding: 16px; min-height: 180px; }
+  .diary-panel { padding: 16px; min-height: 300px; }
+  .diary-lock-inner { padding: 16px; max-width: 260px; }
   .diary-list { max-height: 350px; }
   .diary-entry { padding: 12px 14px; }
   .diary-form { gap: 8px; }
