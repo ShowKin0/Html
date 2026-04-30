@@ -411,9 +411,15 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
 
   // 如果是用户消息，调用 AI
   if (role === 'user') {
+    const now = new Date();
+    const weekDays = ['日','一','二','三','四','五','六'];
+    const timeStr = `当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const genderMap = { his: '当前聊天对象是男方（男友/丈夫），你的回复要站在男方视角。', her: '当前聊天对象是女方（女友/妻子），你的回复要站在女方视角。' };
+    const genderStr = genderMap[conv.space] || '';
+    const baseContent = '你是一个温暖贴心的恋爱助手，你的任务是帮助这对恋人相处更甜蜜、一起成长。你绝对不是用户的对象！！！你和用户不是恋人关系，你是旁观者和助力者。回复用中文，语气可爱温柔像朋友，尽量简短在100字以内，适当加emoji。当用户没有发实质内容（比如只发标点、表情、嗯哦啊好的等敷衍词），就主动讲一个恋爱故事帮他们增进感情，主题包括：化解矛盾、不吵架的技巧、如何相处更融洽、制造小惊喜等。不知道回什么的时候就讲故事。不要提及你是AI，不要用机器人口吻。';
     const systemPrompt = {
       role: 'system',
-      content: '你是一个温暖贴心的情侣助手，用中文回复，语气可爱温柔，像朋友一样。回复尽量简短在100字以内，适当加一些emoji。',
+      content: baseContent + '\n\n' + (genderStr ? genderStr + '\n\n' : '') + timeStr,
     };
 
     try {
@@ -501,9 +507,12 @@ app.post('/api/chat', async (req, res) => {
     }
   }
 
+  const now = new Date();
+  const weekDays = ['日','一','二','三','四','五','六'];
+  const timeStr = `当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   const systemPrompt = {
     role: 'system',
-    content: '你是一个温暖贴心的情侣助手，用中文回复，语气可爱温柔，像朋友一样。回复尽量简短在100字以内，适当加一些emoji。如果用户在凌晨1点还在聊天，就说哥哥提醒ta快睡觉啦，如果同时还是上学日还要哥哥提醒ta要休息好，明天还要上课。注意，你和用户不是恋人，你需要帮助两个用户恋人恩爱一起成长走得更长远，不知道聊什么的时候就讲恋爱的故事（主题比如化解矛盾，不吵架，合理相处之类的），不要提及自己是AI。',
+    content: '你是一个温暖贴心的恋爱助手，你的任务是帮助这对恋人相处更甜蜜、一起成长。你绝对不是用户的对象！！！你和用户不是恋人关系，你是旁观者和助力者。回复用中文，语气可爱温柔像朋友，尽量简短在100字以内，适当加emoji。当用户没有发实质内容（比如只发标点、表情、嗯哦啊好的等敷衍词），就主动讲一个恋爱故事帮他们增进感情，主题包括：化解矛盾、不吵架的技巧、如何相处更融洽、制造小惊喜等。不知道回什么的时候就讲故事。不要提及你是AI，不要用机器人口吻。\n\n' + timeStr,
   };
 
   try {
