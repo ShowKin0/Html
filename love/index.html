@@ -169,6 +169,24 @@
   <!-- AI 聊天 -->
   <section class="section chat-section" id="chat">
     <h2 class="section-title">🤖 AI 小助手</h2>
+    <div class="chat-space-bar" id="chatSpaceBar">
+      <button class="chat-space-btn active" data-space="public">💬 公开</button>
+      <button class="chat-space-btn" data-space="his">👦 林林</button>
+      <button class="chat-space-btn" data-space="her">👧 昕昕</button>
+    </div>
+    <!-- 私密空间密码弹窗 -->
+    <div class="chat-pwd-overlay" id="chatPwdOverlay" style="display:none">
+      <div class="chat-pwd-box">
+        <div class="chat-pwd-icon">🔒</div>
+        <div class="chat-pwd-title" id="chatPwdTitle">请输入密码</div>
+        <input type="password" class="input chat-pwd-input" id="chatPwdInput" placeholder="日记密码">
+        <div class="chat-pwd-actions">
+          <button class="btn btn-pink" id="chatPwdConfirm">确认</button>
+          <button class="btn" id="chatPwdCancel" style="background:#eee">取消</button>
+        </div>
+        <div class="chat-pwd-error" id="chatPwdError" style="display:none">密码错误</div>
+      </div>
+    </div>
     <div class="chat-container">
       <div class="chat-sidebar" id="chatSidebar">
         <button class="btn btn-pink chat-new-btn" id="chatNewBtn">➕ 新对话</button>
@@ -177,7 +195,7 @@
       <div class="chat-main">
         <div class="chat-box">
           <div class="chat-header">
-            <span id="chatTitle">当前对话</span>
+            <span id="chatTitle">公开聊天</span>
             <button class="chat-toggle-btn" id="chatToggleBtn">☰</button>
           </div>
           <div class="chat-messages" id="chatMessages">

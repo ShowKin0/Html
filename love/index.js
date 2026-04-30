@@ -79,18 +79,189 @@ function unlockDiary(person) {
   loadDiary(person);
 }
 
-// 渲染日记内容（支持文本/图片/音频）
-function renderContent(content) {
+// ====== 自定义对话框 ======
+const dialogContainer = document.getElementById('dialogContainer') || (() => {
+  const d = document.createElement('div'); d.id = 'dialogContainer'; d.className = 'dialog-overlay';
+  d.innerHTML = `<div class="dialog-box">
+    <div class="dialog-title" id="dt">确认</div>
+    <div class="dialog-body" id="db"></div>
+    <div class="dialog-actions" id="da"></div>
+  </div>`;
+  document.body.appendChild(d);
+  d.addEventListener('click', e => { if (e.target === d) d.style.display = 'none'; });
+  return d;
+})();
+
+function showConfirm(msg) {
+  return new Promise(resolve => {
+    const box = dialogContainer;
+    document.getElementById('dt').textContent = '确认';
+    document.getElementById('db').innerHTML = `<p style="margin:0;font-size:0.95rem;line-height:1.5">${esc(msg)}</p>`;
+    document.getElementById('da').innerHTML =
+      `<button class="dlg-btn dlg-primary" id="dy">确认</button>
+       <button class="dlg-btn dlg-cancel" id="dn">取消</button>`;
+    box.style.display = 'flex';
+    document.getElementById('dy').onclick = () => { box.style.display = 'none'; resolve(true); };
+    document.getElementById('dn').onclick = () => { box.style.display = 'none'; resolve(false); };
+  });
+}
+
+function showPrompt(title, placeholder, defaultValue = '') {
+  return new Promise(resolve => {
+    const box = dialogContainer;
+    document.getElementById('dt').textContent = title || '请输入';
+    document.getElementById('db').innerHTML =
+      `<input type="text" class="dlg-input" id="di" value="${esc(defaultValue)}" placeholder="${esc(placeholder)}">`;
+    document.getElementById('da').innerHTML =
+      `<button class="dlg-btn dlg-primary" id="dy">确定</button>
+       <button class="dlg-btn dlg-cancel" id="dn">取消</button>`;
+    box.style.display = 'flex';
+    const inp = document.getElementById('di');
+    setTimeout(() => inp.focus(), 100);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('dy').click(); });
+    document.getElementById('dy').onclick = () => { box.style.display = 'none'; resolve(inp.value.trim()); };
+    document.getElementById('dn').onclick = () => { box.style.display = 'none'; resolve(null); };
+  });
+}
+
+// ====== 音频播放器（带进度条）=====
+function renderContent(content, entryId) {
   try {
     const data = JSON.parse(content);
     let html = '';
     if (data.text) html += esc(data.text);
-    if (data.images) data.images.forEach(img => { html += `<img src="${esc(img)}" loading="lazy">`; });
-    if (data.audio) data.audio.forEach(a => { html += `<audio controls src="${esc(a)}"></audio>`; });
+    if (data.images) data.images.forEach((img, i) => {
+      html += `<span class="media-item" data-eid="${entryId}" data-type="image" data-idx="${i}">`;
+      html += `<img src="${esc(img)}" loading="lazy">`;
+      html += `<button class="media-item-del" title="删除图片">×</button></span>`;
+    });
+    if (data.audio) data.audio.forEach((a, i) => {
+      const isObj = typeof a === 'object' && a.data;
+      const type = isObj ? a.type : 'record';
+      const src = isObj ? a.data : a;
+      const icon = type === 'upload' ? '📁' : '🎤';
+      const label = type === 'upload' ? '音频' : '录音';
+      const name = (isObj ? a.name : null) || label;
+      html += `<span class="media-item" data-eid="${entryId}" data-type="audio" data-idx="${i}">`;
+      html += `<span class="diary-audio-player ${type}" data-src="${esc(src)}">
+        <span class="ap-btn">▶</span>
+        <span class="ap-info">${icon} ${esc(name)}</span>
+        <span class="ap-bar-wrap"><span class="ap-bar"><span class="ap-fill"></span></span></span>
+        <span class="ap-time">00:00</span>
+      </span>`;
+      html += `</span>`;
+    });
     return html || '(空)';
   } catch {
     return esc(content);
   }
+}
+
+// 初始化音频播放器（事件委托，防连点+可拖动进度条）
+function initAudioPlayers() {
+  document.querySelectorAll('.diary-list').forEach(list => {
+    const playerClick = e => {
+      const player = e.target.closest('.diary-audio-player');
+      if (!player || !player.dataset.src) return;
+      // 点击进度条不触发播放/暂停
+      if (e.target.closest('.ap-bar-wrap') || e.target.closest('.ap-bar')) return;
+
+      const src = player.dataset.src;
+
+      // 正在播放则暂停
+      if (player._audio && player._playing) {
+        player._audio.pause();
+        player._playing = false;
+        player.querySelector('.ap-btn').textContent = '▶';
+        return;
+      }
+
+      // 如果已创建过音频但暂停了，恢复播放
+      if (player._audio && !player._playing) {
+        player._audio.play();
+        player._playing = true;
+        player.querySelector('.ap-btn').textContent = '⏸';
+        return;
+      }
+
+      // 防止连点：正在加载中
+      if (player._loading) return;
+      player._loading = true;
+      player.querySelector('.ap-btn').textContent = '⏳';
+
+      const audio = new Audio(src);
+      const barFill = player.querySelector('.ap-fill');
+      const timeEl = player.querySelector('.ap-time');
+      const barWrap = player.querySelector('.ap-bar-wrap');
+
+      audio.ontimeupdate = () => {
+        if (!audio.duration) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        barFill.style.width = pct + '%';
+        timeEl.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+      };
+
+      audio.onloadedmetadata = () => {
+        player._loading = false;
+        player._playing = true;
+        player.querySelector('.ap-btn').textContent = '⏸';
+        timeEl.textContent = '00:00 / ' + formatTime(audio.duration);
+        audio.play();
+      };
+
+      audio.onended = () => {
+        player._playing = false;
+        player.querySelector('.ap-btn').textContent = '▶';
+        barFill.style.width = '0%';
+        timeEl.textContent = formatTime(audio.duration || 0);
+      };
+
+      audio.onerror = () => {
+        player._loading = false;
+        player._playing = false;
+        player.querySelector('.ap-btn').textContent = '⚠️';
+      };
+
+      // 拖动/点击进度条（同时支持鼠标和触屏）
+      let seeking = false;
+      const seek = (ev) => {
+        if (!audio.duration) return;
+        const rect = barWrap.getBoundingClientRect();
+        const clientX = ev.clientX || (ev.touches && ev.touches[0].clientX);
+        if (!clientX) return;
+        const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        audio.currentTime = pct * audio.duration;
+      };
+
+      barWrap.addEventListener('pointerdown', (ev) => {
+        ev.stopPropagation();
+        seeking = true;
+        seek(ev);
+        barWrap.setPointerCapture(ev.pointerId);
+      });
+      barWrap.addEventListener('pointermove', (ev) => {
+        if (!seeking) return;
+        ev.stopPropagation();
+        seek(ev);
+      });
+      barWrap.addEventListener('pointerup', (ev) => {
+        seeking = false;
+        ev.stopPropagation();
+        barWrap.releasePointerCapture(ev.pointerId);
+      });
+      barWrap.addEventListener('pointercancel', () => { seeking = false; });
+
+      player._audio = audio;
+    };
+    list.addEventListener('click', playerClick);
+  });
+}
+
+function formatTime(secs) {
+  if (!secs || isNaN(secs)) return '00:00';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
 }
 
 // 构建日记内容 JSON
@@ -125,59 +296,171 @@ async function loadDiary(person) {
     list.innerHTML = filtered.map(e =>
       `<div class="diary-entry" data-id="${e.id}">
         <div class="de-time">${esc(e.time)}</div>
-        <div class="de-content">${renderContent(e.content)}</div>
+        <div class="de-content">${renderContent(e.content, e.id)}</div>
         <button class="de-edit" data-p="${person}" data-id="${e.id}">✏️</button>
         <button class="de-del" data-p="${person}" data-id="${e.id}">🗑</button>
       </div>`
     ).join('');
     list.querySelectorAll('.de-del').forEach(b => b.addEventListener('click', async () => {
-      if (!confirm('确定删除？')) return;
+      if (!await showConfirm('确定删除？')) return;
       await api('DELETE', `/api/diary/${b.dataset.p}/entries/${b.dataset.id}?token=${TOKENS[b.dataset.p]}`);
       loadDiary(b.dataset.p);
     }));
     list.querySelectorAll('.de-edit').forEach(b => b.addEventListener('click', () => editEntry(b.dataset.p, b.dataset.id)));
+    // 媒体单独删除
+    list.querySelectorAll('.media-item-del').forEach(btn => {
+      btn.addEventListener('click', async e => {
+        e.stopPropagation();
+        const item = btn.closest('.media-item');
+        const eid = item.dataset.eid, type = item.dataset.type, idx = +item.dataset.idx;
+        if (!await showConfirm(`确定删除此${type === 'image' ? '图片' : '音频'}？`)) return;
+        try {
+          const entries = await api('GET', `/api/diary/${person}/entries?token=${TOKENS[person]}`);
+          const entry = entries.find(en => en.id === eid);
+          if (!entry) return;
+          const data = JSON.parse(entry.content);
+          if (type === 'image') data.images.splice(idx, 1);
+          else data.audio.splice(idx, 1);
+          await api('PUT', `/api/diary/${person}/entries/${eid}`, { token: TOKENS[person], content: JSON.stringify(data) });
+          loadDiary(person);
+        } catch { alert('删除失败'); }
+      });
+    });
+    initAudioPlayers();
   } catch {}
 }
 
 // 编辑日记
+function renderEditMedia(editMedia, person, container) {
+  if (!container) return;
+  container.innerHTML = '';
+  editMedia.images.forEach((img, i) => {
+    const div = document.createElement('div');
+    div.className = 'media-thumb';
+    div.innerHTML = `<img src="${img}"><button class="media-del" data-idx="${i}">×</button>`;
+    div.querySelector('.media-del').addEventListener('click', () => {
+      editMedia.images.splice(i, 1);
+      renderEditMedia(editMedia, person, container);
+    });
+    container.appendChild(div);
+  });
+  editMedia.audio.forEach((a, i) => {
+    const div = document.createElement('div');
+    const isUpload = a && a.type === 'upload';
+    const icon = isUpload ? '📁' : '🎤';
+    const name = a.name || (isUpload ? '音频' : '录音');
+    div.className = 'media-audio-tag';
+    div.innerHTML = `${icon} <span class="audio-name">${esc(name)}</span> <button class="media-del" data-idx="${i}">×</button>`;
+    div.querySelector('.media-del').addEventListener('click', () => {
+      editMedia.audio.splice(i, 1);
+      renderEditMedia(editMedia, person, container);
+    });
+    div.querySelector('.audio-name').addEventListener('click', async () => {
+      const cur = editMedia.audio[i] ? editMedia.audio[i].name || '' : '';
+      const nn = await showPrompt('重命名', '输入新名称', cur);
+      if (nn && nn.trim()) { editMedia.audio[i].name = nn.trim(); renderEditMedia(editMedia, person, container); }
+    });
+    container.appendChild(div);
+  });
+}
+
 async function editEntry(person, id) {
   const entry = $(`#diary${cap(person)}List`).querySelector(`.diary-entry[data-id="${id}"]`);
   const contentEl = entry.querySelector('.de-content');
   const originalHTML = contentEl.innerHTML;
   const origContent = await getEntryContent(person, id);
+  const editMedia = { images: [...(origContent.images || [])], audio: JSON.parse(JSON.stringify(origContent.audio || [])) };
 
-  // 切换到编辑模式
   contentEl.innerHTML = `
     <div class="de-edit-area">
       <textarea class="input diary-input de-edit-text" rows="3">${esc(origContent.text || '')}</textarea>
-      <div class="diary-toolbar">
-        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-img" data-person="${person}">📷 图片</button>
-        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-audio" data-person="${person}">🎤 录音</button>
-      </div>
       <div class="de-edit-media"></div>
-      <div class="de-edit-actions">
+      <div class="diary-toolbar">
+        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-img">📷 图片</button>
+        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-record">🎤 录音</button>
+        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-audio">📁 上传音频</button>
+      </div>
+      <input type="file" class="de-edit-file-img" accept="image/*" hidden>
+      <input type="file" class="de-edit-file-audio" accept="audio/*" hidden>
+      <span class="diary-audio-timer de-edit-timer" style="display:none">⏺️ 00:00</span>
+      <div class="de-edit-actions" style="margin-top:10px">
         <button class="btn btn-sm btn-blue de-edit-save">💾 保存</button>
         <button class="btn btn-sm de-edit-cancel" style="background:#eee">取消</button>
       </div>
     </div>`;
 
-  const editMedia = { images: origContent.images || [], audio: origContent.audio || [] };
+  // 渲染已有媒体
+  const mediaContainer = contentEl.querySelector('.de-edit-media');
+  renderEditMedia(editMedia, person, mediaContainer);
 
+  // 图片上传
+  const imgInput = contentEl.querySelector('.de-edit-file-img');
+  contentEl.querySelector('.de-edit-img').addEventListener('click', () => imgInput.click());
+  imgInput.addEventListener('change', e => {
+    Array.from(e.target.files).forEach(f => {
+      const r = new FileReader();
+      r.onload = () => { editMedia.images.push(r.result); renderEditMedia(editMedia, person, mediaContainer); };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  });
+
+  // 录音
+  let recorder = null, chunks = [], timer = null;
+  const recordBtn = contentEl.querySelector('.de-edit-record');
+  const timerEl = contentEl.querySelector('.de-edit-timer');
+  recordBtn.addEventListener('click', async () => {
+    if (recorder && recorder.state === 'recording') { recorder.stop(); return; }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm' });
+      chunks = [];
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(chunks, { type: recorder.mimeType });
+        const r = new FileReader();
+        r.onload = () => { editMedia.audio.push({ type: 'record', data: r.result, name: '录音' }); renderEditMedia(editMedia, person, mediaContainer); };
+        r.readAsDataURL(blob);
+        clearInterval(timer);
+        timerEl.style.display = 'none';
+        recordBtn.textContent = '🎤 录音';
+      };
+      recorder.start();
+      recordBtn.textContent = '⏹️ 停止';
+      timerEl.style.display = 'inline';
+      let sec = 0;
+      timer = setInterval(() => { sec++; timerEl.textContent = `⏺️ ${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`; }, 1000);
+    } catch { alert('无法访问麦克风'); }
+  });
+
+  // 上传音频
+  const audioInput = contentEl.querySelector('.de-edit-file-audio');
+  contentEl.querySelector('.de-edit-audio').addEventListener('click', () => audioInput.click());
+  audioInput.addEventListener('change', e => {
+    Array.from(e.target.files).forEach(f => {
+      const r = new FileReader();
+      r.onload = () => { editMedia.audio.push({ type: 'upload', data: r.result, name: '音频' }); renderEditMedia(editMedia, person, mediaContainer); };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  });
+
+  // 保存
   contentEl.querySelector('.de-edit-save').addEventListener('click', async () => {
     const text = contentEl.querySelector('.de-edit-text').value.trim();
     if (!text && !editMedia.images.length && !editMedia.audio.length) { alert('内容不能为空'); return; }
     const content = JSON.stringify({ text, images: editMedia.images, audio: editMedia.audio });
     try {
       const d = await api('PUT', `/api/diary/${person}/entries/${id}`, { token: TOKENS[person], content });
-      contentEl.innerHTML = renderContent(content) + `<div class="de-time-edit">${esc(d.time)}</div>`;
-      const timeEl = entry.querySelector('.de-time');
-      if (timeEl) timeEl.textContent = d.time;
+      contentEl.innerHTML = renderContent(content, id);
+      const te = entry.querySelector('.de-time');
+      if (te) te.textContent = d.time;
     } catch { alert('保存失败'); }
   });
 
-  contentEl.querySelector('.de-edit-cancel').addEventListener('click', () => {
-    contentEl.innerHTML = originalHTML;
-  });
+  // 取消
+  contentEl.querySelector('.de-edit-cancel').addEventListener('click', () => { contentEl.innerHTML = originalHTML; });
 }
 
 // 获取原始条目内容
@@ -240,7 +523,7 @@ function initDiaryMedia(person) {
         const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
         const r = new FileReader();
         r.onload = () => {
-          diaryMedia[person].audio.push(r.result);
+          diaryMedia[person].audio.push({ type: 'record', data: r.result, name: '录音' });
           renderMediaPreview(person);
         };
         r.readAsDataURL(blob);
@@ -267,7 +550,7 @@ function initDiaryMedia(person) {
     Array.from(e.target.files).forEach(f => {
       const r = new FileReader();
       r.onload = () => {
-        diaryMedia[person].audio.push(r.result);
+        diaryMedia[person].audio.push({ type: 'upload', data: r.result, name: '音频' });
         renderMediaPreview(person);
       };
       r.readAsDataURL(f);
@@ -290,13 +573,26 @@ function renderMediaPreview(person) {
     });
     preview.appendChild(div);
   });
-  data.audio.forEach((_, i) => {
+  data.audio.forEach((a, i) => {
     const div = document.createElement('div');
+    const isUpload = a && a.type === 'upload';
+    const icon = isUpload ? '📁' : '🎤';
+    const name = a.name || (isUpload ? '音频' : '录音');
     div.className = 'media-audio-tag';
-    div.innerHTML = `🎵 录音${i+1} <button class="media-del" data-type="audio" data-idx="${i}">×</button>`;
-    div.querySelector('.media-del').addEventListener('click', () => {
+    div.innerHTML = `${icon} <span class="audio-name">${esc(name)}</span> <button class="media-del">×</button>`;
+    const delBtn = div.querySelector('.media-del');
+    const nameSpan = div.querySelector('.audio-name');
+    delBtn.addEventListener('click', () => {
       data.audio.splice(i, 1);
       renderMediaPreview(person);
+    });
+    nameSpan.addEventListener('click', async () => {
+      const current = data.audio[i] ? data.audio[i].name || '' : '';
+      const newName = await showPrompt('重命名', '输入新名称', current);
+      if (newName && newName.trim()) {
+        data.audio[i].name = newName.trim();
+        renderMediaPreview(person);
+      }
     });
     preview.appendChild(div);
   });
@@ -344,14 +640,17 @@ function updateHeroAnnouncements(items) {
 // ====== 粒子 ======
 function createParticles() {
   const c = $('#particles');
-  for (const e of ['🌸','💕','✨','💗','🩷','🦋','⭐','💖']) {
+  const isMobile = window.innerWidth < 768;
+  const count = isMobile ? 8 : 20;
+  const emojis = ['🌸','💕','✨','💗','🩷','🦋','⭐','💖'];
+  for (let i = 0; i < count; i++) {
     const el = document.createElement('span');
     el.className = 'particle';
-    el.textContent = e;
+    el.textContent = emojis[i % emojis.length];
     el.style.left = Math.random() * 100 + '%';
-    el.style.animationDuration = (5 + Math.random() * 8) + 's';
-    el.style.animationDelay = Math.random() * 6 + 's';
-    el.style.fontSize = (14 + Math.random() * 18) + 'px';
+    el.style.animationDuration = (6 + Math.random() * 8) + 's';
+    el.style.animationDelay = Math.random() * 10 + 's';
+    el.style.fontSize = (isMobile ? 12 : 14) + Math.random() * (isMobile ? 12 : 18) + 'px';
     c.appendChild(el);
   }
 }
@@ -452,7 +751,7 @@ function initPhotos() {
   $('#modalClose').addEventListener('click', () => { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; });
   $('#photoModal').addEventListener('click', e => { if (e.target === $('#photoModal')) { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; } });
   $('#modalDel').addEventListener('click', async () => {
-    if (!confirm('确定删除？')) return;
+    if (!await showConfirm('确定删除？')) return;
     await api('DELETE', `/api/photos/${$('#photoModal')._pid}`);
     renderPhotos();
     $('#photoModal').classList.remove('active');
@@ -461,12 +760,31 @@ function initPhotos() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#photoModal').classList.remove('active'); document.body.style.overflow = ''; } });
 }
 
-// ====== AI 聊天 ======
+// ====== AI 聊天（支持私密空间）=====
 let curConv = null, chatLoading = false;
+let chatSpace = 'public'; // 'public', 'his', 'her'
+const chatSpaceToken = { his: null, her: null };
+const SPACE_NAMES = { public: '公开', his: '林林', her: '昕昕' };
+
+function chatApiUrl(path) {
+  let url = path;
+  if (chatSpace !== 'public') {
+    const token = chatSpaceToken[chatSpace];
+    if (!token) return null;
+    url += (url.includes('?') ? '&' : '?') + 'token=' + token;
+  }
+  return url;
+}
 
 async function loadConvs() {
   try {
-    const list = await api('GET', '/api/chat/conversations');
+    let url = '/api/chat/conversations?space=' + chatSpace;
+    if (chatSpace !== 'public') {
+      const token = chatSpaceToken[chatSpace];
+      if (!token) return;
+      url += '&token=' + token;
+    }
+    const list = await api('GET', url);
     $('#chatHistoryList').innerHTML = list.map(c => `
       <div class="chat-history-item-wrap">
         <div class="chat-history-item ${c.id === curConv ? 'active' : ''}" data-cid="${c.id}">
@@ -486,19 +804,21 @@ async function loadConvs() {
 }
 
 async function switchConv(id) {
+  const url = chatApiUrl(`/api/chat/conversations/${id}`);
+  if (!url) return;
   try {
-    const conv = await api('GET', `/api/chat/conversations/${id}`);
+    const conv = await api('GET', url);
     curConv = conv.id;
     const el = $('#chatMessages');
     el.innerHTML = conv.messages.map(m => `<div class="chat-msg ${m.role === 'user' ? 'user' : 'bot'}">${esc(m.content)}</div>`).join('');
     el.scrollTop = el.scrollHeight;
-    $('#chatTitle').textContent = conv.title;
+    $('#chatTitle').textContent = '[' + SPACE_NAMES[conv.space || 'public'] + '] ' + conv.title;
     loadConvs();
   } catch {}
 }
 
 async function renameConv(id) {
-  const t = prompt('请输入新标题：');
+  const t = await showPrompt('重命名对话', '输入新标题');
   if (!t || !t.trim()) return;
   try {
     await api('PUT', `/api/chat/conversations/${id}`, { title: t.trim() });
@@ -508,7 +828,7 @@ async function renameConv(id) {
 }
 
 async function deleteConv(id) {
-  if (!confirm('确定删除此对话？')) return;
+  if (!await showConfirm('确定删除此对话？')) return;
   try {
     await api('DELETE', `/api/chat/conversations/${id}`);
     if (id === curConv) newConv();
@@ -519,10 +839,12 @@ async function deleteConv(id) {
 async function newConv() {
   const title = '新对话 ' + localTime();
   try {
-    const conv = await api('POST', '/api/chat/conversations', { title });
+    const body = { title, space: chatSpace };
+    if (chatSpace !== 'public') body.token = chatSpaceToken[chatSpace];
+    const conv = await api('POST', '/api/chat/conversations', body);
     curConv = conv.id;
     $('#chatMessages').innerHTML = '<div class="chat-msg bot">你好呀！我是你们的小助手 💕 有什么我可以帮忙的吗？</div>';
-    $('#chatTitle').textContent = conv.title;
+    $('#chatTitle').textContent = '[' + SPACE_NAMES[chatSpace] + '] ' + conv.title;
     loadConvs();
   } catch {}
 }
@@ -531,6 +853,7 @@ async function sendMsg() {
   const input = $('#chatInput'), text = input.value.trim();
   if (!text || chatLoading) return;
   if (!curConv) await newConv();
+  if (!curConv) return;
   const el = $('#chatMessages');
   el.innerHTML += `<div class="chat-msg user">${esc(text)}</div>`;
   el.scrollTop = el.scrollHeight;
@@ -539,13 +862,15 @@ async function sendMsg() {
   $('#chatLoading').style.display = 'block';
   el.scrollTop = el.scrollHeight;
   try {
-    const d = await api('POST', `/api/chat/conversations/${curConv}/messages`, { role: 'user', content: text });
+    const body = { role: 'user', content: text };
+    if (chatSpace !== 'public') body.token = chatSpaceToken[chatSpace];
+    const d = await api('POST', `/api/chat/conversations/${curConv}/messages`, body);
     $('#chatLoading').style.display = 'none';
     if (d.reply) {
       el.innerHTML += `<div class="chat-msg bot">${esc(d.reply)}</div>`;
       el.scrollTop = el.scrollHeight;
       loadConvs();
-      try { const c = await api('GET', `/api/chat/conversations/${curConv}`); $('#chatTitle').textContent = c.title; } catch {}
+      try { const c = await api('GET', chatApiUrl(`/api/chat/conversations/${curConv}`)); $('#chatTitle').textContent = '[' + SPACE_NAMES[chatSpace] + '] ' + c.title; } catch {}
     } else {
       el.innerHTML += '<div class="chat-msg bot">呜呜，小助手好像走神了…💦</div>';
     }
@@ -556,16 +881,96 @@ async function sendMsg() {
   chatLoading = false;
 }
 
+let pendingSpace = null;
+
+async function switchChatSpace(space) {
+  if (space === 'public') {
+    chatSpace = 'public';
+    updateSpaceUI();
+    loadPublicChat();
+    return;
+  }
+  // 已有 token 直接切换
+  if (chatSpaceToken[space]) {
+    chatSpace = space;
+    updateSpaceUI();
+    loadPublicChat();
+    return;
+  }
+  // 弹出密码框
+  pendingSpace = space;
+  $('#chatPwdTitle').textContent = `请输入${SPACE_NAMES[space]}的密码`;
+  $('#chatPwdInput').value = '';
+  $('#chatPwdError').style.display = 'none';
+  $('#chatPwdOverlay').style.display = 'flex';
+  setTimeout(() => $('#chatPwdInput').focus(), 100);
+}
+
+function initChatPwdDialog() {
+  $('#chatPwdConfirm').addEventListener('click', async () => {
+    const pwd = $('#chatPwdInput').value.trim();
+    if (!pwd) return;
+    try {
+      const d = await api('POST', `/api/diary/${pendingSpace}/verify`, { password: pwd });
+      chatSpaceToken[pendingSpace] = d.token;
+      $('#chatPwdOverlay').style.display = 'none';
+      chatSpace = pendingSpace;
+      updateSpaceUI();
+      loadPublicChat();
+    } catch {
+      $('#chatPwdError').style.display = 'block';
+      setTimeout(() => $('#chatPwdError').style.display = 'none', 2000);
+    }
+  });
+  $('#chatPwdCancel').addEventListener('click', () => {
+    $('#chatPwdOverlay').style.display = 'none';
+    pendingSpace = null;
+  });
+  $('#chatPwdOverlay').addEventListener('click', e => {
+    if (e.target === $('#chatPwdOverlay')) {
+      $('#chatPwdOverlay').style.display = 'none';
+      pendingSpace = null;
+    }
+  });
+  $('#chatPwdInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('#chatPwdConfirm').click();
+  });
+}
+
+function updateSpaceUI() {
+  document.querySelectorAll('.chat-space-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.space === chatSpace);
+  });
+  // 更新标题
+  $('#chatTitle').textContent = chatSpace === 'public' ? '公开聊天' : '[' + SPACE_NAMES[chatSpace] + '] 私密空间';
+}
+
+async function loadPublicChat() {
+  curConv = null;
+  $('#chatMessages').innerHTML = '<div class="chat-msg bot">' + (chatSpace === 'public' ? '你好呀！我是你们的小助手 💕 有什么我可以帮忙的吗？' : '🔒 欢迎进入私密空间，只有你能看到这里的对话') + '</div>';
+  loadConvs();
+  // 自动加载第一个对话
+  try {
+    let url = '/api/chat/conversations?space=' + chatSpace;
+    if (chatSpace !== 'public') url += '&token=' + chatSpaceToken[chatSpace];
+    const list = await api('GET', url);
+    if (list && list.length > 0) switchConv(list[0].id);
+    else newConv();
+  } catch { newConv(); }
+}
+
 function initChat() {
   $('#chatSend').addEventListener('click', sendMsg);
   $('#chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
   $('#chatNewBtn').addEventListener('click', newConv);
   $('#chatToggleBtn').addEventListener('click', () => $('#chatSidebar').classList.toggle('open'));
-  // 加载上次对话，没有则创建新对话
-  api('GET', '/api/chat/conversations').then(list => {
-    if (list && list.length > 0) switchConv(list[0].id);
-    else newConv();
-  }).catch(() => newConv());
+  // 空间切换
+  document.querySelectorAll('.chat-space-btn').forEach(b => {
+    b.addEventListener('click', () => switchChatSpace(b.dataset.space));
+  });
+  initChatPwdDialog();
+  // 默认加载公开聊天
+  loadPublicChat();
 }
 
 // ====== 启动 ======

@@ -322,31 +322,48 @@ app.delete('/api/photos/:id', (req, res) => {
 
 // ====== AI 聊天 — 历史对话 ======
 
-// 获取所有对话
+// 获取所有对话（支持空间筛选）
 app.get('/api/chat/conversations', (req, res) => {
   const data = readJSON('chat-conversations') || [];
-  // 只返回摘要（不含完整 messages）
-  const summary = data.map(c => ({
+  const space = req.query.space || 'public';
+  let filtered = data;
+  if (space === 'public') {
+    filtered = data.filter(c => !c.space || c.space === 'public');
+  } else if (space === 'his' || space === 'her') {
+    const token = req.query.token;
+    const session = getSession(token);
+    if (!session || session.person !== space) return res.status(403).json({ error: '无权限' });
+    filtered = data.filter(c => c.space === space);
+  }
+  const summary = filtered.map(c => ({
     id: c.id,
     title: c.title,
     createdAt: c.createdAt,
     updatedAt: c.updatedAt,
     msgCount: c.messages ? c.messages.length : 0,
+    space: c.space || 'public',
   }));
   summary.sort((a, b) => new Date(b.updatedAt.replace(' ','T')) - new Date(a.updatedAt.replace(' ','T')));
   res.json(summary);
 });
 
-// 创建新对话
+// 创建新对话（支持空间）
 app.post('/api/chat/conversations', (req, res) => {
   const data = readJSON('chat-conversations') || [];
   const now = localTime();
+  const space = req.body.space || 'public';
+  // 私密空间需验证 token
+  if (space !== 'public') {
+    const session = getSession(req.body.token);
+    if (!session || session.person !== space) return res.status(403).json({ error: '无权限' });
+  }
   const conv = {
     id: uid(),
     title: req.body.title || '新对话 ' + now,
     messages: [],
     createdAt: now,
     updatedAt: now,
+    space,
   };
   data.push(conv);
   writeJSON('chat-conversations', data);
@@ -358,6 +375,12 @@ app.get('/api/chat/conversations/:id', (req, res) => {
   const data = readJSON('chat-conversations') || [];
   const conv = data.find(c => c.id === req.params.id);
   if (!conv) return res.status(404).json({ error: 'not found' });
+  // 私密空间需验证
+  if (conv.space && conv.space !== 'public') {
+    const token = req.query.token;
+    const session = getSession(token);
+    if (!session || session.person !== conv.space) return res.status(403).json({ error: '无权限' });
+  }
   res.json(conv);
 });
 
@@ -366,6 +389,12 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
   const data = readJSON('chat-conversations') || [];
   const conv = data.find(c => c.id === req.params.id);
   if (!conv) return res.status(404).json({ error: 'not found' });
+
+  // 私密空间消息需验证
+  if (conv.space && conv.space !== 'public') {
+    const session = getSession(req.body.token);
+    if (!session || session.person !== conv.space) return res.status(403).json({ error: '无权限' });
+  }
 
   const { role, content } = req.body;
   if (!role || !content) return res.status(400).json({ error: 'need role and content' });
