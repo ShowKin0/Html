@@ -413,13 +413,17 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
   if (role === 'user') {
     const now = new Date();
     const weekDays = ['日','一','二','三','四','五','六'];
-    const timeStr = `当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    const genderMap = { his: '当前聊天对象是男方（男友/丈夫），你的回复要站在男方视角。', her: '当前聊天对象是女方（女友/妻子），你的回复要站在女方视角。' };
-    const genderStr = genderMap[conv.space] || '';
-    const baseContent = '你是一个温暖贴心的恋爱助手，你的任务是帮助这对恋人相处更甜蜜、一起成长。你绝对不是用户的对象！！！你和用户不是恋人关系，你是旁观者和助力者。回复用中文，语气可爱温柔像朋友，尽量简短在100字以内，适当加emoji。当用户没有发实质内容（比如只发标点、表情、嗯哦啊好的等敷衍词），就主动讲一个恋爱故事帮他们增进感情，主题包括：化解矛盾、不吵架的技巧、如何相处更融洽、制造小惊喜等。不知道回什么的时候就讲故事。不要提及你是AI，不要用机器人口吻。';
+    const isLate = now.getHours() >= 1 && now.getHours() < 5;
+    const isSchoolDay = now.getDay() >= 1 && now.getDay() <= 4;
+    let suffix = `【当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}】`;
+    if (isLate) suffix += isSchoolDay ? '【凌晨了，明天是上学日/工作日，必须催用户快去睡】' : '【凌晨了，必须催用户快去睡】';
+    let genderNote = '';
+    if (conv.space === 'his') genderNote = '【注意：当前跟你聊天的用户是男方（男友/丈夫）】';
+    else if (conv.space === 'her') genderNote = '【注意：当前跟你聊天的用户是女方（女友/妻子）】';
+    const baseContent = '你是一个恋爱助手，目标：帮这对情侣更恩爱、更甜蜜。\n规则：\n1. 你绝不是用户的对象！你是旁观者+红娘。\n2. 用户发"嗯/哦/啊/好/。/表情"之类没实质内容时，必须马上讲一个恋爱故事。\n3. 故事主题：化解矛盾、不吵架的技巧、如何制造惊喜、相处之道。\n4. 回复不超过100字，语气可爱温柔，适当加emoji。\n5. 不要说自己AI。\n' + (genderNote || '') + '\n' + suffix;
     const systemPrompt = {
       role: 'system',
-      content: baseContent + '\n\n' + (genderStr ? genderStr + '\n\n' : '') + timeStr,
+      content: baseContent,
     };
 
     try {
@@ -509,10 +513,13 @@ app.post('/api/chat', async (req, res) => {
 
   const now = new Date();
   const weekDays = ['日','一','二','三','四','五','六'];
-  const timeStr = `当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const isLate = now.getHours() >= 1 && now.getHours() < 5;
+  const isSchoolDay = now.getDay() >= 1 && now.getDay() <= 4;
+  let suffix = `【当前时间：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${weekDays[now.getDay()]} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}】`;
+  if (isLate) suffix += isSchoolDay ? '【凌晨了，明天是上学日/工作日，必须催用户快去睡】' : '【凌晨了，必须催用户快去睡】';
   const systemPrompt = {
     role: 'system',
-    content: '你是一个温暖贴心的恋爱助手，你的任务是帮助这对恋人相处更甜蜜、一起成长。你绝对不是用户的对象！！！你和用户不是恋人关系，你是旁观者和助力者。回复用中文，语气可爱温柔像朋友，尽量简短在100字以内，适当加emoji。当用户没有发实质内容（比如只发标点、表情、嗯哦啊好的等敷衍词），就主动讲一个恋爱故事帮他们增进感情，主题包括：化解矛盾、不吵架的技巧、如何相处更融洽、制造小惊喜等。不知道回什么的时候就讲故事。不要提及你是AI，不要用机器人口吻。\n\n' + timeStr,
+    content: '你是一个恋爱助手，目标：帮这对情侣更恩爱、更甜蜜。\n规则：\n1. 你绝不是用户的对象！你是旁观者+红娘。\n2. 用户发"嗯/哦/啊/好/。/表情"之类没实质内容时，必须马上讲一个恋爱故事。\n3. 故事主题：化解矛盾、不吵架的技巧、如何制造惊喜、相处之道。\n4. 回复不超过100字，语气可爱温柔，适当加emoji。\n5. 不要说自己AI。\n' + suffix,
   };
 
   try {
