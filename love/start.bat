@@ -43,7 +43,7 @@ netstat -an | find ":3000 " >nul 2>nul
 if %errorlevel% neq 0 goto wait
 
 :: 打开本地网站
-start "" "http://localhost:3000"
+
 
 :: 启动 ngrok
 echo 🌐 启动内网穿透...
