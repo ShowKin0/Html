@@ -79,34 +79,227 @@ function unlockDiary(person) {
   loadDiary(person);
 }
 
+// 渲染日记内容（支持文本/图片/音频）
+function renderContent(content) {
+  try {
+    const data = JSON.parse(content);
+    let html = '';
+    if (data.text) html += esc(data.text);
+    if (data.images) data.images.forEach(img => { html += `<img src="${esc(img)}" loading="lazy">`; });
+    if (data.audio) data.audio.forEach(a => { html += `<audio controls src="${esc(a)}"></audio>`; });
+    return html || '(空)';
+  } catch {
+    return esc(content);
+  }
+}
+
+// 构建日记内容 JSON
+function buildContent(person) {
+  const text = $(`#diary${cap(person)}Input`).value.trim();
+  const mediaData = diaryMedia[person] || { images: [], audio: [] };
+  if (!text && !mediaData.images.length && !mediaData.audio.length) return null;
+  return JSON.stringify({ text, images: mediaData.images, audio: mediaData.audio });
+}
+
+// 清空日记表单
+function resetDiaryForm(person) {
+  $(`#diary${cap(person)}Input`).value = '';
+  $(`#diary${cap(person)}MediaPreview`).innerHTML = '';
+  diaryMedia[person] = { images: [], audio: [] };
+}
+
+// 多媒体数据存储
+const diaryMedia = { his: { images: [], audio: [] }, her: { images: [], audio: [] } };
+const diaryFilter = { his: '', her: '' };
+
 async function loadDiary(person) {
   const token = TOKENS[person];
   if (!token) return;
   try {
     const entries = await api('GET', `/api/diary/${person}/entries?token=${token}`);
+    const filterDate = diaryFilter[person];
+    const filtered = filterDate
+      ? entries.filter(e => e.time.startsWith(filterDate))
+      : entries;
     const list = $(`#diary${cap(person)}List`);
-    list.innerHTML = entries.map(e =>
-      `<div class="diary-entry"><div class="de-time">${esc(e.time)}</div><div class="de-content">${esc(e.content)}</div><button class="de-del" data-p="${person}" data-id="${e.id}">🗑</button></div>`
+    list.innerHTML = filtered.map(e =>
+      `<div class="diary-entry" data-id="${e.id}">
+        <div class="de-time">${esc(e.time)}</div>
+        <div class="de-content">${renderContent(e.content)}</div>
+        <button class="de-edit" data-p="${person}" data-id="${e.id}">✏️</button>
+        <button class="de-del" data-p="${person}" data-id="${e.id}">🗑</button>
+      </div>`
     ).join('');
     list.querySelectorAll('.de-del').forEach(b => b.addEventListener('click', async () => {
       if (!confirm('确定删除？')) return;
       await api('DELETE', `/api/diary/${b.dataset.p}/entries/${b.dataset.id}?token=${TOKENS[b.dataset.p]}`);
       loadDiary(b.dataset.p);
     }));
+    list.querySelectorAll('.de-edit').forEach(b => b.addEventListener('click', () => editEntry(b.dataset.p, b.dataset.id)));
   } catch {}
+}
+
+// 编辑日记
+async function editEntry(person, id) {
+  const entry = $(`#diary${cap(person)}List`).querySelector(`.diary-entry[data-id="${id}"]`);
+  const contentEl = entry.querySelector('.de-content');
+  const originalHTML = contentEl.innerHTML;
+  const origContent = await getEntryContent(person, id);
+
+  // 切换到编辑模式
+  contentEl.innerHTML = `
+    <div class="de-edit-area">
+      <textarea class="input diary-input de-edit-text" rows="3">${esc(origContent.text || '')}</textarea>
+      <div class="diary-toolbar">
+        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-img" data-person="${person}">📷 图片</button>
+        <button class="btn btn-sm ${person === 'his' ? 'btn-blue' : 'btn-pink'} de-edit-audio" data-person="${person}">🎤 录音</button>
+      </div>
+      <div class="de-edit-media"></div>
+      <div class="de-edit-actions">
+        <button class="btn btn-sm btn-blue de-edit-save">💾 保存</button>
+        <button class="btn btn-sm de-edit-cancel" style="background:#eee">取消</button>
+      </div>
+    </div>`;
+
+  const editMedia = { images: origContent.images || [], audio: origContent.audio || [] };
+
+  contentEl.querySelector('.de-edit-save').addEventListener('click', async () => {
+    const text = contentEl.querySelector('.de-edit-text').value.trim();
+    if (!text && !editMedia.images.length && !editMedia.audio.length) { alert('内容不能为空'); return; }
+    const content = JSON.stringify({ text, images: editMedia.images, audio: editMedia.audio });
+    try {
+      const d = await api('PUT', `/api/diary/${person}/entries/${id}`, { token: TOKENS[person], content });
+      contentEl.innerHTML = renderContent(content) + `<div class="de-time-edit">${esc(d.time)}</div>`;
+      const timeEl = entry.querySelector('.de-time');
+      if (timeEl) timeEl.textContent = d.time;
+    } catch { alert('保存失败'); }
+  });
+
+  contentEl.querySelector('.de-edit-cancel').addEventListener('click', () => {
+    contentEl.innerHTML = originalHTML;
+  });
+}
+
+// 获取原始条目内容
+async function getEntryContent(person, id) {
+  const entries = await api('GET', `/api/diary/${person}/entries?token=${TOKENS[person]}`);
+  const entry = entries.find(e => e.id === id);
+  if (!entry) return { text: '' };
+  try { return JSON.parse(entry.content); } catch { return { text: entry.content }; }
 }
 
 async function addEntry(person) {
   const token = TOKENS[person];
   if (!token) { alert('请先解锁'); return; }
-  const input = $(`#diary${cap(person)}Input`);
-  const content = input.value.trim();
+  const content = buildContent(person);
   if (!content) { alert('写点什么吧～'); return; }
   try {
     await api('POST', `/api/diary/${person}/entries`, { token, content });
-    input.value = '';
+    resetDiaryForm(person);
     loadDiary(person);
   } catch { alert('保存失败'); }
+}
+
+// ====== 日记多媒体 ======
+function initDiaryMedia(person) {
+  // 图片上传
+  const imgInput = $(`#diary${cap(person)}ImgInput`);
+  const imgBtn = $(`#diary${cap(person)}Form`).querySelector('.diary-img-btn');
+  imgBtn.addEventListener('click', () => imgInput.click());
+  imgInput.addEventListener('change', e => {
+    Array.from(e.target.files).forEach(f => {
+      const r = new FileReader();
+      r.onload = () => {
+        diaryMedia[person].images.push(r.result);
+        renderMediaPreview(person);
+      };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  });
+
+  // 录音
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let audioTimer = null;
+  const audioBtn = $(`#diary${cap(person)}Form`).querySelector('.diary-audio-btn');
+  const timerEl = $(`#diary${cap(person)}AudioTimer`);
+
+  audioBtn.addEventListener('click', async () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' : 'audio/webm' });
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
+        const r = new FileReader();
+        r.onload = () => {
+          diaryMedia[person].audio.push(r.result);
+          renderMediaPreview(person);
+        };
+        r.readAsDataURL(blob);
+        clearInterval(audioTimer);
+        timerEl.style.display = 'none';
+        audioBtn.textContent = '🎤 录音';
+      };
+      mediaRecorder.start();
+      audioBtn.textContent = '⏹️ 停止';
+      timerEl.style.display = 'inline';
+      let sec = 0;
+      audioTimer = setInterval(() => {
+        sec++;
+        timerEl.textContent = `⏺️ ${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+      }, 1000);
+    } catch { alert('无法访问麦克风'); }
+  });
+
+  // 上传音频文件
+  const audioUploadBtn = $(`#diary${cap(person)}Form`).querySelector('.diary-audio-upload-btn');
+  const audioInput = $(`#diary${cap(person)}AudioInput`);
+  audioUploadBtn.addEventListener('click', () => audioInput.click());
+  audioInput.addEventListener('change', e => {
+    Array.from(e.target.files).forEach(f => {
+      const r = new FileReader();
+      r.onload = () => {
+        diaryMedia[person].audio.push(r.result);
+        renderMediaPreview(person);
+      };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  });
+}
+
+function renderMediaPreview(person) {
+  const preview = $(`#diary${cap(person)}MediaPreview`);
+  const data = diaryMedia[person];
+  preview.innerHTML = '';
+  data.images.forEach((img, i) => {
+    const div = document.createElement('div');
+    div.className = 'media-thumb';
+    div.innerHTML = `<img src="${img}"><button class="media-del" data-type="image" data-idx="${i}">×</button>`;
+    div.querySelector('.media-del').addEventListener('click', () => {
+      data.images.splice(i, 1);
+      renderMediaPreview(person);
+    });
+    preview.appendChild(div);
+  });
+  data.audio.forEach((_, i) => {
+    const div = document.createElement('div');
+    div.className = 'media-audio-tag';
+    div.innerHTML = `🎵 录音${i+1} <button class="media-del" data-type="audio" data-idx="${i}">×</button>`;
+    div.querySelector('.media-del').addEventListener('click', () => {
+      data.audio.splice(i, 1);
+      renderMediaPreview(person);
+    });
+    preview.appendChild(div);
+  });
 }
 
 // ====== 倒计时 ======
@@ -390,6 +583,20 @@ function init() {
     $(`#diary${cap(p)}SetPwdBtn`).addEventListener('click', () => setPw(p));
     $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-btn').addEventListener('click', () => verifyPw(p));
     $(`#diary${cap(p)}Add`).addEventListener('click', () => addEntry(p));
+    initDiaryMedia(p);
+    // 日期筛选
+    $(`#diary${cap(p)}Filter`).addEventListener('change', e => {
+      diaryFilter[p] = e.target.value || '';
+      const clearBtn = $(`.diary-filter-clear[data-person="${p}"]`);
+      clearBtn.style.display = diaryFilter[p] ? 'inline-flex' : 'none';
+      loadDiary(p);
+    });
+    $(`.diary-filter-clear[data-person="${p}"]`).addEventListener('click', () => {
+      diaryFilter[p] = '';
+      $(`#diary${cap(p)}Filter`).value = '';
+      $(`.diary-filter-clear[data-person="${p}"]`).style.display = 'none';
+      loadDiary(p);
+    });
   });
   initStatusOnScroll();
 

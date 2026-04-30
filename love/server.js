@@ -173,7 +173,7 @@ app.get('/api/diary/:person/entries', (req, res) => {
     }
   });
 
-  decrypted.sort((a, b) => b.time.localeCompare(a.time));
+  decrypted.sort((a, b) => new Date(b.time.replace(' ','T')) - new Date(a.time.replace(' ','T')));
   res.json(decrypted);
 });
 
@@ -222,6 +222,33 @@ app.delete('/api/diary/:person/entries/:id', (req, res) => {
   entries = entries.filter(e => e.id !== id);
   writeJSON(diaryKey, entries);
   res.json({ ok: true });
+});
+
+// 编辑日记条目
+app.put('/api/diary/:person/entries/:id', (req, res) => {
+  const { person, id } = req.params;
+  if (!['his', 'her'].includes(person)) return res.status(400).json({ error: 'invalid person' });
+  const token = req.body.token;
+  const session = getSession(token);
+  if (!session) return res.status(401).json({ error: '未登录' });
+  if (session.person !== person) return res.status(403).json({ error: '无权限' });
+
+  const { content } = req.body;
+  if (!content || !content.trim()) return res.status(400).json({ error: '内容不能为空' });
+
+  const key = Buffer.from(session.encKey, 'hex');
+  const diaryKey = 'diary-' + person;
+  const entries = readJSON(diaryKey) || [];
+  const idx = entries.findIndex(e => e.id === id);
+  if (idx === -1) return res.status(404).json({ error: 'not found' });
+
+  const now = new Date();
+  const time = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  entries[idx].encrypted = encryptText(content, key);
+  entries[idx].time = time + ' ✏️';
+  writeJSON(diaryKey, entries);
+  res.json({ ok: true, time: entries[idx].time });
 });
 
 // ====== 时间线 API ======
@@ -306,7 +333,7 @@ app.get('/api/chat/conversations', (req, res) => {
     updatedAt: c.updatedAt,
     msgCount: c.messages ? c.messages.length : 0,
   }));
-  summary.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  summary.sort((a, b) => new Date(b.updatedAt.replace(' ','T')) - new Date(a.updatedAt.replace(' ','T')));
   res.json(summary);
 });
 

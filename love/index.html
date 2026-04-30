@@ -91,9 +91,22 @@
         </div>
         <div class="diary-content" id="diaryHisContent">
           <div class="diary-unlocked-bar">🔓 已解锁</div>
-          <div class="diary-form">
+          <div class="diary-form" id="diaryHisForm">
             <textarea id="diaryHisInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
+            <div class="diary-media-preview" id="diaryHisMediaPreview"></div>
+            <div class="diary-toolbar">
+              <button class="btn btn-sm btn-blue diary-img-btn" data-person="his">📷 图片</button>
+              <button class="btn btn-sm btn-blue diary-audio-btn" data-person="his">🎤 录音</button>
+              <button class="btn btn-sm btn-blue diary-audio-upload-btn" data-person="his">📁 上传音频</button>
+              <input type="file" class="diary-img-input" id="diaryHisImgInput" accept="image/*" hidden>
+              <input type="file" class="diary-audio-input" id="diaryHisAudioInput" accept="audio/*" hidden>
+              <span class="diary-audio-timer" id="diaryHisAudioTimer" style="display:none">⏺️ 00:00</span>
+            </div>
             <button class="btn btn-blue" id="diaryHisAdd">📝 写下心情</button>
+          </div>
+          <div class="diary-filter">
+            <input type="date" class="input diary-filter-input" id="diaryHisFilter" data-person="his">
+            <button class="btn btn-sm btn-blue diary-filter-clear" data-person="his" style="display:none">✕ 清除</button>
           </div>
           <div class="diary-list" id="diaryHisList"></div>
         </div>
@@ -118,9 +131,22 @@
         </div>
         <div class="diary-content" id="diaryHerContent">
           <div class="diary-unlocked-bar">🔓 已解锁</div>
-          <div class="diary-form">
+          <div class="diary-form" id="diaryHerForm">
             <textarea id="diaryHerInput" class="input diary-input" placeholder="今天想说什么..."></textarea>
+            <div class="diary-media-preview" id="diaryHerMediaPreview"></div>
+            <div class="diary-toolbar">
+              <button class="btn btn-sm btn-pink diary-img-btn" data-person="her">📷 图片</button>
+              <button class="btn btn-sm btn-pink diary-audio-btn" data-person="her">🎤 录音</button>
+              <button class="btn btn-sm btn-pink diary-audio-upload-btn" data-person="her">📁 上传音频</button>
+              <input type="file" class="diary-img-input" id="diaryHerImgInput" accept="image/*" hidden>
+              <input type="file" class="diary-audio-input" id="diaryHerAudioInput" accept="audio/*" hidden>
+              <span class="diary-audio-timer" id="diaryHerAudioTimer" style="display:none">⏺️ 00:00</span>
+            </div>
             <button class="btn btn-pink" id="diaryHerAdd">📝 写下心情</button>
+          </div>
+          <div class="diary-filter">
+            <input type="date" class="input diary-filter-input" id="diaryHerFilter" data-person="her">
+            <button class="btn btn-sm btn-pink diary-filter-clear" data-person="her" style="display:none">✕ 清除</button>
           </div>
           <div class="diary-list" id="diaryHerList"></div>
         </div>
