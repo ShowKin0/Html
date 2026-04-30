@@ -367,7 +367,11 @@ function initChat() {
   $('#chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
   $('#chatNewBtn').addEventListener('click', newConv);
   $('#chatToggleBtn').addEventListener('click', () => $('#chatSidebar').classList.toggle('open'));
-  newConv();
+  // 加载上次对话，没有则创建新对话
+  api('GET', '/api/chat/conversations').then(list => {
+    if (list && list.length > 0) switchConv(list[0].id);
+    else newConv();
+  }).catch(() => newConv());
 }
 
 // ====== 启动 ======
