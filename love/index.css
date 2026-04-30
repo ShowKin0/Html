@@ -563,6 +563,25 @@ body {
   50% { opacity: 0.6; }
 }
 
+/* ===== 相恋天数 ===== */
+.hero-days {
+  margin-top: 16px;
+  font-size: 1rem;
+  color: var(--pink-dark);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.hero-days .days-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--pink-dark), var(--blue-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  margin: 0 4px;
+}
+
 /* ===== 首页纪念日提醒 ===== */
 .hero-announce { margin-top: 20px; }
 .hero-announce-item {

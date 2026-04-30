@@ -21,6 +21,10 @@ const ITERATIONS = 100000;
 const DIGEST = 'sha512';
 
 function uid() { return Date.now().toString(36) + crypto.randomBytes(4).toString('hex'); }
+function localTime() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
 function readJSON(name) {
   const p = path.join(DATA_DIR, name + '.json');
   if (!fs.existsSync(p)) return null;
@@ -268,7 +272,7 @@ app.post('/api/photos/upload', (req, res) => {
   const photo = {
     id: uid(),
     url: '/uploads/' + fileName,
-    time: new Date().toISOString(),
+    time: localTime(),
   };
   photos.push(photo);
   writeJSON('photos', photos);
@@ -309,10 +313,10 @@ app.get('/api/chat/conversations', (req, res) => {
 // 创建新对话
 app.post('/api/chat/conversations', (req, res) => {
   const data = readJSON('chat-conversations') || [];
-  const now = new Date().toISOString();
+  const now = localTime();
   const conv = {
     id: uid(),
-    title: req.body.title || '新对话 ' + now.slice(0, 16).replace('T', ' '),
+    title: req.body.title || '新对话 ' + now,
     messages: [],
     createdAt: now,
     updatedAt: now,
@@ -340,7 +344,7 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
   if (!role || !content) return res.status(400).json({ error: 'need role and content' });
 
   conv.messages.push({ role, content });
-  conv.updatedAt = new Date().toISOString();
+  conv.updatedAt = localTime();
 
   // 自动生成标题（第一条用户消息）
   if (conv.title === '新对话 ' + conv.createdAt.slice(0, 16).replace('T', ' ') && role === 'user') {
@@ -381,7 +385,7 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
       const reply = apiData.choices[0].message.content;
 
       conv.messages.push({ role: 'assistant', content: reply });
-      conv.updatedAt = new Date().toISOString();
+      conv.updatedAt = localTime();
       writeJSON('chat-conversations', data);
 
       res.json({ reply, conversationId: conv.id });
@@ -410,7 +414,7 @@ app.put('/api/chat/conversations/:id', (req, res) => {
   const { title } = req.body;
   if (!title || !title.trim()) return res.status(400).json({ error: '标题不能为空' });
   conv.title = title.trim();
-  conv.updatedAt = new Date().toISOString();
+  conv.updatedAt = localTime();
   writeJSON('chat-conversations', data);
   res.json({ ok: true, title: conv.title });
 });
@@ -427,8 +431,8 @@ app.post('/api/chat', async (req, res) => {
     conv = data.find(c => c.id === conversationId);
   }
   if (!conv) {
-    const now = new Date().toISOString();
-    conv = { id: uid(), title: '对话 ' + now.slice(0, 16).replace('T', ' '), messages: [], createdAt: now, updatedAt: now };
+    const now = localTime();
+    conv = { id: uid(), title: '对话 ' + now, messages: [], createdAt: now, updatedAt: now };
     data.push(conv);
   }
 
@@ -467,7 +471,7 @@ app.post('/api/chat', async (req, res) => {
     const apiData = await apiRes.json();
     const reply = apiData.choices[0].message.content;
     conv.messages.push({ role: 'assistant', content: reply });
-    conv.updatedAt = new Date().toISOString();
+    conv.updatedAt = localTime();
     writeJSON('chat-conversations', data);
 
     res.json({ reply, conversationId: conv.id });

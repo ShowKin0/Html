@@ -11,6 +11,7 @@ function $(s) { return document.querySelector(s); }
 function $$(s) { return document.querySelectorAll(s); }
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function localTime() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
 
 // ====== 密码系统 ======
 const TOKENS = { his: null, her: null };
@@ -18,6 +19,10 @@ const TOKENS = { his: null, her: null };
 async function checkStatus(person) {
   try {
     const data = await api('GET', `/api/diary/${person}/status`);
+    const lockEl = $(`#diary${cap(person)}Lock`);
+    // 已解锁就不重复切换
+    if (lockEl.classList.contains('unlocked')) return;
+
     const pwMode = $(`#diary${cap(person)}PwMode`);
     const setupMode = $(`#diary${cap(person)}SetupMode`);
     if (data.individualSet) {
@@ -28,6 +33,20 @@ async function checkStatus(person) {
       setupMode.style.display = 'block';
     }
   } catch {}
+}
+
+// 每3秒自动同步对方密码状态
+function startStatusPoll() {
+  setInterval(() => { ['his', 'her'].forEach(checkStatus); }, 3000);
+}
+
+// 每5秒同步共享数据（时间线、照片墙、聊天列表）
+function startDataSync() {
+  setInterval(() => {
+    renderTimeline();
+    renderPhotos();
+    loadConvs();
+  }, 5000);
 }
 
 async function setPw(person) {
@@ -143,12 +162,23 @@ function createParticles() {
   }
 }
 
+// ====== 相恋天数 ======
+const LOVE_START = new Date(2026, 3, 6); // 2026-04-06
+function updateLoveDays() {
+  const now = new Date();
+  const diff = now - LOVE_START;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const el = $('#heroDays');
+  if (el) el.innerHTML = `💕 我们在一起的第 <span class="days-num">${days}</span> 天`;
+}
+
 // ====== 时钟 ======
 function updateClock() {
   const now = new Date();
   const wd = ['日','一','二','三','四','五','六'];
   if ($('#clockDate')) $('#clockDate').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${wd[now.getDay()]}`;
   if ($('#clockTime')) $('#clockTime').textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  updateLoveDays();
 }
 
 // ====== 导航 ======
@@ -293,7 +323,7 @@ async function deleteConv(id) {
 }
 
 async function newConv() {
-  const title = '新对话 ' + new Date().toISOString().slice(0, 16).replace('T', ' ');
+  const title = '新对话 ' + localTime();
   try {
     const conv = await api('POST', '/api/chat/conversations', { title });
     curConv = conv.id;
@@ -356,6 +386,8 @@ function init() {
     $(`#diary${cap(p)}Lock`).querySelector('.diary-pwd-btn').addEventListener('click', () => verifyPw(p));
     $(`#diary${cap(p)}Add`).addEventListener('click', () => addEntry(p));
   });
+  startStatusPoll();
+  startDataSync();
 
   initPhotos();
   renderPhotos();
