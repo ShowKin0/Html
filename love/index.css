@@ -530,63 +530,119 @@ body {
 
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
+  .section { padding: 56px 24px; }
+
   .nav-links {
     position: fixed; top: var(--nav-height); left: 0; right: 0;
     flex-direction: column; background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(14px); padding: 16px;
-    display: none; gap: 4px;
+    backdrop-filter: blur(14px); padding: 12px 16px;
+    display: none; gap: 2px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     z-index: 999;
   }
   .nav-links.open { display: flex; }
   .nav-toggle { display: flex; }
-  .nav-links a { padding: 12px 20px; }
+  .nav-links a { padding: 14px 20px; font-size: 1rem; }
+
+  .section-title { margin-bottom: 28px; }
 
   .timeline::before { left: 24px; }
-  .tl-item { width: 100%; left: 0 !important; padding: 10px 0 10px 48px !important; text-align: left !important; }
+  .tl-item { width: 100%; left: 0 !important; padding: 12px 0 12px 48px !important; text-align: left !important; }
   .tl-item:nth-child(odd) .tl-dot,
   .tl-item:nth-child(even) .tl-dot { left: 16px !important; }
+  .tl-card { padding: 14px 18px; }
 
-  .diary-dual { grid-template-columns: 1fr; }
-  .diary-panel { min-height: 200px; }
+  .diary-dual { grid-template-columns: 1fr; gap: 20px; }
+  .diary-panel { min-height: 200px; padding: 20px; }
 
-  .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .timeline-add { gap: 10px; }
+  .timeline-add .input { min-width: 100%; }
 
-  .hero-avatars { gap: 10px; }
-  .avatar { width: 56px; height: 56px; font-size: 28px; }
-  .clock-time { font-size: 2.2rem; }
-  .hero-floating .float-heart:nth-child(n+4) { display: none; } /* 减少浮动元素 */
+  .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .chat-container { border-radius: 12px; }
+  .chat-messages { height: 320px; padding: 16px; }
+  .chat-msg { max-width: 88%; font-size: 0.92rem; padding: 10px 16px; }
+
+  .hero-avatars { gap: 12px; }
+  .avatar { width: 60px; height: 60px; font-size: 30px; }
+  .clock-time { font-size: 2rem; }
+  .hero-floating .float-heart:nth-child(n+4) { display: none; }
+
+  .diary-list { max-height: 400px; }
+  .diary-entry { padding: 14px 16px; }
 }
 
 @media (max-width: 480px) {
-  .section { padding: 60px 16px; }
-  .section-title { font-size: 1.5rem; }
-  .timeline-add { flex-direction: column; }
-  .timeline-add .input { min-width: 100%; }
-  .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .photo-card { aspect-ratio: 1; }
-  .chat-messages { height: 280px; }
-  .chat-msg { max-width: 92%; font-size: 0.9rem; }
-  .chat-space-btn { font-size: 0.78rem; padding: 8px 4px; }
+  .section { padding: 40px 16px; }
+  .section-title { font-size: 1.3rem; margin-bottom: 20px; }
+
+  .timeline-add { gap: 8px; }
+  .timeline-add .input { font-size: 16px; padding: 12px 14px; }
+
+  .tl-item { padding: 10px 0 10px 44px !important; }
+  .tl-card { padding: 12px 14px; }
+  .tl-title { font-size: 1rem; }
+  .tl-date { font-size: 0.8rem; }
+  .tl-desc { font-size: 0.85rem; }
+
+  .photo-grid { gap: 10px; }
+  .photo-card { aspect-ratio: 1; border-radius: 10px; }
+  .photo-upload { margin-bottom: 16px; }
+
+  .chat-messages { height: 260px; padding: 12px; gap: 8px; }
+  .chat-msg { max-width: 92%; font-size: 0.88rem; padding: 10px 14px; border-radius: 14px; }
+  .chat-space-btn { font-size: 0.8rem; padding: 10px 6px; border-radius: 10px; }
+  .chat-input-row { padding: 10px 12px; }
+  .chat-input-row .input { font-size: 16px; }
+  .chat-header { padding: 10px 14px; font-size: 0.85rem; }
+  .chat-sidebar { width: 100%; }
+  .chat-history-item { padding: 10px 12px; font-size: 0.82rem; }
+
   .diary-pwd-btn, .btn { min-height: 44px; }
-  .diary-pwd-input, .input { font-size: 16px; } /* 防止 iOS 缩放 */
-  .nav-links a { padding: 14px 20px; font-size: 1rem; } /* 增大点击区域 */
-  .clock-time { font-size: 1.8rem; }
-  .hero-announce-item { font-size: 0.85rem; padding: 8px 16px; }
-  .hero-floating .float-heart { display: none; } /* 减少动画元素 */
-  .float-heart:nth-child(-n+3) { display: block; } /* 只保留前3个 */
-  .modal-img { max-width: 92vw; max-height: 60vh; }
+  .diary-pwd-input, .input { font-size: 16px; padding: 12px 14px; }
+  .diary-panel { padding: 16px; min-height: 180px; }
+  .diary-list { max-height: 350px; }
+  .diary-entry { padding: 12px 14px; }
+  .diary-form { gap: 8px; }
+  .diary-input { min-height: 70px; }
+  .diary-name { font-size: 1.05rem; margin-bottom: 12px; }
+
+  .clock-time { font-size: 1.5rem; letter-spacing: 2px; }
+  .clock-date { font-size: 0.85rem; }
+  .hero-title { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+  .hero-subtitle { font-size: 0.9rem; margin-bottom: 20px; }
+  .hero-days { font-size: 0.85rem; }
+  .hero-days .days-num { font-size: 1.6rem; }
+  .hero-announce-item { font-size: 0.82rem; padding: 10px 16px; border-radius: 16px; margin: 3px; }
+
+  .hero-floating .float-heart { display: none; }
+  .float-heart:nth-child(-n+3) { display: block; }
+
+  .modal-img { max-width: 92vw; max-height: 60vh; border-radius: 12px; }
   .modal-close { font-size: 32px; top: 12px; right: 16px; }
   .chat-pwd-box { padding: 24px 20px; }
-  .diary-toolbar .btn { flex: 1; justify-content: center; min-height: 44px; }
-  .de-edit-area .diary-toolbar .btn { font-size: 0.82rem; padding: 8px 6px; }
-  .de-edit-media { gap: 6px; }
-  .de-edit-media .media-thumb { width: 70px; height: 70px; }
-  .de-edit-media .media-audio-tag { font-size: 0.78rem; padding: 8px 10px; }
-  .media-item-del { opacity: 1 !important; width: 26px; height: 26px; font-size: 16px; } /* 手机始终显示删除 */
-  .diary-filter-input { width: 100%; }
-  .diary-audio-player { max-width: none; min-width: 120px; }
-  .diary-audio-player .ap-info { max-width: 50px; }
+
+  .diary-toolbar { gap: 6px; }
+  .diary-toolbar .btn { flex: 1; justify-content: center; min-height: 44px; font-size: 0.82rem; padding: 8px 6px; border-radius: 12px; }
+
+  .de-edit-area .diary-toolbar .btn { font-size: 0.8rem; padding: 10px 4px; }
+  .de-edit-media { gap: 8px; }
+  .de-edit-media .media-thumb { width: 72px; height: 72px; border-radius: 8px; }
+  .de-edit-media .media-audio-tag { font-size: 0.8rem; padding: 8px 12px; border-radius: 8px; }
+
+  .media-item-del { opacity: 1 !important; width: 26px; height: 26px; font-size: 16px; }
+  .diary-filter-input { width: 100%; font-size: 16px; }
+
+  .diary-audio-player { max-width: none; min-width: 120px; padding: 8px 12px; border-radius: 18px; }
+  .diary-audio-player .ap-info { max-width: 50px; font-size: 0.78rem; }
+  .diary-audio-player .ap-time { min-width: 60px; font-size: 0.68rem; }
+
+  .diary-media-preview .media-thumb { width: 72px; height: 72px; border-radius: 8px; }
+  .diary-media-preview .media-audio-tag { padding: 8px 12px; border-radius: 8px; }
+
+  .footer { padding: 28px 16px; font-size: 0.8rem; }
+  .nav-links a { padding: 14px 20px; font-size: 1rem; }
 }
 
 /* ===== 日记 - 新样式 ===== */
