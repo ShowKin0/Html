@@ -23,7 +23,8 @@ const DIGEST = 'sha512';
 function uid() { return Date.now().toString(36) + crypto.randomBytes(4).toString('hex'); }
 function localTime() {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `【纪念日：${tlStr}】
+${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 function readJSON(name) {
   const p = path.join(DATA_DIR, name + '.json');
@@ -420,7 +421,10 @@ app.post('/api/chat/conversations/:id/messages', async (req, res) => {
     let genderNote = '';
     if (conv.space === 'his') genderNote = '【当前用户是男方（男友/丈夫）】';
     else if (conv.space === 'her') genderNote = '【当前用户是女方（女友/妻子）】';
-    const baseContent = `【背景：这是一对异地恋情侣，两人不在一起生活，主要通过聊天联系】
+    const tlData = readJSON("timeline") || [];
+    const tlStr = tlData.length ? tlData.map(t => t.date + " " + t.title).join("、") : "暂无";
+    const baseContent = `【纪念日：${tlStr}】
+【背景：这是一对异地恋情侣，两人不在一起生活，主要通过聊天联系】
 你是恋爱军师/红娘，职责是帮这对情侣感情更好。
 
 严重警告(必须遵守)：
@@ -511,6 +515,10 @@ app.put('/api/chat/conversations/:id', (req, res) => {
 
 // AI Chat 兼容旧端点
 app.post('/api/chat', async (req, res) => {
+  const tlData = readJSON("timeline") || [];
+  const tlStr = tlData.length ? tlData.map(t => t.date + " " + t.title).join("、") : "暂无";
+
+
   const { messages, conversationId } = req.body;
   if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'invalid messages' });
 
