@@ -188,6 +188,7 @@ body {
   font-size: 0.95rem; font-weight: 600; cursor: pointer;
   transition: all 0.3s; font-family: inherit;
   display: inline-flex; align-items: center; gap: 6px;
+  touch-action: manipulation;
 }
 .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .btn-pink { background: var(--pink); color: #fff; }
@@ -257,7 +258,7 @@ body {
 .diary-panel {
   background: #fff; border-radius: var(--radius);
   padding: 24px; box-shadow: var(--shadow);
-  position: relative; min-height: 300px;
+  position: relative; min-height: 300px; overflow: hidden;
 }
 .diary-his { border-top: 4px solid var(--blue); }
 .diary-her { border-top: 4px solid var(--pink); }
@@ -267,7 +268,6 @@ body {
 }
 
 /* 日记密码锁 */
-.diary-panel { overflow: hidden; }
 .diary-lock {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(255,255,255,0.92);
@@ -283,13 +283,6 @@ body {
 .diary-lock-title { font-size: 1rem; font-weight: 600; margin-bottom: 14px; color: var(--text); }
 .diary-pwd-input { width: 100%; margin-bottom: 10px; text-align: center; }
 .diary-pwd-btn { width: 100%; justify-content: center; }
-.diary-pwd-reset {
-  background: none; border: none; font-size: 0.78rem;
-  color: var(--text-light); cursor: pointer; margin-top: 10px;
-  text-decoration: underline; opacity: 0.6;
-}
-.diary-pwd-reset:hover { opacity: 1; }
-
 .diary-content { display: none; }
 .diary-content.unlocked { display: block; }
 
@@ -530,6 +523,18 @@ body {
 }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
 
+/* ===== 性能优化 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.particle, .float-heart, .hero-announce-item, .diary-entry, .tl-item {
+  will-change: transform, opacity;
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
   .section { padding: 56px 24px; }
@@ -656,13 +661,6 @@ body {
 .setup-hint {
   font-size: 0.85rem; color: var(--text-light); margin-bottom: 10px;
 }
-.diary-pwd-master-btn {
-  background: none; border: none; font-size: 0.78rem;
-  color: var(--text-light); cursor: pointer; margin-top: 8px;
-  text-decoration: underline; opacity: 0.6; display: inline-block;
-}
-.diary-pwd-master-btn:hover { opacity: 1; }
-
 /* ===== AI 聊天 - 新版 ===== */
 .chat-container {
   display: flex; gap: 0;
