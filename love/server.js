@@ -23,8 +23,7 @@ const DIGEST = 'sha512';
 function uid() { return Date.now().toString(36) + crypto.randomBytes(4).toString('hex'); }
 function localTime() {
   const d = new Date();
-  return `【纪念日：${tlStr}】
-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 function readJSON(name) {
   const p = path.join(DATA_DIR, name + '.json');
