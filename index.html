@@ -1,55 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="index.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SK的小站</title>
-        <link rel="icon" href="../Avatar.jpg" type="image/x-icon">
+        <link rel="stylesheet" href="index.css">
+        <link rel="icon" href="../Avatar.jpg" type="image/jpeg">
     </head>
     <body>
         <nav>
-            <button class="active" id="work">项目</button>
-            <button id="learn">学习</button>
-            <button id="explore">探索</button>
-            <button id="other">其它</button>
+            <button class="navActive" data-tab="work">项目</button>
+            <button data-tab="learn">学习</button>
+            <button data-tab="explore">探索</button>
+            <button data-tab="other">其它</button>
         </nav>
-        <div class="content visible" id="work">
-            <div class="work">
-                <ul>
-                    <li>Html
-                        <a href="work\his\hisIndex.html">His</a>
-                        <a href="zu/index.html">imageChange</a>
-                        <a href="love\index.html">love</a>
-                    </li>
-                    <li>Java
-                        <a href="https://github.com/ShowKin0/JAVA">SRC</a>
-                    </li>
-                    <li>Godot</li>
-                    <li>C++</li>
-                    <li>AI Agent</li>
-                </ul>
-            </div>
-        </div>
-        <div class="content" id="learn"></div>
-        <div class="content" id="explore"></div>
-        <div class="content" id="other">
-            <div class="other">
-                <iframe src="other\index.html" frameborder="0"></iframe>
-            </div>
-        </div>
+        <main>
+            <section class="content visible" id="work">
+                <div class="work">
+                    <ul>
+                        <li>Html
+                            <a href="work/his/hisIndex.html">His</a>
+                            <a href="zu/index.html">imageChange</a>
+                            <a href="love/index.html">love</a>
+                        </li>
+                        <li>Java
+                            <a href="https://github.com/ShowKin0/JAVA">SRC</a>
+                        </li>
+                        <li>Godot</li>
+                        <li>C++</li>
+                        <li>AI Agent</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="content" id="learn"></section>
+            <section class="content" id="explore"></section>
+            <section class="content" id="other">
+                <div class="other">
+                    <iframe src="other/index.html"></iframe>
+                </div>
+            </section>
+        </main>
         <div class="music">
-            <div class="musicName">unicorn Phantom - 独角</div>
-            <button id="playMusic" onclick="playMusic()">播放</button>
+            <span class="musicName">unicorn Phantom - 独角</span>
+            <button id="playMusic">播放</button>
             <audio id="music">
-                <source src="work\UnicornPhantom - 独角.mp3" type="audio/mpeg">
+                <source src="work/UnicornPhantom - 独角.mp3" type="audio/mpeg">
             </audio>
-            
         </div>
         <footer>
-            <p>Copyright © 2026 SK的小站. All rights reserved.</p>
-            <p>GitHub: <a class="link" href="https://github.com/ShowKin0" target="_blank">ShowKin</a></p>
-            <p><a class="link" href="https://github.com/ShowKin0/Html.git" target="_blank">网站项目源码</a></p>
+            <p>&copy; 2026 SK的小站. All rights reserved.</p>
+            <p>GitHub: <a href="https://github.com/ShowKin0" target="_blank" rel="noopener">ShowKin</a></p>
+            <p><a href="https://github.com/ShowKin0/Html.git" target="_blank" rel="noopener">网站项目源码</a></p>
         </footer>
-        <script src="index.js"></script>
+        <script src="index.js" defer></script>
     </body>
 </html>

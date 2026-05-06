@@ -1,25 +1,28 @@
-var btn = document.querySelectorAll('nav button');
-var content = document.querySelectorAll('.content');
-var act = 0;
-for(let i = 0; i < btn.length; i++){
-    btn[i].addEventListener('click', function() {
-    content[act].classList.remove('visible');
-    btn[act].classList.remove('navActive');
-    act = i;
-    this.classList.add('navActive');
-    content[i].classList.add('visible');
-})
-}
-function playMusic(){
-    var music = document.getElementById('music');
-    var play = document.getElementById('playMusic');
-    music.loop = true; // 确保每次播放都循环
-    if(music.paused){
+const tabs = document.querySelectorAll('[data-tab]');
+const contents = document.querySelectorAll('.content');
+let activeIndex = 0;
+
+tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+        contents[activeIndex].classList.remove('visible');
+        tabs[activeIndex].classList.remove('navActive');
+        activeIndex = i;
+        tab.classList.add('navActive');
+        contents[i].classList.add('visible');
+    });
+});
+
+const music = document.getElementById('music');
+const playBtn = document.getElementById('playMusic');
+music.loop = true;
+
+playBtn.addEventListener('click', () => {
+    if (music.paused) {
         music.play();
-        play.innerHTML = '暂停';
-    }else{
+        playBtn.textContent = '暂停';
+    } else {
         music.pause();
-        play.innerHTML = '播放';
+        playBtn.textContent = '播放';
     }
-}
+});
 

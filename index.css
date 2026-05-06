@@ -1,30 +1,26 @@
-*{
-    margin:0;
-    padding:0;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-
-body{
+body {
     display: grid;
     height: 100vh;
-    background: linear-gradient(135deg, 
-    rgb(253, 165, 179, 0.7),  /* pink 50%透明度 */
-    rgba(0, 0, 255, 0.7)      /* blue 50%透明度 */
+    background: linear-gradient(135deg,
+        rgb(253, 165, 179, 0.7),
+        rgba(0, 0, 255, 0.7)
     );
-    background-size: cover;
     background-attachment: fixed;
-    grid-template-areas: 
-    "nav"
-    "content"
-    "footer"
-    ;
+    grid-template-areas:
+        "nav"
+        "content"
+        "footer";
     grid-template-columns: 1fr;
     grid-template-rows: 55px 1fr 55px;
-
 }
-nav{
-    grid-area: nav;
+
+nav {
     background-color: rgba(202, 193, 193, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 10px 20px;
@@ -34,49 +30,54 @@ nav{
     left: 0;
     border-radius: 1000px;
     gap: 20px;
-    
+    z-index: 100;
 }
-nav button{
+
+nav button {
     background-color: rgba(255, 255, 255, 0.7);
-        height: 25px;
-        width: 50px;
-        border-radius: 10px;
-        transition: scale 0.5s;
-        cursor: pointer;
-        justify-content: center;
-        border: none;
+    height: 25px;
+    width: 50px;
+    border-radius: 10px;
+    transition: scale 0.5s;
+    cursor: pointer;
+    justify-content: center;
+    border: none;
 }
-nav button:hover{
+
+nav button:hover {
     box-shadow: 0 0 5px rgba(16, 160, 226, 0.8);
-    scale: calc(1.2);
+    scale: 1.2;
 }
-.navActive{
-    scale: calc(1.5);
-    background: linear-gradient(135deg, 
-    rgba(233, 9, 47, 0.3),  /* pink 50%透明度 */
-    rgba(0, 0, 255, 0.3)      /* blue 50%透明度 */
+
+.navActive {
+    scale: 1.5;
+    background: linear-gradient(135deg,
+        rgba(233, 9, 47, 0.3),
+        rgba(0, 0, 255, 0.3)
     );
     box-shadow: 0 0 5px rgba(223, 5, 150, 0.8);
 }
-.content{
+
+main {
     grid-area: content;
-    opacity: 0;
-    transition:opacity 0.5s;
-    visibility: hidden;
-    
 }
-.content.visible{
+
+.content {
+    opacity: 0;
+    transition: opacity 0.5s;
+    visibility: hidden;
+}
+
+.content.visible {
     visibility: visible;
     opacity: 1;
 }
 
-
 /* 工作区 */
-
-.content .work{
+.content .work {
     margin-top: 25vh;
-    
 }
+
 iframe {
     width: 100%;
     height: 100%;
@@ -84,7 +85,8 @@ iframe {
     display: block;
     border: none;
 }
-.content .work ul{
+
+.content .work ul {
     display: flex;
     justify-content: center;
     list-style: none;
@@ -92,23 +94,25 @@ iframe {
     text-align: center;
     font-size: 18px;
 }
-.content .work ul li{
+
+.content .work ul li {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 10px 20px;
     height: 50px;
     width: 120px;
     border-radius: 10px;
-    transition:all 0.5s;
+    transition: all 0.5s;
     cursor: pointer;
-    justify-content: center;
     overflow: hidden;
 }
-.content .work ul li:hover{
+
+.content .work ul li:hover {
     background-color: rgba(255, 255, 255, 0.5);
     width: 250px;
     height: 480px;
 }
-.content .work ul li a{
+
+.content .work ul li a {
     margin-top: 20px;
     display: block;
     padding: 5px;
@@ -120,61 +124,61 @@ iframe {
     font-weight: 500;
     transition: all 0.5s;
 }
-.content .work ul li a:hover{
+
+.content .work ul li a:hover {
     color: #0cd11d;
-    scale: calc(1.2);
-    transition: 0.5s;
+    scale: 1.2;
 }
-.music{
+
+.music {
     background-color: rgba(202, 193, 193, 0.5);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 300px;
-        height: 50px; 
-        border-radius:1000px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 50px;
+    border-radius: 1000px;
+    z-index: 100;
 }
-.musicName{
-    position:absolute;
+
+.musicName {
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
     left: 20px;
     font-size: 1.2em;
-    
 }
-.music button{
-        border-radius: 10px;
-        transition: scale 0.5s;
-        cursor: pointer;
-        transform: translateY(-50%);
-        position:absolute;
-        top: 50%;
-        right: 8px;
-        border: none;
-        margin-bottom: 5px;
-}
-#playMusic{
+
+.music button {
+    border-radius: 10px;
+    transition: scale 0.5s;
+    cursor: pointer;
+    transform: translateY(-50%);
     position: absolute;
+    top: 50%;
+    right: 8px;
+    border: none;
+}
+
+#playMusic {
     width: 50px;
     height: 30px;
     border-radius: 50px;
     font-size: 20px;
     transition: scale 0.5s;
 }
-#playMusic:hover{
+
+#playMusic:hover {
     box-shadow: 0 0 5px rgba(16, 160, 226, 0.8);
-    scale: calc(1.2);
+    scale: 1.2;
 }
 
-                                    /* 页脚 */
-
-
+/* 页脚 */
 footer {
     grid-area: footer;
     text-align: center;
     line-height: 5px;
-    color: #fff;
     font-size: 13px;
     color: rgba(85, 85, 85, 0.8);
 }
@@ -182,7 +186,6 @@ footer {
 footer a {
     color: rgba(10, 24, 223, 0.8);
     text-decoration: none;
-
 }
 
 footer p {
@@ -191,7 +194,6 @@ footer p {
 
 footer a:hover {
     border-radius: 5px;
-    scale: calc(1.2);
+    scale: 1.2;
     transition: 0.5s;
 }
-
