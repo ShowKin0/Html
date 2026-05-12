@@ -23,11 +23,174 @@
     font-size: large;
     color: rgb(76, 76, 79);
 }
-.top-bar .right{
+.top-bar .wrap .right{
     float: right;
+}
+.top-bar .wrap .left{
+    float: left;
+}
+.top-bar .wrap .right a{
     margin-right: 50px;
 }
-.card ul,li{
-    color: black;
+.cart ul{
+    width: 300px;
+    height: 100px;
+    font-size: 15px;
     list-style: none;
+    position: absolute;
+    background-color: #c72b2b;
+    border-radius: 5px;
+    transform: translateX(-82%);
+    display: none;
 }
+.cart:hover ul{
+    display: block;
+}
+.top-nav{
+    width:auto;
+    height:100px;
+    background-color: #895454;
+    display: flex;;
+    align-items: center;
+
+}
+.top-nav .nav{
+    margin-left:250px;
+
+}
+.top-nav .logo{
+    margin-left: 10px;
+}
+.top-nav .logo img{
+    width: 90px;
+    height: 90px;
+}
+.search{
+    width: 300px;
+    height: 40px;
+    margin-right: 10px;
+    float: right;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
