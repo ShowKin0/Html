@@ -130,7 +130,6 @@
 }
 .banner .aside ul{
 	list-style: none;
-	padding-top: 10px;
 }
 .banner .aside li{
 	height: 30px;
@@ -138,7 +137,6 @@
 	width: 290px;
 	background-color: rgba(22, 11, 11, 0.1);
 	border-radius: 5px;
-	margin-top: 10px;
 	cursor: pointer;
 	transition: all 0.7s;
 }
