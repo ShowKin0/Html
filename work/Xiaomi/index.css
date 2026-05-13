@@ -1,5 +1,9 @@
+*{
+	margin: 0;
+	padding: 0;
+}
 .top-bar{
-	width: 100%;
+	width: 1226px;
     border-radius: 5px;
     background-color: rgb(64, 64, 64);
     height:40px;
@@ -67,7 +71,7 @@
 	background-color: aqua;
 }
 .top-nav{
-	width:1200px;
+	width:1226px;
 	height:100px;
 	background-color: aqua;
 	margin: 0 auto;
@@ -113,4 +117,35 @@
 .search button:hover{
 	background-color: orange;
 
+}
+.banner{
+	width: 1226px;
+	height: 500px;
+	background-color: antiquewhite;
+}
+.banner .aside{
+	width: 290px;
+	height: 500px;
+	background-color: rgb(0, 0, 0,0.2);
+}
+.banner .aside ul{
+	list-style: none;
+	margin-left: 15px;
+	padding-top: 10px;
+}
+.banner .aside li{
+	height: 30px;
+	line-height: 30px;
+	width: 150px;
+	background-color: rgba(22, 11, 11, 0.1);
+	border-radius: 5px;
+	padding-left: 50px;
+	margin-top: 10px;
+	cursor: pointer;
+	transition: all 0.7s;
+}
+.banner .aside li:hover{
+	width: 200px;
+	height: 40px;
+	line-height: 40px;
 }
