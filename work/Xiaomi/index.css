@@ -1,196 +1,98 @@
-*{
-    margin: 0;
-    padding: 0;
-}
-
-
-
-
 .top-bar{
-    width: 100%;
+	width: 100%;
+    border-radius: 5px;
+    background-color: rgb(64, 64, 64);
     height:40px;
-    background-color: #000;
-}
-.top-bar a{
-    color: #b0b0b0;
-    text-decoration: none;
+	/* display: flex; */
 }
 .top-bar .wrap{
-    position: relative;
-    height:100%;
-    line-height: 35px;
+	width: 1226px;
+	height: 40px;
+	color:rgb(206, 206, 206);
+    font-size: 13px;
+    line-height: 40px;/*垂直居中*/
     margin: 0 auto;
-    font-size: large;
-    color: rgb(76, 76, 79);
+	
 }
-.top-bar .wrap .right{
-    float: right;
+	
+.top-bar .wrap a{
+	color: rgb(206, 206, 206);
+	text-decoration: none;
+    
+}
+.top-bar .wrap a:hover{
+	color:white;
+}
+.top-bar .wrap span{
+	margin: 0 5px 0 5px;
 }
 .top-bar .wrap .left{
-    float: left;
+	float: left;
+	/* background-color: bisque; */
+	
 }
-.top-bar .wrap .right a{
-    margin-right: 50px;
+.top-bar .wrap .right{
+	float: right;
+	/* background-color: bisque; */
+    padding-right: 100px;
+	
 }
-.cart ul{
-    width: 300px;
-    height: 100px;
-    font-size: 15px;
-    list-style: none;
-    position: absolute;
-    background-color: #c72b2b;
-    border-radius: 5px;
-    transform: translateX(-82%);
-    display: none;
+.car{
+	display:inline-block;
+	height: 40px;
+	width: 150px
 }
-.cart:hover ul{
-    display: block;
+.car ul{
+	list-style-type: none;
+	color:rgb(0, 0, 0);
+    /* background-color: blue; */
+    width:200px;
+	height:100px;
+	display:none;
+	position: absolute;
+	right:300px;
+	top:35px;
+	box-shadow: -2px 2px 2px 2px gray;
+} 
+.car:hover ul{
+	display:block;
+}
+.strike{
+	border-bottom: 30px solide red;
+	border-left:30px solid transparent;
+	border-right:30px solid transparent ;
+    top:80px;	
+	background-color: aqua;
 }
 .top-nav{
-    width:auto;
-    height:100px;
-    background-color: #895454;
-    display: flex;;
-    align-items: center;
+	width:1200px;
+	height:100px;
+	background-color: aqua;
+	margin: 0 auto;
+	
+	
+}
+.logo{
+	float: left;
+	width:290px;
+	height:100px;
+	background-color: red;
+	
+	
+}
+.logo img{
+	width: 100%;       /* 宽度铺满父盒子 */
+	height: 100%;      /* 高度铺满父盒子 */
+	object-fit: cover;
+}
 
-}
-.top-nav .nav{
-    margin-left:250px;
-
-}
-.top-nav .logo{
-    margin-left: 10px;
-}
-.top-nav .logo img{
-    width: 90px;
-    height: 90px;
+.top-nav.nav{
 }
 .search{
-    width: 300px;
-    height: 40px;
-    margin-right: 10px;
-    float: right;
+	float: right;
+	width:350px;
+	height:100px;
+	background-color: red;
+	line-height: 100px;
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
