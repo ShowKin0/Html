@@ -130,22 +130,19 @@
 }
 .banner .aside ul{
 	list-style: none;
-	margin-left: 15px;
 	padding-top: 10px;
 }
 .banner .aside li{
 	height: 30px;
 	line-height: 30px;
-	width: 150px;
+	width: 290px;
 	background-color: rgba(22, 11, 11, 0.1);
 	border-radius: 5px;
-	padding-left: 50px;
 	margin-top: 10px;
 	cursor: pointer;
 	transition: all 0.7s;
 }
 .banner .aside li:hover{
-	width: 200px;
 	height: 40px;
 	line-height: 40px;
 }
