@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     display: grid;
     grid-template-areas:
@@ -13,6 +14,7 @@ body {
     grid-template-rows: 60px 1fr 40px;
     min-height: 100vh;
 }
+
 .header {
     grid-area: header;
     background-color: black;
@@ -20,16 +22,19 @@ body {
     line-height: 60px;
     position: relative;
 }
+
 .userName {
     position: absolute;
     font-size: 15px;
-    right: 2vh;
+    right: 25px;
     text-align: center;
     width: 80px;
 }
+
 .userName span {
     cursor: pointer;
 }
+
 .userName ul {
     display: none;
     list-style: none;
@@ -39,60 +44,58 @@ body {
     position: absolute;
     transform: translateX(20%);
 }
+
 .userName:hover ul {
     display: block;
     box-shadow: 0 0 10px rgba(0, 0, 0, 1);
     border-radius: 5px;
-    
+
+
 }
+
 .userName ul li {
-    border-bottom: 1px solid #464141;
-    
-    font-size: 15px;
     cursor: pointer;
 }
+
 .aside {
     grid-area: aside;
     height: 100vh;
-    background-color: #f9f8f8;
+    background-color: #f0f0f0;
 }
-.aside ul li{
+
+.aside ul li {
     padding: 10px;
     cursor: pointer;
 }
+
 .aside .Menu ul {
     list-style: none;
     cursor: pointer;
 }
-.aside .subMenu {
+
+.subMenu {
     display: none;
     list-style: none;
     cursor: pointer;
 }
-.aside .Menu.active .subMenu {
+
+.Menu.active .subMenu {
     display: block;
 }
+
 .section {
     grid-area: section;
     height: 100vh;
     background-color: #fff;
-    list-style: none;
 }
+
 .section .title {
     width: 100%;
     height: 20px;
     background-color: #f0f0f0;
 }
-.content {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.5s;
-}
-.content.visible {
-    visibility: visible;
-    opacity: 1;
-}
-.Register_at_the_window .function {
+
+.section .function {
     width: 100%;
     height: 30px;
     margin-top: 30px;
@@ -100,7 +103,8 @@ body {
     color: #fff;
     line-height: 30px;
 }
-.Register_at_the_window .function button {
+
+.section .function button {
     margin-left: 10px;
     padding: 4px 10px;
     background-color: rgb(124, 124, 244);
@@ -109,7 +113,8 @@ body {
     border: none;
     cursor: pointer;
 }
-.Register_at_the_window .basicInformation {
+
+.section .basicInformation {
     background-color: #f0f0f0;
     width: 100%;
     padding: 20px;
@@ -118,13 +123,15 @@ body {
     grid-template-rows: repeat(3, 1fr);
     gap: 15px;
 }
-.Register_at_the_window .basicInformation input,
-.Register_at_the_window .basicInformation select {
+
+.section .basicInformation input,
+.section .basicInformation select {
     margin-left: 10px;
     padding: 5px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 .footer {
     grid-area: footer;
     background-color: #333;

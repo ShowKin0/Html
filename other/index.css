@@ -2,12 +2,7 @@
     margin: 0;
     padding: 0;
 }
-body{
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    grid-area: auto auto;
-}
+
  #left {
      position: absolute;
      top: 50%;
@@ -77,6 +72,7 @@ body{
      list-style: none;
      position: relative;
      justify-self: center;
+     align-items: center;
      width: 1000px;
      height: 600px;
      overflow: hidden;
