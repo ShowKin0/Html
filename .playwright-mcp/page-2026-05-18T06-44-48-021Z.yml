@@ -1,0 +1,1101 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - link "小米官网" [ref=e8] [cursor=pointer]:
+            - /url: //www.mi.com/
+          - text: "|"
+          - link "小米商城" [ref=e9] [cursor=pointer]:
+            - /url: //www.mi.com/shop
+          - text: "|"
+          - link "小米澎湃OS" [ref=e10] [cursor=pointer]:
+            - /url: //hyperos.mi.com/
+          - text: "|"
+          - link "小米汽车" [ref=e11] [cursor=pointer]:
+            - /url: //www.xiaomiev.com/
+          - text: "|"
+          - link "云服务" [ref=e12] [cursor=pointer]:
+            - /url: //i.mi.com/
+          - text: "|"
+          - link "IoT" [ref=e13] [cursor=pointer]:
+            - /url: //iot.mi.com
+          - text: "|"
+          - link "有品" [ref=e14] [cursor=pointer]:
+            - /url: //youpin.mi.com/
+          - text: "|"
+          - link "小爱开放平台" [ref=e15] [cursor=pointer]:
+            - /url: //xiaoai.mi.com/
+          - text: "|"
+          - link "资质证照" [ref=e16] [cursor=pointer]:
+            - /url: //www.mi.com/aptitude/list/?id=88
+          - text: "|"
+          - link "协议规则" [ref=e17] [cursor=pointer]:
+            - /url: //www.mi.com/aptitude/list/
+          - text: "|"
+          - link "下载app 小米商城 小米商城APP" [ref=e18] [cursor=pointer]:
+            - /url: //www.mi.com/appdownload/
+            - text: 下载app
+            - generic:
+              - img "小米商城" [ref=e19]
+              - text: 小米商城APP
+          - text: "|"
+          - link "Select Location" [ref=e20] [cursor=pointer]:
+            - /url: javascript:;
+        - link " 购物车（0）" [ref=e22] [cursor=pointer]:
+          - /url: //www.mi.com/shop/buy/cart
+          - emphasis [ref=e23]: 
+          - text:  购物车（0）
+        - generic [ref=e27]:
+          - link "登录" [ref=e28] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e29]: "|"
+          - link "注册" [ref=e30] [cursor=pointer]:
+            - /url: javascript:void(0);
+          - generic [ref=e31]: "|"
+          - link "消息通知" [ref=e33] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - text: 消息通知
+      - generic [ref=e35]:
+        - link "小米官网" [ref=e37] [cursor=pointer]:
+          - /url: //www.mi.com
+        - list [ref=e39]:
+          - listitem [ref=e40]:
+            - list [ref=e42]:
+              - listitem [ref=e43]:
+                - link "手机 " [ref=e44] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 手机
+                  - emphasis [ref=e45]: 
+              - listitem [ref=e46]:
+                - link "电视 " [ref=e47] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 电视
+                  - emphasis [ref=e48]: 
+              - listitem [ref=e49]:
+                - link "家电 " [ref=e50] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 家电
+                  - emphasis [ref=e51]: 
+              - listitem [ref=e52]:
+                - link "笔记本 平板 显示器 " [ref=e53] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 笔记本 平板 显示器
+                  - emphasis [ref=e54]: 
+              - listitem [ref=e55]:
+                - link "出行 穿戴 " [ref=e56] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 出行 穿戴
+                  - emphasis [ref=e57]: 
+              - listitem [ref=e58]:
+                - link "耳机 音箱 " [ref=e59] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 耳机 音箱
+                  - emphasis [ref=e60]: 
+              - listitem [ref=e61]:
+                - link "健康 儿童 " [ref=e62] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 健康 儿童
+                  - emphasis [ref=e63]: 
+              - listitem [ref=e64]:
+                - link "生活 箱包 " [ref=e65] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 生活 箱包
+                  - emphasis [ref=e66]: 
+              - listitem [ref=e67]:
+                - link "智能 路由器 " [ref=e68] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 智能 路由器
+                  - emphasis [ref=e69]: 
+              - listitem [ref=e70]:
+                - link "电源 配件 " [ref=e71] [cursor=pointer]:
+                  - /url: javascript:void(0);
+                  - text: 电源 配件
+                  - emphasis [ref=e72]: 
+          - listitem [ref=e73]:
+            - link "Xiaomi手机" [ref=e74] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e75]:
+            - link "REDMI手机" [ref=e76] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e77]:
+            - link "电视" [ref=e78] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e79]:
+            - link "笔记本" [ref=e80] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e81]:
+            - link "平板" [ref=e82] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e83]:
+            - link "家电" [ref=e84] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e85]:
+            - link "路由器" [ref=e86] [cursor=pointer]:
+              - /url: "javascript: void(0);"
+          - listitem [ref=e87]:
+            - link "服务中心" [ref=e88] [cursor=pointer]:
+              - /url: https://www.mi.com/service/
+          - listitem [ref=e89]:
+            - link "社区" [ref=e90] [cursor=pointer]:
+              - /url: http://www.xiaomi.cn/
+        - generic [ref=e92]:
+          - searchbox "站内搜索" [ref=e93]
+          - button "" [ref=e94] [cursor=pointer]
+    - generic [ref=e96]:
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - generic:
+            - link:
+              - /url: //www.mi.com/a/h/86995.html?sign=20ec04316f9b9b66cce6174b8373e6bb
+          - link [ref=e100] [cursor=pointer]:
+            - /url: https://www.mi.com/a/h/86773.html?sign=486e4335eb0365d17e3a7a013e44ff7e
+          - generic:
+            - link:
+              - /url: https://www.mi.com/a/h/86891.html?sign=a070d3d6e9c5288d063fb0ae285f51ef
+          - generic:
+            - link:
+              - /url: https://www.mi.com/a/h/86890.html?sign=5b9bde3182d8578f07d0b8015b0a1ba2
+          - generic:
+            - link:
+              - /url: //www.mi.com/a/h/86832.html?sign=28b391d19622cf1567f7b14cad48de29
+          - generic:
+            - link:
+              - /url: https://www.mi.com/shop/buy?product_id=23578
+          - generic:
+            - link:
+              - /url: //www.mi.com/a/h/86995.html?sign=20ec04316f9b9b66cce6174b8373e6bb
+          - generic:
+            - link:
+              - /url: https://www.mi.com/a/h/86773.html?sign=486e4335eb0365d17e3a7a013e44ff7e
+        - generic [ref=e101]:
+          - button "Go to slide 1" [ref=e102] [cursor=pointer]
+          - button "Go to slide 2" [ref=e103] [cursor=pointer]
+          - button "Go to slide 3" [ref=e104] [cursor=pointer]
+          - button "Go to slide 4" [ref=e105] [cursor=pointer]
+          - button "Go to slide 5" [ref=e106] [cursor=pointer]
+          - button "Go to slide 6" [ref=e107] [cursor=pointer]
+        - button "Previous slide" [ref=e108] [cursor=pointer]
+        - button "Next slide" [ref=e109] [cursor=pointer]
+      - generic [ref=e110]:
+        - list [ref=e112]:
+          - listitem [ref=e113]:
+            - link "保障服务 保障服务" [ref=e114] [cursor=pointer]:
+              - /url: https://api.jr.mi.com/activity/scene/scenePCsearch.html?from=search
+              - img "保障服务" [ref=e115]
+              - text: 保障服务
+          - listitem [ref=e116]:
+            - link "企业团购 企业团购" [ref=e117] [cursor=pointer]:
+              - /url: https://business.qiye.mi.com
+              - img "企业团购" [ref=e118]
+              - text: 企业团购
+          - listitem [ref=e119]:
+            - link "F码通道 F码通道" [ref=e120] [cursor=pointer]:
+              - /url: https://www.mi.com/order/fcode
+              - img "F码通道" [ref=e121]
+              - text: F码通道
+          - listitem [ref=e122]:
+            - link "米粉卡 米粉卡" [ref=e123] [cursor=pointer]:
+              - /url: https://10046.mi.com
+              - img "米粉卡" [ref=e124]
+              - text: 米粉卡
+          - listitem [ref=e125]:
+            - link "以旧换新 以旧换新" [ref=e126] [cursor=pointer]:
+              - /url: //www.mi.com/a/h/16769.html
+              - img "以旧换新" [ref=e127]
+              - text: 以旧换新
+          - listitem [ref=e128]:
+            - link "话费充值 话费充值" [ref=e129] [cursor=pointer]:
+              - /url: https://recharge.10046.mi.com/
+              - img "话费充值" [ref=e130]
+              - text: 话费充值
+        - list [ref=e132]:
+          - listitem [ref=e133]:
+            - link [ref=e134] [cursor=pointer]:
+              - /url: https://www.mi.com/shop/buy?product_id=23969
+          - listitem [ref=e135]:
+            - link [ref=e136] [cursor=pointer]:
+              - /url: https://www.mi.com/shop/buy?product_id=21413
+          - listitem [ref=e137]:
+            - link [ref=e138] [cursor=pointer]:
+              - /url: https://www.mi.com/shop/buy?product_id=21405
+    - generic [ref=e140]:
+      - link "test" [ref=e142] [cursor=pointer]:
+        - /url: https://www.mi.com/shop/buy?product_id=21931
+        - img "test" [ref=e143]
+      - generic [ref=e144]:
+        - generic [ref=e145]:
+          - heading "手机" [level=2] [ref=e146]
+          - link "查看更多" [ref=e148] [cursor=pointer]:
+            - /url: //www.mi.com/shop/search?keyword=%E6%89%8B%E6%9C%BA
+            - text: 查看更多
+            - generic [ref=e149]: 
+        - generic [ref=e151]:
+          - list [ref=e153]:
+            - listitem [ref=e154]:
+              - link [ref=e155] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=23969
+          - list [ref=e157]:
+            - listitem [ref=e158]:
+              - link "REDMI K90 Max REDMI K90 Max 风冷双芯 性能魔王 3199元起3499元" [ref=e159] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=23969
+                - img "REDMI K90 Max" [ref=e161]
+                - heading "REDMI K90 Max" [level=3] [ref=e162]
+                - paragraph [ref=e163]: 风冷双芯 性能魔王
+                - paragraph [ref=e164]:
+                  - text: 3199元起
+                  - deletion [ref=e165]: 3499元
+            - listitem [ref=e166]:
+              - link "REDMI Turbo 5 MAX REDMI Turbo 5 MAX 天玑 9500s | 9000mAh 最大小米电池 | 1.5K 超级阳光屏 2299元起2499元" [ref=e167] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22527
+                - img "REDMI Turbo 5 MAX" [ref=e169]
+                - heading "REDMI Turbo 5 MAX" [level=3] [ref=e170]
+                - paragraph [ref=e171]: 天玑 9500s | 9000mAh 最大小米电池 | 1.5K 超级阳光屏
+                - paragraph [ref=e172]:
+                  - text: 2299元起
+                  - deletion [ref=e173]: 2499元
+            - listitem [ref=e174]:
+              - link "REDMI Turbo 5 REDMI Turbo 5 天玑 8500-Ultra | 6.59\" 黄金尺寸 | 1.5K 超级阳光屏 2299元起" [ref=e175] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22526
+                - img "REDMI Turbo 5" [ref=e177]
+                - heading "REDMI Turbo 5" [level=3] [ref=e178]
+                - paragraph [ref=e179]: 天玑 8500-Ultra | 6.59" 黄金尺寸 | 1.5K 超级阳光屏
+                - paragraph [ref=e180]: 2299元起
+            - listitem [ref=e181]:
+              - link "Xiaomi 17 Ultra 徕卡版 Xiaomi 17 Ultra 徕卡版 全方位徕卡相机体验｜徕卡2亿像素光学变焦 7999元起" [ref=e182] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22423
+                - img "Xiaomi 17 Ultra 徕卡版" [ref=e184]
+                - heading "Xiaomi 17 Ultra 徕卡版" [level=3] [ref=e185]
+                - paragraph [ref=e186]: 全方位徕卡相机体验｜徕卡2亿像素光学变焦
+                - paragraph [ref=e187]: 7999元起
+            - listitem [ref=e188]:
+              - link "Xiaomi 17 Ultra Xiaomi 17 Ultra 徕卡2亿像素光学变焦｜徕卡1英寸光影大师 6999元起" [ref=e189] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22422
+                - img "Xiaomi 17 Ultra" [ref=e191]
+                - heading "Xiaomi 17 Ultra" [level=3] [ref=e192]
+                - paragraph [ref=e193]: 徕卡2亿像素光学变焦｜徕卡1英寸光影大师
+                - paragraph [ref=e194]: 6999元起
+            - listitem [ref=e195]:
+              - link "REDMI K90 Pro Max REDMI K90 Pro Max 第五代 骁龙®8至尊版｜超级像素护眼屏｜5X 潜望长焦 3999元起4199元" [ref=e196] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22171
+                - img "REDMI K90 Pro Max" [ref=e198]
+                - heading "REDMI K90 Pro Max" [level=3] [ref=e199]
+                - paragraph [ref=e200]: 第五代 骁龙®8至尊版｜超级像素护眼屏｜5X 潜望长焦
+                - paragraph [ref=e201]:
+                  - text: 3999元起
+                  - deletion [ref=e202]: 4199元
+            - listitem [ref=e203]:
+              - link "REDMI K90 REDMI K90 骁龙®8至尊版 ｜Sound by Bose 联合调音 2549元起2599元" [ref=e204] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=22172
+                - img "REDMI K90" [ref=e206]
+                - heading "REDMI K90" [level=3] [ref=e207]
+                - paragraph [ref=e208]: 骁龙®8至尊版 ｜Sound by Bose 联合调音
+                - paragraph [ref=e209]:
+                  - text: 2549元起
+                  - deletion [ref=e210]: 2599元
+            - listitem [ref=e211]:
+              - link "Xiaomi 17 Pro Max Xiaomi 17 Pro Max 徕卡光影大师 移动影像系统｜徕卡 5X 超聚光潜望长焦 5999元起" [ref=e212] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=21936
+                - img "Xiaomi 17 Pro Max" [ref=e214]
+                - heading "Xiaomi 17 Pro Max" [level=3] [ref=e215]
+                - paragraph [ref=e216]: 徕卡光影大师 移动影像系统｜徕卡 5X 超聚光潜望长焦
+                - paragraph [ref=e217]: 5999元起
+      - generic [ref=e218]:
+        - generic [ref=e219]:
+          - heading "智能穿戴" [level=2] [ref=e220]
+          - list [ref=e222]:
+            - listitem [ref=e223] [cursor=pointer]: 耳机
+            - listitem [ref=e224] [cursor=pointer]: 穿戴
+        - generic [ref=e226]:
+          - list [ref=e228]:
+            - listitem [ref=e229]:
+              - link [ref=e230] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=23408
+          - generic [ref=e231]:
+            - list [ref=e233]:
+              - listitem [ref=e234]:
+                - link "REDMI Buds 8 REDMI Buds 8 至高 50dB 4kHz宽频降噪 | 11mm 高性能动圈单元 | 设备智能互联体验 229元249元" [ref=e235] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=23966
+                  - img "REDMI Buds 8" [ref=e237]
+                  - heading "REDMI Buds 8" [level=3] [ref=e238]
+                  - paragraph [ref=e239]: 至高 50dB 4kHz宽频降噪 | 11mm 高性能动圈单元 | 设备智能互联体验
+                  - paragraph [ref=e240]:
+                    - text: 229元
+                    - deletion [ref=e241]: 249元
+              - listitem [ref=e242]:
+                - link "REDMI Buds 8 活力版 REDMI Buds 8 活力版 声享澎湃音质 电量超长相随 119元" [ref=e243] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=23261
+                  - img "REDMI Buds 8 活力版" [ref=e245]
+                  - heading "REDMI Buds 8 活力版" [level=3] [ref=e246]
+                  - paragraph [ref=e247]: 声享澎湃音质 电量超长相随
+                  - paragraph [ref=e248]: 119元
+              - listitem [ref=e249]:
+                - link "REDMI Buds 8 青春版 REDMI Buds 8 青春版 42dB 深度主动降噪 | 12.4mm超大镀钛单元 | 支持小米澎湃智联 139元" [ref=e250] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=23260
+                  - img "REDMI Buds 8 青春版" [ref=e252]
+                  - heading "REDMI Buds 8 青春版" [level=3] [ref=e253]
+                  - paragraph [ref=e254]: 42dB 深度主动降噪 | 12.4mm超大镀钛单元 | 支持小米澎湃智联
+                  - paragraph [ref=e255]: 139元
+              - listitem [ref=e256]:
+                - link "REDMI Buds 8 Pro REDMI Buds 8 Pro 55dB深度降噪 | 新增智能查找 | 同档罕见同轴三单元 399元" [ref=e257] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=22137
+                  - img "REDMI Buds 8 Pro" [ref=e259]
+                  - heading "REDMI Buds 8 Pro" [level=3] [ref=e260]
+                  - paragraph [ref=e261]: 55dB深度降噪 | 新增智能查找 | 同档罕见同轴三单元
+                  - paragraph [ref=e262]: 399元
+              - listitem [ref=e263]:
+                - link "Xiaomi Buds 6 Xiaomi Buds 6 仿生曲线设计|哈曼金耳朵联合调音|耳机独立录音2.0 649元699元" [ref=e264] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=22419
+                  - img "Xiaomi Buds 6" [ref=e266]
+                  - heading "Xiaomi Buds 6" [level=3] [ref=e267]
+                  - paragraph [ref=e268]: 仿生曲线设计|哈曼金耳朵联合调音|耳机独立录音2.0
+                  - paragraph [ref=e269]:
+                    - text: 649元
+                    - deletion [ref=e270]: 699元
+              - listitem [ref=e271]:
+                - link "Xiaomi 开放式耳机 Pro Xiaomi 开放式耳机 Pro 人体工学设计，三点支撑，贴合不压耳 | 0.6mm超纤细柔性记忆钛丝 | 行业首发开放式五单元声学系统 799元999元" [ref=e272] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=21418
+                  - img "Xiaomi 开放式耳机 Pro" [ref=e274]
+                  - heading "Xiaomi 开放式耳机 Pro" [level=3] [ref=e275]
+                  - paragraph [ref=e276]: 人体工学设计，三点支撑，贴合不压耳 | 0.6mm超纤细柔性记忆钛丝 | 行业首发开放式五单元声学系统
+                  - paragraph [ref=e277]:
+                    - text: 799元
+                    - deletion [ref=e278]: 999元
+              - listitem [ref=e279]:
+                - link "Xiaomi Buds 5 Pro Xiaomi Buds 5 Pro 小米首发双功放三单元｜55dB 深度降噪｜哈曼联合调音 899元起1299元" [ref=e280] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=20978
+                  - img "Xiaomi Buds 5 Pro" [ref=e282]
+                  - heading "Xiaomi Buds 5 Pro" [level=3] [ref=e283]
+                  - paragraph [ref=e284]: 小米首发双功放三单元｜55dB 深度降噪｜哈曼联合调音
+                  - paragraph [ref=e285]:
+                    - text: 899元起
+                    - deletion [ref=e286]: 1299元
+              - listitem [ref=e287]:
+                - link "Redmi Buds 6 青春版 Redmi Buds 6 青春版 139元" [ref=e288] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=20139
+                  - img "Redmi Buds 6 青春版" [ref=e290]
+                  - heading "Redmi Buds 6 青春版" [level=3] [ref=e291]
+                  - paragraph [ref=e292]: 139元
+              - listitem [ref=e293]:
+                - link " 浏览更多 耳机" [ref=e294] [cursor=pointer]:
+                  - /url: //www.mi.com/shop/search?keyword=%E8%80%B3%E6%9C%BA
+                  - generic [ref=e296]: 
+                  - generic [ref=e297]:
+                    - text: 浏览更多
+                    - generic [ref=e298]: 耳机
+            - generic: 
+      - generic [ref=e299]:
+        - generic [ref=e300]:
+          - heading "笔记本 | 平板" [level=2] [ref=e301]
+          - list [ref=e303]:
+            - listitem [ref=e304] [cursor=pointer]: 热门
+        - generic [ref=e306]:
+          - list [ref=e308]:
+            - listitem [ref=e309]:
+              - link [ref=e310] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy/detail?product_id=23472
+          - list [ref=e313]:
+            - listitem [ref=e314]:
+              - link "Xiaomi Book Pro 14 Xiaomi Book Pro 14 第三代英特尔酷睿 Ultra 处理器 | 至高50W持久释放 | 1.08kg 超轻薄设计 | 3.1K高清高刷OLED屏 8499元起" [ref=e315] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=23472
+                - img "Xiaomi Book Pro 14" [ref=e317]
+                - heading "Xiaomi Book Pro 14" [level=3] [ref=e318]
+                - paragraph [ref=e319]: 第三代英特尔酷睿 Ultra 处理器 | 至高50W持久释放 | 1.08kg 超轻薄设计 | 3.1K高清高刷OLED屏
+                - paragraph [ref=e320]: 8499元起
+            - listitem [ref=e321]:
+              - link "REDMI Book 16 2026 REDMI Book 16 2026 英特尔酷睿Ultra，2.5K超清镜面屏，高效跨端智联 5699元起6199元" [ref=e322] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=24038
+                - img "REDMI Book 16 2026" [ref=e324]
+                - heading "REDMI Book 16 2026" [level=3] [ref=e325]
+                - paragraph [ref=e326]: 英特尔酷睿Ultra，2.5K超清镜面屏，高效跨端智联
+                - paragraph [ref=e327]:
+                  - text: 5699元起
+                  - deletion [ref=e328]: 6199元
+            - listitem [ref=e329]:
+              - link "REDMI Book 14 2026 REDMI Book 14 2026 英特尔酷睿Ultra，2.8K超清镜面屏，高效跨端智联 5499元起5999元" [ref=e330] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=24282
+                - img "REDMI Book 14 2026" [ref=e332]
+                - heading "REDMI Book 14 2026" [level=3] [ref=e333]
+                - paragraph [ref=e334]: 英特尔酷睿Ultra，2.8K超清镜面屏，高效跨端智联
+                - paragraph [ref=e335]:
+                  - text: 5499元起
+                  - deletion [ref=e336]: 5999元
+            - listitem [ref=e337]:
+              - link "Xiaomi Pad 8 Pro Xiaomi Pad 8 Pro 骁龙 8 至尊版旗舰处理器 | 11.2英寸高清护眼屏 | 薄至5.75mm 轻至485g | 9200mAh 大电池 | 小米澎湃OS 3 | PC 级WPS、CAD 2899元起" [ref=e338] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=21871
+                - img "Xiaomi Pad 8 Pro" [ref=e340]
+                - heading "Xiaomi Pad 8 Pro" [level=3] [ref=e341]
+                - paragraph [ref=e342]: 骁龙 8 至尊版旗舰处理器 | 11.2英寸高清护眼屏 | 薄至5.75mm 轻至485g | 9200mAh 大电池 | 小米澎湃OS 3 | PC 级WPS、CAD
+                - paragraph [ref=e343]: 2899元起
+            - listitem [ref=e344]:
+              - link "Xiaomi Pad 8 Xiaomi Pad 8 第四代骁龙 8s 旗舰处理器 | 11.2英寸高清护眼屏 | 薄至5.75mm 轻至485g | 9200mAh 大电池 | 小米澎湃OS 3 | PC 级WPS、CAD 2299元起" [ref=e345] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=21872
+                - img "Xiaomi Pad 8" [ref=e347]
+                - heading "Xiaomi Pad 8" [level=3] [ref=e348]
+                - paragraph [ref=e349]: 第四代骁龙 8s 旗舰处理器 | 11.2英寸高清护眼屏 | 薄至5.75mm 轻至485g | 9200mAh 大电池 | 小米澎湃OS 3 | PC 级WPS、CAD
+                - paragraph [ref=e350]: 2299元起
+            - listitem [ref=e351]:
+              - link "Xiaomi Pad 7 Pro Xiaomi Pad 7 Pro 11.2英寸3.2K高清高刷屏 | 第三代骁龙8s 旗舰芯片 | HyperOS 2 2199元起2499元" [ref=e352] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=20598
+                - img "Xiaomi Pad 7 Pro" [ref=e354]
+                - heading "Xiaomi Pad 7 Pro" [level=3] [ref=e355]
+                - paragraph [ref=e356]: 11.2英寸3.2K高清高刷屏 | 第三代骁龙8s 旗舰芯片 | HyperOS 2
+                - paragraph [ref=e357]:
+                  - text: 2199元起
+                  - deletion [ref=e358]: 2499元
+            - listitem [ref=e359]:
+              - link "Redmi Pad Pro系列 Redmi Pad Pro系列 12.1英寸2.5K旗舰机大屏 | 10000mAh超大电池 1499元起" [ref=e360] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=10050070
+                - img "Redmi Pad Pro系列" [ref=e362]
+                - heading "Redmi Pad Pro系列" [level=3] [ref=e363]
+                - paragraph [ref=e364]: 12.1英寸2.5K旗舰机大屏 | 10000mAh超大电池
+                - paragraph [ref=e365]: 1499元起
+            - listitem [ref=e366]:
+              - link "REDMI Book Pro 16 2025 REDMI Book Pro 16 2025 7299元起" [ref=e367] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=20993
+                - img "REDMI Book Pro 16 2025" [ref=e369]
+                - heading "REDMI Book Pro 16 2025" [level=3] [ref=e370]
+                - paragraph [ref=e371]: 7299元起
+            - listitem [ref=e372]:
+              - link " 浏览更多 热门" [ref=e373] [cursor=pointer]:
+                - /url: //www.mi.com/shop/search?keyword=%E7%AC%94%E8%AE%B0%E6%9C%AC
+                - generic [ref=e375]: 
+                - generic [ref=e376]:
+                  - text: 浏览更多
+                  - generic [ref=e377]: 热门
+      - generic [ref=e378]:
+        - generic [ref=e379]:
+          - heading "家电" [level=2] [ref=e380]
+          - list [ref=e382]:
+            - listitem [ref=e383] [cursor=pointer]: 热门
+            - listitem [ref=e384] [cursor=pointer]: 电视影音
+            - listitem [ref=e385] [cursor=pointer]: 空调
+            - listitem [ref=e386] [cursor=pointer]: 冰箱
+            - listitem [ref=e387] [cursor=pointer]: 洗衣机
+        - generic [ref=e389]:
+          - list [ref=e391]:
+            - listitem [ref=e392]:
+              - link [ref=e393] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=10050068
+            - listitem [ref=e394]:
+              - link [ref=e395] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=2230005998
+          - generic [ref=e396]:
+            - list [ref=e398]:
+              - listitem [ref=e399]:
+                - link "小米电视S Pro Mini LED系列 小米电视S Pro Mini LED系列 288Hz超高刷、4+64G大存储 4999元起" [ref=e400] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=10050050
+                  - img "小米电视S Pro Mini LED系列" [ref=e402]
+                  - heading "小米电视S Pro Mini LED系列" [level=3] [ref=e403]
+                  - paragraph [ref=e404]: 288Hz超高刷、4+64G大存储
+                  - paragraph [ref=e405]: 4999元起
+              - listitem [ref=e406]:
+                - link "小米电视 S Mini LED 系列 小米电视 S Mini LED 系列 Mini LED 高分区背光、1200nits峰值亮度 2999元起" [ref=e407] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=10050068
+                  - img "小米电视 S Mini LED 系列" [ref=e409]
+                  - heading "小米电视 S Mini LED 系列" [level=3] [ref=e410]
+                  - paragraph [ref=e411]: Mini LED 高分区背光、1200nits峰值亮度
+                  - paragraph [ref=e412]: 2999元起
+              - listitem [ref=e413]:
+                - link "米家冰箱 十字430L 2026款 米家冰箱 十字430L 2026款 纤薄机身小占地 精控变温更养鲜 1899元2299元" [ref=e414] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=22503
+                  - img "米家冰箱 十字430L 2026款" [ref=e416]
+                  - heading "米家冰箱 十字430L 2026款" [level=3] [ref=e417]
+                  - paragraph [ref=e418]: 纤薄机身小占地 精控变温更养鲜
+                  - paragraph [ref=e419]:
+                    - text: 1899元
+                    - deletion [ref=e420]: 2299元
+              - listitem [ref=e421]:
+                - link "米家洗衣机Pro 超电解智投 洗烘12kg 米家洗衣机Pro 超电解智投 洗烘12kg 12kg大容量洗+9kg烘干，超电解祛渍净白防串色 3499元3999元" [ref=e422] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=22521
+                  - img "米家洗衣机Pro 超电解智投 洗烘12kg" [ref=e424]
+                  - heading "米家洗衣机Pro 超电解智投 洗烘12kg" [level=3] [ref=e425]
+                  - paragraph [ref=e426]: 12kg大容量洗+9kg烘干，超电解祛渍净白防串色
+                  - paragraph [ref=e427]:
+                    - text: 3499元
+                    - deletion [ref=e428]: 3999元
+              - listitem [ref=e429]:
+                - link "米家冰箱 对开门系列 米家冰箱 对开门系列 海量空间 压缩机10年质保 1999元起" [ref=e430] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=10050151
+                  - img "米家冰箱 对开门系列" [ref=e432]
+                  - heading "米家冰箱 对开门系列" [level=3] [ref=e433]
+                  - paragraph [ref=e434]: 海量空间 压缩机10年质保
+                  - paragraph [ref=e435]: 1999元起
+              - listitem [ref=e436]:
+                - link "巨省电 小米空调 1.5匹新1级能效 巨省电 小米空调 1.5匹新1级能效 强劲制冷 | 高效节能 | 智能互联 1849元2499元" [ref=e437] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=13143
+                  - img "巨省电 小米空调 1.5匹新1级能效" [ref=e439]
+                  - heading "巨省电 小米空调 1.5匹新1级能效" [level=3] [ref=e440]
+                  - paragraph [ref=e441]: 强劲制冷 | 高效节能 | 智能互联
+                  - paragraph [ref=e442]:
+                    - text: 1849元
+                    - deletion [ref=e443]: 2499元
+              - listitem [ref=e444]:
+                - link "巨省电Pro 立式3匹 超一级能效 米家空调 巨省电Pro 立式3匹 超一级能效 米家空调 硬核飓风 智能省电 4999元6499元" [ref=e445] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=20791
+                  - img "巨省电Pro 立式3匹 超一级能效 米家空调" [ref=e447]
+                  - heading "巨省电Pro 立式3匹 超一级能效 米家空调" [level=3] [ref=e448]
+                  - paragraph [ref=e449]: 硬核飓风 智能省电
+                  - paragraph [ref=e450]:
+                    - text: 4999元
+                    - deletion [ref=e451]: 6499元
+              - listitem [ref=e452]:
+                - link "米家迷你波轮洗衣机Pro 3kg 米家迷你波轮洗衣机Pro 3kg 1599元" [ref=e453] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=12882
+                  - img "米家迷你波轮洗衣机Pro 3kg" [ref=e455]
+                  - heading "米家迷你波轮洗衣机Pro 3kg" [level=3] [ref=e456]
+                  - paragraph [ref=e457]: 1599元
+              - listitem [ref=e458]:
+                - link " 浏览更多 热门" [ref=e459] [cursor=pointer]:
+                  - /url: //www.mi.com/shop/search?keyword=%E5%AE%B6%E7%94%A8%E7%94%B5%E5%99%A8
+                  - generic [ref=e461]: 
+                  - generic [ref=e462]:
+                    - text: 浏览更多
+                    - generic [ref=e463]: 热门
+            - generic: 
+            - generic: 
+            - generic: 
+            - generic: 
+      - generic [ref=e464]:
+        - generic [ref=e465]:
+          - heading "生活电器" [level=2] [ref=e466]
+          - list [ref=e468]:
+            - listitem [ref=e469] [cursor=pointer]: 风扇
+            - listitem [ref=e470] [cursor=pointer]: 扫地机
+            - listitem [ref=e471] [cursor=pointer]: 空净
+            - listitem [ref=e472] [cursor=pointer]: 清洁
+            - listitem [ref=e473] [cursor=pointer]: 环境
+        - generic [ref=e475]:
+          - list [ref=e477]:
+            - listitem [ref=e478]:
+              - link [ref=e479] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=2230005492
+            - listitem [ref=e480]:
+              - link [ref=e481] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=2230005467
+          - generic [ref=e482]:
+            - list [ref=e484]:
+              - listitem [ref=e485]:
+                - link "米家智能变频循环扇Pro 米家智能变频循环扇Pro 3D广角自然风，2分钟焕新整屋空气 499元599元" [ref=e486] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=23259
+                  - img "米家智能变频循环扇Pro" [ref=e488]
+                  - heading "米家智能变频循环扇Pro" [level=3] [ref=e489]
+                  - paragraph [ref=e490]: 3D广角自然风，2分钟焕新整屋空气
+                  - paragraph [ref=e491]:
+                    - text: 499元
+                    - deletion [ref=e492]: 599元
+              - listitem [ref=e493]:
+                - link "米家智能变频循环扇Pro 米家智能变频循环扇Pro 3D广角自然风，2分钟焕新整屋空气 499元599元" [ref=e494] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=23259
+                  - img "米家智能变频循环扇Pro" [ref=e496]
+                  - heading "米家智能变频循环扇Pro" [level=3] [ref=e497]
+                  - paragraph [ref=e498]: 3D广角自然风，2分钟焕新整屋空气
+                  - paragraph [ref=e499]:
+                    - text: 499元
+                    - deletion [ref=e500]: 599元
+              - listitem [ref=e501]:
+                - link "米家落地扇 米家落地扇 静享智能轻风 219元299元" [ref=e502] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=12010
+                  - img "米家落地扇" [ref=e504]
+                  - heading "米家落地扇" [level=3] [ref=e505]
+                  - paragraph [ref=e506]: 静享智能轻风
+                  - paragraph [ref=e507]:
+                    - text: 219元
+                    - deletion [ref=e508]: 299元
+              - listitem [ref=e509]:
+                - link "米家智能直流变频落地扇1X 升级版 米家智能直流变频落地扇1X 升级版 静音舒适自然风，支持充电宝供电，随处可用， 小爱语音控制 259元329元" [ref=e510] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=18219
+                  - img "米家智能直流变频落地扇1X 升级版" [ref=e512]
+                  - heading "米家智能直流变频落地扇1X 升级版" [level=3] [ref=e513]
+                  - paragraph [ref=e514]: 静音舒适自然风，支持充电宝供电，随处可用， 小爱语音控制
+                  - paragraph [ref=e515]:
+                    - text: 259元
+                    - deletion [ref=e516]: 329元
+              - listitem [ref=e517]:
+                - link "米家直流变频台式循环扇 米家直流变频台式循环扇 小身材大风量，轻松循环整屋 279元349元" [ref=e518] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=21039
+                  - img "米家直流变频台式循环扇" [ref=e520]
+                  - heading "米家直流变频台式循环扇" [level=3] [ref=e521]
+                  - paragraph [ref=e522]: 小身材大风量，轻松循环整屋
+                  - paragraph [ref=e523]:
+                    - text: 279元
+                    - deletion [ref=e524]: 349元
+              - listitem [ref=e525]:
+                - link "米家直流变频台式循环扇 米家直流变频台式循环扇 小身材大风量，轻松循环整屋 279元349元" [ref=e526] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=21039
+                  - img "米家直流变频台式循环扇" [ref=e528]
+                  - heading "米家直流变频台式循环扇" [level=3] [ref=e529]
+                  - paragraph [ref=e530]: 小身材大风量，轻松循环整屋
+                  - paragraph [ref=e531]:
+                    - text: 279元
+                    - deletion [ref=e532]: 349元
+              - listitem [ref=e533]:
+                - link "米家直流变频落地扇 Pro 米家直流变频落地扇 Pro 收纳有序，与自然风同行 399元499元" [ref=e534] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=19989
+                  - img "米家直流变频落地扇 Pro" [ref=e536]
+                  - heading "米家直流变频落地扇 Pro" [level=3] [ref=e537]
+                  - paragraph [ref=e538]: 收纳有序，与自然风同行
+                  - paragraph [ref=e539]:
+                    - text: 399元
+                    - deletion [ref=e540]: 499元
+              - listitem [ref=e541]:
+                - link "米家智能直流变频循环落地扇 电池版 米家智能直流变频循环落地扇 电池版 559元" [ref=e542] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=14522
+                  - img "米家智能直流变频循环落地扇 电池版" [ref=e544]
+                  - heading "米家智能直流变频循环落地扇 电池版" [level=3] [ref=e545]
+                  - paragraph [ref=e546]: 559元
+              - listitem [ref=e547]:
+                - link " 浏览更多 风扇" [ref=e548] [cursor=pointer]:
+                  - /url: //www.mi.com/shop/search?keyword=%E9%A3%8E%E6%89%87
+                  - generic [ref=e550]: 
+                  - generic [ref=e551]:
+                    - text: 浏览更多
+                    - generic [ref=e552]: 风扇
+            - generic: 
+            - generic: 
+            - generic: 
+            - generic: 
+      - generic [ref=e553]:
+        - generic [ref=e554]:
+          - heading "厨房电器" [level=2] [ref=e555]
+          - list [ref=e557]:
+            - listitem [ref=e558] [cursor=pointer]: 净水器
+            - listitem [ref=e559] [cursor=pointer]: 烟灶
+            - listitem [ref=e560] [cursor=pointer]: 电饭煲
+            - listitem [ref=e561] [cursor=pointer]: 微蒸烤
+        - generic [ref=e563]:
+          - list [ref=e565]:
+            - listitem [ref=e566]:
+              - link [ref=e567] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=20331
+            - listitem [ref=e568]:
+              - link [ref=e569] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=19939
+          - generic [ref=e570]:
+            - list [ref=e572]:
+              - listitem [ref=e573]:
+                - link "米家前置过滤器 米家前置过滤器 家庭净水的第一道防线 499元" [ref=e574] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=18505
+                  - img "米家前置过滤器" [ref=e576]
+                  - heading "米家前置过滤器" [level=3] [ref=e577]
+                  - paragraph [ref=e578]: 家庭净水的第一道防线
+                  - paragraph [ref=e579]: 499元
+              - listitem [ref=e580]:
+                - link "米家即热管线机 米家即热管线机 净水好搭档，100度真沸腾 1099元1299元" [ref=e581] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=19201
+                  - img "米家即热管线机" [ref=e583]
+                  - heading "米家即热管线机" [level=3] [ref=e584]
+                  - paragraph [ref=e585]: 净水好搭档，100度真沸腾
+                  - paragraph [ref=e586]:
+                    - text: 1099元
+                    - deletion [ref=e587]: 1299元
+              - listitem [ref=e588]:
+                - link "米家即热净水器Q1000 米家即热净水器Q1000 专利即热技术，一分钟1升开水 1999元3499元" [ref=e589] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=19148
+                  - img "米家即热净水器Q1000" [ref=e591]
+                  - heading "米家即热净水器Q1000" [level=3] [ref=e592]
+                  - paragraph [ref=e593]: 专利即热技术，一分钟1升开水
+                  - paragraph [ref=e594]:
+                    - text: 1999元
+                    - deletion [ref=e595]: 3499元
+              - listitem [ref=e596]:
+                - link "米家净水器1000G Pro 米家净水器1000G Pro 米家净水器1000G Pro 1599元2299元" [ref=e597] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=18519
+                  - img "米家净水器1000G Pro" [ref=e599]
+                  - heading "米家净水器1000G Pro" [level=3] [ref=e600]
+                  - paragraph [ref=e601]: 米家净水器1000G Pro
+                  - paragraph [ref=e602]:
+                    - text: 1599元
+                    - deletion [ref=e603]: 2299元
+              - listitem [ref=e604]:
+                - link "米家净水器 1200G Pro 米家净水器 1200G Pro 全新零陈水3.0，畅饮母婴级健康水 1499元2499元" [ref=e605] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=20331
+                  - img "米家净水器 1200G Pro" [ref=e607]
+                  - heading "米家净水器 1200G Pro" [level=3] [ref=e608]
+                  - paragraph [ref=e609]: 全新零陈水3.0，畅饮母婴级健康水
+                  - paragraph [ref=e610]:
+                    - text: 1499元
+                    - deletion [ref=e611]: 2499元
+              - listitem [ref=e612]:
+                - link "米家双核净水器 1200G Pro 米家双核净水器 1200G Pro 主RO使用寿命8年 1799元3499元" [ref=e613] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=19556
+                  - img "米家双核净水器 1200G Pro" [ref=e615]
+                  - heading "米家双核净水器 1200G Pro" [level=3] [ref=e616]
+                  - paragraph [ref=e617]: 主RO使用寿命8年
+                  - paragraph [ref=e618]:
+                    - text: 1799元
+                    - deletion [ref=e619]: 3499元
+              - listitem [ref=e620]:
+                - link "米家净水器1600G 米家净水器1600G 2.1秒一杯水，还原自来水的澎湃流速 2499元3499元" [ref=e621] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=16549
+                  - img "米家净水器1600G" [ref=e623]
+                  - heading "米家净水器1600G" [level=3] [ref=e624]
+                  - paragraph [ref=e625]: 2.1秒一杯水，还原自来水的澎湃流速
+                  - paragraph [ref=e626]:
+                    - text: 2499元
+                    - deletion [ref=e627]: 3499元
+              - listitem [ref=e628]:
+                - link " 浏览更多 净水器" [ref=e629] [cursor=pointer]:
+                  - /url: //www.mi.com/shop/search?keyword=%E5%87%80%E6%B0%B4%E5%99%A8
+                  - generic [ref=e631]: 
+                  - generic [ref=e632]:
+                    - text: 浏览更多
+                    - generic [ref=e633]: 净水器
+            - generic: 
+            - generic: 
+            - generic: 
+      - generic [ref=e634]:
+        - generic [ref=e635]:
+          - heading "智能家居" [level=2] [ref=e636]
+          - list [ref=e638]:
+            - listitem [ref=e639] [cursor=pointer]: 小爱音箱
+            - listitem [ref=e640] [cursor=pointer]: 门锁门铃
+            - listitem [ref=e641] [cursor=pointer]: 路由器
+            - listitem [ref=e642] [cursor=pointer]: 智能设备
+        - generic [ref=e644]:
+          - list [ref=e646]:
+            - listitem [ref=e647]:
+              - link [ref=e648] [cursor=pointer]:
+                - /url: https://www.mi.com/xiaomi-sound-2-max
+            - listitem [ref=e649]:
+              - link [ref=e650] [cursor=pointer]:
+                - /url: https://www.mi.com/shop/buy?product_id=20289
+          - generic [ref=e651]:
+            - list [ref=e653]:
+              - listitem [ref=e654]:
+                - link "Xiaomi 智能音箱 Pro Xiaomi 智能音箱 Pro 连续指令语控，一句话操作多个智能家居 299元369元" [ref=e655] [cursor=pointer]:
+                  - /url: https://www.mi.com/xiaomi-smart-speaker-pro
+                  - img "Xiaomi 智能音箱 Pro" [ref=e657]
+                  - heading "Xiaomi 智能音箱 Pro" [level=3] [ref=e658]
+                  - paragraph [ref=e659]: 连续指令语控，一句话操作多个智能家居
+                  - paragraph [ref=e660]:
+                    - text: 299元
+                    - deletion [ref=e661]: 369元
+              - listitem [ref=e662]:
+                - link "Xiaomi 智能音箱 Xiaomi 智能音箱 对话连贯自然，问答专业详实 199元249元" [ref=e663] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=21205
+                  - img "Xiaomi 智能音箱" [ref=e665]
+                  - heading "Xiaomi 智能音箱" [level=3] [ref=e666]
+                  - paragraph [ref=e667]: 对话连贯自然，问答专业详实
+                  - paragraph [ref=e668]:
+                    - text: 199元
+                    - deletion [ref=e669]: 249元
+              - listitem [ref=e670]:
+                - link "Xiaomi Sound 2 Pro Xiaomi Sound 2 Pro 强大音质，精简至极 1175元1699元" [ref=e671] [cursor=pointer]:
+                  - /url: https://www.mi.com/xiaomi-sound-2-pro
+                  - img "Xiaomi Sound 2 Pro" [ref=e673]
+                  - heading "Xiaomi Sound 2 Pro" [level=3] [ref=e674]
+                  - paragraph [ref=e675]: 强大音质，精简至极
+                  - paragraph [ref=e676]:
+                    - text: 1175元
+                    - deletion [ref=e677]: 1699元
+              - listitem [ref=e678]:
+                - link "Xiaomi 智能家庭屏 Max 27 Xiaomi 智能家庭屏 Max 27 「超级小爱」闺蜜机，可移动的宅家娱乐屏 3999元" [ref=e679] [cursor=pointer]:
+                  - /url: https://www.mi.com/xiaomi-smartdisplay-max27
+                  - img "Xiaomi 智能家庭屏 Max 27" [ref=e681]
+                  - heading "Xiaomi 智能家庭屏 Max 27" [level=3] [ref=e682]
+                  - paragraph [ref=e683]: 「超级小爱」闺蜜机，可移动的宅家娱乐屏
+                  - paragraph [ref=e684]: 3999元
+              - listitem [ref=e685]:
+                - link "Xiaomi 智能家庭屏 11 Xiaomi 智能家庭屏 11 海量影音内容，AI智控全家 1299元" [ref=e686] [cursor=pointer]:
+                  - /url: https://www.mi.com/xiaomi-smartdisplay-11
+                  - img "Xiaomi 智能家庭屏 11" [ref=e688]
+                  - heading "Xiaomi 智能家庭屏 11" [level=3] [ref=e689]
+                  - paragraph [ref=e690]: 海量影音内容，AI智控全家
+                  - paragraph [ref=e691]: 1299元
+              - listitem [ref=e692]:
+                - link "Xiaomi智能家庭屏 10 Xiaomi智能家庭屏 10 MIUI Home｜10.1\" 高清大屏｜115°超广角摄像头｜儿童模式｜家庭 KTV｜小爱同学 839元999元" [ref=e693] [cursor=pointer]:
+                  - /url: https://www.mi.com/smart-screen
+                  - img "Xiaomi智能家庭屏 10" [ref=e695]
+                  - heading "Xiaomi智能家庭屏 10" [level=3] [ref=e696]
+                  - paragraph [ref=e697]: MIUI Home｜10.1" 高清大屏｜115°超广角摄像头｜儿童模式｜家庭 KTV｜小爱同学
+                  - paragraph [ref=e698]:
+                    - text: 839元
+                    - deletion [ref=e699]: 999元
+              - listitem [ref=e700]:
+                - link "Xiaomi 智能家庭屏 8 云台版 Xiaomi 智能家庭屏 8 云台版 360°AI看护，智能生活一屏陪伴 599元899元" [ref=e701] [cursor=pointer]:
+                  - /url: https://www.mi.com/xiaomi-smartdisplay-8-yt
+                  - img "Xiaomi 智能家庭屏 8 云台版" [ref=e703]
+                  - heading "Xiaomi 智能家庭屏 8 云台版" [level=3] [ref=e704]
+                  - paragraph [ref=e705]: 360°AI看护，智能生活一屏陪伴
+                  - paragraph [ref=e706]:
+                    - text: 599元
+                    - deletion [ref=e707]: 899元
+              - listitem [ref=e708]:
+                - link "小米小爱音箱Play 增强版 小米小爱音箱Play 增强版 129元" [ref=e709] [cursor=pointer]:
+                  - /url: https://www.mi.com/shop/buy?product_id=14596
+                  - img "小米小爱音箱Play 增强版" [ref=e711]
+                  - heading "小米小爱音箱Play 增强版" [level=3] [ref=e712]
+                  - paragraph [ref=e713]: 129元
+              - listitem [ref=e714]:
+                - link " 浏览更多 小爱音箱" [ref=e715] [cursor=pointer]:
+                  - /url: //www.mi.com/shop/search?keyword=%E5%B0%8F%E7%88%B1%E9%9F%B3%E7%AE%B1
+                  - generic [ref=e717]: 
+                  - generic [ref=e718]:
+                    - text: 浏览更多
+                    - generic [ref=e719]: 小爱音箱
+            - generic: 
+            - generic: 
+            - generic: 
+      - link "test" [ref=e721] [cursor=pointer]:
+        - /url: https://www.mi.com/shop/buy?product_id=9836
+        - img "test" [ref=e722]
+    - generic [ref=e723]:
+      - generic [ref=e725]:
+        - list [ref=e727]:
+          - listitem [ref=e728]:
+            - link "预约维修服务" [ref=e729] [cursor=pointer]:
+              - /url: //www.mi.com/service/aftersale/front
+              - emphasis [ref=e730]: 
+              - text: 预约维修服务
+          - listitem [ref=e731]:
+            - link "7天无理由退货" [ref=e732] [cursor=pointer]:
+              - /url: //www.mi.com/service/exchange#back
+              - emphasis [ref=e733]: 
+              - text: 7天无理由退货
+          - listitem [ref=e734]:
+            - link "15天免费换货" [ref=e735] [cursor=pointer]:
+              - /url: //www.mi.com/service/exchange#back
+              - emphasis [ref=e736]: 
+              - text: 15天免费换货
+          - listitem [ref=e737]:
+            - link "满69元包邮" [ref=e738] [cursor=pointer]:
+              - /url: //www.mi.com/service/buy/Postal%20policy
+              - emphasis [ref=e739]: 
+              - text: 满69元包邮
+          - listitem [ref=e740]:
+            - link "1100余家售后网点" [ref=e741] [cursor=pointer]:
+              - /url: //www.mi.com/service/sitelist
+              - emphasis [ref=e742]: 
+              - text: 1100余家售后网点
+        - generic [ref=e743]:
+          - generic [ref=e744]:
+            - term
+          - generic [ref=e745]:
+            - term [ref=e746]: 选购指南
+            - definition [ref=e747]:
+              - link "手机" [ref=e748] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E6%89%8B%E6%9C%BA
+            - definition [ref=e749]:
+              - link "电视" [ref=e750] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E7%94%B5%E8%A7%86
+            - definition [ref=e751]:
+              - link "笔记本" [ref=e752] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E7%AC%94%E8%AE%B0%E6%9C%AC
+            - definition [ref=e753]:
+              - link "平板" [ref=e754] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E5%B9%B3%E6%9D%BF
+            - definition [ref=e755]:
+              - link "穿戴" [ref=e756] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E6%99%BA%E8%83%BD%E7%A9%BF%E6%88%B4
+            - definition [ref=e757]:
+              - link "耳机" [ref=e758] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E8%80%B3%E6%9C%BA
+            - definition [ref=e759]:
+              - link "家电" [ref=e760] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E5%AE%B6%E7%94%B5
+            - definition [ref=e761]:
+              - link "路由器" [ref=e762] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E8%B7%AF%E7%94%B1%E5%99%A8
+            - definition [ref=e763]:
+              - link "音箱" [ref=e764] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E9%9F%B3%E7%AE%B1
+            - definition [ref=e765]:
+              - link "配件" [ref=e766] [cursor=pointer]:
+                - /url: //www.mi.com/search?keyword=%E9%85%8D%E4%BB%B6
+          - generic [ref=e767]:
+            - term [ref=e768]: 服务中心
+            - definition [ref=e769]:
+              - link "申请售后" [ref=e770] [cursor=pointer]:
+                - /url: //www.mi.com/service/aftersale/front
+            - definition [ref=e771]:
+              - link "服务政策" [ref=e772] [cursor=pointer]:
+                - /url: //m.mi.com/aftersale/new-service?path=%2Fpages%2Fservice-charge%2Fproduct-search%2Findex%3FdefaultPage%3D0%26pageFrom%3Dcharge%26isPolicy%3Dtrue
+            - definition [ref=e773]:
+              - link "服务价格" [ref=e774] [cursor=pointer]:
+                - /url: //m.mi.com/aftersale/new-service#/pages/service-charge/product-search/index
+            - definition [ref=e775]:
+              - link "订单查询" [ref=e776] [cursor=pointer]:
+                - /url: //www.mi.com/user/orderList
+            - definition [ref=e777]:
+              - link "以旧换新" [ref=e778] [cursor=pointer]:
+                - /url: //www.mi.com/a/h/16769.html
+            - definition [ref=e779]:
+              - link "保障服务" [ref=e780] [cursor=pointer]:
+                - /url: //api.jr.mi.com/activity/scene/scenePCsearch.html?from=search
+            - definition [ref=e781]:
+              - link "防伪查询" [ref=e782] [cursor=pointer]:
+                - /url: //www.mi.com/service/imei
+            - definition [ref=e783]:
+              - link "F码通道" [ref=e784] [cursor=pointer]:
+                - /url: //www.mi.com/order/fcode
+          - generic [ref=e785]:
+            - term [ref=e786]: 线下门店
+            - definition [ref=e787]:
+              - link "小米之家" [ref=e788] [cursor=pointer]:
+                - /url: //www.mi.com/service/mihome/list
+            - definition [ref=e789]:
+              - link "服务网点" [ref=e790] [cursor=pointer]:
+                - /url: //www.mi.com/service/sitelist
+            - definition [ref=e791]:
+              - link "授权体验店/专区" [ref=e792] [cursor=pointer]:
+                - /url: //www.mi.com/service/family-location
+          - generic [ref=e793]:
+            - term [ref=e794]: 关于小米
+            - definition [ref=e795]:
+              - link "了解小米" [ref=e796] [cursor=pointer]:
+                - /url: //www.mi.com/about/
+            - definition [ref=e797]:
+              - link "加入小米" [ref=e798] [cursor=pointer]:
+                - /url: //hr.xiaomi.com/
+            - definition [ref=e799]:
+              - link "投资者关系" [ref=e800] [cursor=pointer]:
+                - /url: //ir.mi.com/zh-hans
+            - definition [ref=e801]:
+              - link "ESG与可持续发展" [ref=e802] [cursor=pointer]:
+                - /url: //www.mi.com/csr
+            - definition [ref=e803]:
+              - link "廉洁举报" [ref=e804] [cursor=pointer]:
+                - /url: //www.mi.com/integrity
+          - generic [ref=e805]:
+            - term [ref=e806]: 关注我们
+            - definition [ref=e807]:
+              - link "新浪微博" [ref=e808] [cursor=pointer]:
+                - /url: //weibo.com/xiaomishangcheng
+            - definition [ref=e809]:
+              - link "官方微信" [ref=e810] [cursor=pointer]:
+                - /url: javascript:void(0);
+            - definition [ref=e811]:
+              - link "联系我们" [ref=e812] [cursor=pointer]:
+                - /url: //www.mi.com/about/contact/
+            - definition [ref=e813]:
+              - link "公益基金会" [ref=e814] [cursor=pointer]:
+                - /url: //www.mi.com/foundation/index
+            - definition [ref=e815]:
+              - link "小米高校合作" [ref=e816] [cursor=pointer]:
+                - /url: //utc.xiaomi.com/
+          - generic [ref=e817]:
+            - generic [ref=e818]:
+              - paragraph [ref=e819]: "950816"
+              - paragraph [ref=e820]: 8:00-18:00（仅收市话费）
+              - generic [ref=e821] [cursor=pointer]:
+                - emphasis [ref=e822]: 
+                - text: 人工客服
+            - paragraph [ref=e823]: "950818"
+            - generic [ref=e824]:
+              - paragraph [ref=e825]: 8:00-18:00（仅收市话费）
+              - paragraph [ref=e826]: 手机适用于：Xiaomi MIX Fold系列、MIX Flip系列、Xiaomi Ultra系列、Xiaomi Pro Max系列
+              - paragraph [ref=e827]: 电视适用于：98寸、100寸以上大电视系列
+            - generic [ref=e828] [cursor=pointer]:
+              - emphasis [ref=e829]: 
+              - text: 人工客服
+      - generic [ref=e830]:
+        - generic [ref=e831]:
+          - generic [ref=e832]: 小米官网
+          - generic [ref=e833]:
+            - paragraph [ref=e834]:
+              - link "小米商城" [ref=e835] [cursor=pointer]:
+                - /url: //www.mi.com/shop
+              - text: "|"
+              - link "小米澎湃OS" [ref=e836] [cursor=pointer]:
+                - /url: //hyperos.mi.com/
+              - text: "|"
+              - link "米家" [ref=e837] [cursor=pointer]:
+                - /url: //home.mi.com/index.html
+              - text: "|"
+              - link "多看" [ref=e838] [cursor=pointer]:
+                - /url: //www.duokan.com/
+              - text: "|"
+              - link "游戏" [ref=e839] [cursor=pointer]:
+                - /url: //game.xiaomi.com/
+              - text: "|"
+              - link "音乐" [ref=e840] [cursor=pointer]:
+                - /url: //www.mi.com/music
+              - text: "|"
+              - link "政企服务" [ref=e841] [cursor=pointer]:
+                - /url: //b.mi.com/?client_id=180100031058&masid=17409.0358
+              - text: "|"
+              - link "小米天猫店" [ref=e842] [cursor=pointer]:
+                - /url: //xiaomi.tmall.com/
+              - text: "|"
+              - link "小米集团隐私政策" [ref=e843] [cursor=pointer]:
+                - /url: //privacy.mi.com/all/zh_CN/
+              - text: "|"
+              - link "小米公司儿童信息保护规则" [ref=e844] [cursor=pointer]:
+                - /url: //cdn.cnbj1.fds.api.mi-img.com/mi-mall/f516fe9e2c01.html
+              - text: "|"
+              - link "小米商城隐私政策" [ref=e845] [cursor=pointer]:
+                - /url: //m.mi.com/support/module?id=63&headless=1
+              - text: "|"
+              - link "小米商城用户协议" [ref=e846] [cursor=pointer]:
+                - /url: //www.mi.com/aptitude/list?id=62
+              - text: "|"
+              - link "问题反馈" [ref=e847] [cursor=pointer]:
+                - /url: //static.mi.com/feedback/
+              - text: "|"
+              - link "Select Location" [ref=e848] [cursor=pointer]:
+                - /url: javascript:void(0);
+            - paragraph [ref=e849]:
+              - link "北京互联网法院法律服务工作站" [ref=e850] [cursor=pointer]:
+                - /url: http://www.mi.com/beihu
+              - text: "|"
+              - link "中国消费者协会" [ref=e851] [cursor=pointer]:
+                - /url: http://www.cca.org.cn/
+              - text: "|"
+              - link "北京市消费者协会" [ref=e852] [cursor=pointer]:
+                - /url: http://www.bj315.org/
+            - paragraph [ref=e853]:
+              - text: ©
+              - link "mi.com" [ref=e854] [cursor=pointer]:
+                - /url: javascript:;
+              - text: 京ICP证110507号
+              - link "京ICP备10046444号" [ref=e855] [cursor=pointer]:
+                - /url: http://beian.miit.gov.cn/
+              - link "京公网安备11010802020134号" [ref=e856] [cursor=pointer]:
+                - /url: http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802020134
+              - text: 京网文[2026]0015-006号
+              - link "（京）网械平台备字（2018）第00005号" [ref=e857] [cursor=pointer]:
+                - /url: ""
+              - link "药品医疗器械网络信息服务备案 (京)网药械信息备字（2024）第00478号" [ref=e858] [cursor=pointer]:
+                - /url: ""
+              - link "营业执照" [ref=e859] [cursor=pointer]:
+                - /url: //www.mi.com/business-license/
+              - link "医疗器械质量公告" [ref=e860] [cursor=pointer]:
+                - /url: //www.mi.com/medical/list/
+              - link "增值电信业务经营许可证编号：京B2-20180851" [ref=e861] [cursor=pointer]:
+                - /url: https://cdn.cnbj1.fds.api.mi-img.com/staticsfile/pc/5f93056c-bc30-401e-9526-66839114ffb9.png
+              - text: 网络食品经营备案 京食药网食备202010048
+              - link "食品经营许可证" [ref=e862] [cursor=pointer]:
+                - /url: https://www.mi.com/article/detail/972d1e084d35.html
+              - text: 新出发京批字第直220280号
+              - text: 违法和不良信息举报电话：171-5104-4404
+              - link "知识产权侵权投诉" [ref=e863] [cursor=pointer]:
+                - /url: https://www.mi.com/intellectual
+              - text: 本网站所列数据，除特殊说明，所有数据均出自我司实验室测试
+          - generic [ref=e864]:
+            - link "诚信网站" [ref=e865] [cursor=pointer]:
+              - /url: //search.szfw.org/cert/l/CX20120926001783002010
+              - img "诚信网站" [ref=e866]
+            - link "可信网站" [ref=e867] [cursor=pointer]:
+              - /url: //xyt.xinchacha.com/pcinfo?sn=523009637759455232&certType=6
+              - img "可信网站" [ref=e868]
+            - link "诚信经营 放心消费" [ref=e869] [cursor=pointer]:
+              - /url: //www.mi.com/service/buy/commitment/
+              - img "诚信经营 放心消费" [ref=e870]
+        - generic [ref=e871]: 探索黑科技，小米为发烧而生
+  - generic [ref=e872]:
+    - generic [ref=e874]:
+      - img [ref=e875]
+      - img [ref=e876]
+    - generic [ref=e878]:
+      - img [ref=e879]
+      - img [ref=e880]
+    - generic [ref=e882]:
+      - img [ref=e883]
+      - img [ref=e884]
+    - generic [ref=e886]:
+      - img [ref=e887]
+      - img [ref=e888]
+    - generic [ref=e890]:
+      - img [ref=e891]
+      - img [ref=e892]

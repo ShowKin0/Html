@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<title></title>
 	<link rel ="stylesheet" href="index.css">
-	<link rel ="stylesheet" href="iconfont.css">
+	<link rel ="stylesheet" href="iconfont/iconfont/iconfont.css">
 	</head>
 	<body>
 	<div class="top-bar">
@@ -181,8 +181,112 @@
 			</ul>
 		</div>
 		<div class="content">
-
+			<div class="carousel">
+				<div class="carousel-slides">
+					<div class="carousel-slide active" style="background-image: url('https://picsum.photos/seed/xiaomi15ultra/936/500')">
+						<div class="slide-info">
+							<h2>Xiaomi 15 Ultra</h2>
+							<p>专业影像旗舰，徕卡光学加持</p>
+						</div>
+					</div>
+					<div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/xiaomi15pro/936/500')">
+						<div class="slide-info">
+							<h2>Xiaomi 15 Pro</h2>
+							<p>旗舰性能，超长续航</p>
+						</div>
+					</div>
+					<div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/xiaomi15/936/500')">
+						<div class="slide-info">
+							<h2>Xiaomi 15</h2>
+							<p>小屏旗舰，一手掌握</p>
+						</div>
+					</div>
+					<div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/redmik80pro/936/500')">
+						<div class="slide-info">
+							<h2>Redmi K80 Pro</h2>
+							<p>性能狂暴，性价比之王</p>
+						</div>
+					</div>
+					<div class="carousel-slide" style="background-image: url('https://picsum.photos/seed/redminote14/936/500')">
+						<div class="slide-info">
+							<h2>Redmi Note 14</h2>
+							<p>亿万销量，品质之选</p>
+						</div>
+					</div>
+				</div>
+				<button class="carousel-btn carousel-prev">&lt;</button>
+				<button class="carousel-btn carousel-next">&gt;</button>
+				<div class="carousel-dots"></div>
+			</div>
 		</div>
 	</div>
+	<div class="service-wrap"><div class="service-bar">
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe60e;</i>
+			<span>保障服务</span>
+		</a>
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe629;</i>
+			<span>企业团购</span>
+		</a>
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe607;</i>
+			<span>F码通道</span>
+		</a>
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe733;</i>
+			<span>米粉卡</span>
+		</a>
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe606;</i>
+			<span>以旧换新</span>
+		</a>
+		<a href="#" class="service-item">
+			<i class="icon iconfont">&#xe65c;</i>
+			<span>话费充值</span>
+		</a>
+	</div></div>
+	<script>
+		const slides = document.querySelectorAll('.carousel-slide');
+		const dotsContainer = document.querySelector('.carousel-dots');
+		const prevBtn = document.querySelector('.carousel-prev');
+		const nextBtn = document.querySelector('.carousel-next');
+		let currentIndex = 0;
+		let autoPlayTimer;
+
+		for (let i = 0; i < slides.length; i++) {
+			const dot = document.createElement('span');
+			dot.className = 'dot' + (i === 0 ? ' active' : '');
+			dot.dataset.index = i;
+			dotsContainer.appendChild(dot);
+		}
+		const dots = document.querySelectorAll('.dot');
+
+		function goToSlide(index) {
+			slides.forEach(s => s.classList.remove('active'));
+			dots.forEach(d => d.classList.remove('active'));
+			currentIndex = (index + slides.length) % slides.length;
+			slides[currentIndex].classList.add('active');
+			dots[currentIndex].classList.add('active');
+		}
+
+		function nextSlide() { goToSlide(currentIndex + 1); }
+		function prevSlide() { goToSlide(currentIndex - 1); }
+
+		function startAutoPlay() {
+			stopAutoPlay();
+			autoPlayTimer = setInterval(nextSlide, 4000);
+		}
+		function stopAutoPlay() { clearInterval(autoPlayTimer); }
+
+		nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
+		prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
+		dots.forEach(d => d.addEventListener('click', () => { goToSlide(parseInt(d.dataset.index)); startAutoPlay(); }));
+
+		document.querySelector('.carousel').addEventListener('mouseenter', stopAutoPlay);
+		document.querySelector('.carousel').addEventListener('mouseleave', startAutoPlay);
+
+		startAutoPlay();
+	</script>
 	</body>
 </html>
