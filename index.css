@@ -225,32 +225,102 @@ footer a:hover {
 
     .music {
         top: auto;
-        bottom: 10px;
+        bottom: 50px;
         right: 50%;
         transform: translateX(50%);
-        width: 280px;
     }
 
     .content .work {
-        margin-top: 15vh;
+        margin-top: 0;
+        position: relative;
+        height: calc(100vh - 130px);
     }
 
     .content .work ul {
-        flex-wrap: wrap;
-        padding: 0 15px;
-        gap: 12px;
+        position: fixed;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        flex-wrap: nowrap;
+        padding: 3px;
+        gap: 10px;
+        z-index: 50;
     }
 
     .content .work ul li {
-        width: auto;
-        min-width: 100px;
-        flex: 1 1 calc(50% - 12px);
-        max-width: 200px;
-        height: auto;
+        flex: none;
+        max-width: none;
+        width: 40px;
+        height: 60px;
+        padding: 10px 14px;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 8px;
+        font-size: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: 2px;
+    }
+
+    .content .work ul li:hover {
+        width: 40px;
+        height: 80px;
+    }
+
+    .content .work ul li a {
+        display: none;
+    }
+
+    .content .work ul li.work-active {
+        background: linear-gradient(135deg,
+            rgba(233, 9, 47, 0.4),
+            rgba(0, 0, 255, 0.4)
+        );
+        color: white;
+        box-shadow: 0 0 8px rgba(223, 5, 150, 0.6);
+        scale: 1.2;
+    }
+
+    /* 内容展示区 */
+    .work-display {
+        margin-right: 52px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        padding: 20px;
+    }
+
+    .work-display a {
+        display: block;
+        padding: 14px 40px;
+        background: linear-gradient(135deg,
+            rgba(233, 9, 47, 0.35),
+            rgba(0, 0, 255, 0.35)
+        );
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
+        min-width: 160px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+    }
+
+    .work-display .work-empty {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 15px;
     }
 
     .other {
-        margin-top: 8vh;
+        margin-top: 25vh;
     }
 
     iframe {
@@ -259,75 +329,23 @@ footer a:hover {
 }
 
 /* 手机 ≤ 480px */
-@media (max-width: 480px) {
-    body {
-        grid-template-rows: 45px 1fr 50px;
-    }
-
-    nav {
-        padding: 6px 10px;
-        gap: 6px;
-        max-width: 96vw;
-        border-radius: 50px;
-    }
-
-    nav button {
-        width: 52px;
-        height: 26px;
-        font-size: 11px;
-    }
-
-    .navActive {
-        scale: 1.2;
-    }
-
-    .music {
-        width: 92vw;
-        max-width: 300px;
-        bottom: 8px;
-        height: 44px;
-    }
-
-    .musicName {
-        font-size: 0.9em;
-        left: 12px;
-    }
-
-    #playMusic {
-        width: 44px;
-        height: 26px;
-        font-size: 14px;
-    }
-
-    .content .work {
-        margin-top: 12vh;
-    }
-
+@media (max-width: 480px)
+{
     .content .work ul li {
-        flex: 1 1 100%;
-        max-width: none;
-        height: auto;
-        padding: 8px 16px;
+        padding: 8px 10px;
+        font-size: 12px;
+        letter-spacing: 1px;
     }
 
-    .content .work ul li:hover {
-        width: 100%;
+    .work-display {
+        margin-right: 38px;
+        padding: 10px;
+        gap: 12px;
     }
 
-    .content .work ul li a {
-        margin-top: 10px;
-    }
-
-    .other {
-        margin-top: 5vh;
-    }
-
-    iframe {
-        height: 45vh;
-    }
-
-    footer p {
-        margin: 5px;
-        font-size: 11px;
+    .work-display a {
+        padding: 12px 30px;
+        font-size: 14px;
+        min-width: 120px;
     }
 }
