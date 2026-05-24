@@ -139,3 +139,61 @@ body {
     line-height: 40px;
     text-align: center;
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    body {
+        grid-template-areas:
+            "header"
+            "section"
+            "footer";
+        grid-template-columns: 1fr;
+        grid-template-rows: 50px 1fr 35px;
+    }
+
+    .aside {
+        display: none;
+    }
+
+    .header {
+        line-height: 50px;
+    }
+
+    .header span[style*="right: 105px"] {
+        display: none;
+    }
+
+    .userName {
+        right: 15px;
+        font-size: 13px;
+        width: 60px;
+    }
+
+    .userName ul {
+        transform: translateX(-20%);
+    }
+
+    .section .basicInformation {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .section .basicInformation input,
+    .section .basicInformation select {
+        width: calc(100% - 20px);
+        margin-left: 5px;
+    }
+
+    .section .basicInformation div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section .basicInformation {
+        grid-template-columns: 1fr;
+    }
+}

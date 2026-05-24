@@ -199,3 +199,135 @@ footer a:hover {
     scale: 1.2;
     transition: 0.5s;
 }
+
+/* ===== 移动端适配 ===== */
+
+/* 平板及以下 ≤ 768px */
+@media (max-width: 768px) {
+    nav {
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 8px 16px;
+        gap: 12px;
+        width: auto;
+        max-width: 90vw;
+    }
+
+    nav button {
+        width: 60px;
+        height: 30px;
+        font-size: 13px;
+    }
+
+    .navActive {
+        scale: 1.3;
+    }
+
+    .music {
+        top: auto;
+        bottom: 10px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 280px;
+    }
+
+    .content .work {
+        margin-top: 15vh;
+    }
+
+    .content .work ul {
+        flex-wrap: wrap;
+        padding: 0 15px;
+        gap: 12px;
+    }
+
+    .content .work ul li {
+        width: auto;
+        min-width: 100px;
+        flex: 1 1 calc(50% - 12px);
+        max-width: 200px;
+        height: auto;
+    }
+
+    .other {
+        margin-top: 8vh;
+    }
+
+    iframe {
+        height: 55vh;
+    }
+}
+
+/* 手机 ≤ 480px */
+@media (max-width: 480px) {
+    body {
+        grid-template-rows: 45px 1fr 50px;
+    }
+
+    nav {
+        padding: 6px 10px;
+        gap: 6px;
+        max-width: 96vw;
+        border-radius: 50px;
+    }
+
+    nav button {
+        width: 52px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    .navActive {
+        scale: 1.2;
+    }
+
+    .music {
+        width: 92vw;
+        max-width: 300px;
+        bottom: 8px;
+        height: 44px;
+    }
+
+    .musicName {
+        font-size: 0.9em;
+        left: 12px;
+    }
+
+    #playMusic {
+        width: 44px;
+        height: 26px;
+        font-size: 14px;
+    }
+
+    .content .work {
+        margin-top: 12vh;
+    }
+
+    .content .work ul li {
+        flex: 1 1 100%;
+        max-width: none;
+        height: auto;
+        padding: 8px 16px;
+    }
+
+    .content .work ul li:hover {
+        width: 100%;
+    }
+
+    .content .work ul li a {
+        margin-top: 10px;
+    }
+
+    .other {
+        margin-top: 5vh;
+    }
+
+    iframe {
+        height: 45vh;
+    }
+
+    footer p {
+        margin: 5px;
+        font-size: 11px;
+    }
+}

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         #left {
             position: absolute;
@@ -66,6 +67,28 @@
             width: 1000px;
             height: 600px;
             overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .window {
+                width: 95vw;
+                height: calc(95vw * 0.6);
+            }
+            #left, #right {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            .selcte {
+                bottom: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+            .point button {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
         }
 
         .pic {

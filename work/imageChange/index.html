@@ -235,6 +235,105 @@
             animation: fadeInUp 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        @media (max-width: 768px) {
+            .slider-container {
+                width: 95vw;
+                height: calc(95vw * 0.6);
+                max-height: 85vh;
+                border-radius: 16px;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                opacity: 1;
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .nav-arrow .material-icons {
+                font-size: 24px;
+            }
+
+            .nav-arrow.prev { left: 10px; }
+            .nav-arrow.next { right: 10px; }
+
+            .title-overlay {
+                bottom: 60px;
+                left: 20px;
+            }
+
+            .title-overlay h2 {
+                font-size: 24px;
+            }
+
+            .title-overlay p {
+                font-size: 13px;
+            }
+
+            .slide-counter {
+                top: 12px;
+                right: 12px;
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+
+            .glass-effect {
+                top: 12px;
+                left: 12px;
+                padding: 8px 16px;
+                font-size: 11px;
+            }
+
+            .indicators {
+                bottom: 16px;
+                gap: 10px;
+            }
+
+            .indicator {
+                width: 8px;
+                height: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider-container {
+                width: 100vw;
+                height: calc(100vw * 0.7);
+                border-radius: 0;
+            }
+
+            .nav-arrow {
+                width: 34px;
+                height: 34px;
+            }
+
+            .nav-arrow .material-icons {
+                font-size: 20px;
+            }
+
+            .title-overlay h2 {
+                font-size: 18px;
+            }
+
+            .title-overlay p {
+                font-size: 11px;
+            }
+
+            .slide-counter {
+                padding: 4px 10px;
+                font-size: 10px;
+            }
+
+            .indicators {
+                gap: 8px;
+            }
+
+            .indicator {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
         .glass-effect {
             position: absolute;
             top: 24px;
