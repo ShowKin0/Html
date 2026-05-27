@@ -125,8 +125,12 @@ playBtn.addEventListener('click', () => {
 
     // 获取所有评论
     function getComments() {
-        const data = localStorage.getItem(COMMENTS_KEY);
-        return data ? JSON.parse(data) : [];
+        try {
+            const data = localStorage.getItem(COMMENTS_KEY);
+            return data ? JSON.parse(data) : [];
+        } catch {
+            return [];
+        }
     }
 
     // 保存评论
@@ -143,6 +147,7 @@ playBtn.addEventListener('click', () => {
 
     // 添加评论
     function addComment(articleId, nickname, content) {
+        if (!nickname.trim() || !content.trim()) return null;
         const comments = getComments();
         const comment = {
             id: generateId(),
