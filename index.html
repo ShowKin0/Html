@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SK的小站</title>
         <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
         <link rel="icon" href="../Avatar.jpg" type="image/jpeg">
     </head>
     <body>
@@ -32,7 +33,20 @@
                     </ul>
                 </div>
             </section>
-            <section class="content" id="learn"></section>
+            <section class="content" id="learn">
+                <div class="learn">
+                    <div class="learn-header">
+                        <div class="learn-search">
+                            <input type="text" id="searchArticle" placeholder="搜索文章...">
+                        </div>
+                        <a href="admin/admin.html" class="admin-link" target="_blank">后台管理</a>
+                    </div>
+                    <div class="article-grid" id="articleGrid"></div>
+                    <div class="article-empty" id="articleEmpty">
+                        <p>暂无文章</p>
+                    </div>
+                </div>
+            </section>
             <section class="content" id="explore"></section>
             <section class="content" id="other">
                 <div class="other">
@@ -47,11 +61,23 @@
                 <source src="work/UnicornPhantom - 独角.mp3" type="audio/mpeg">
             </audio>
         </div>
+
+        <!-- 文章详情弹窗 -->
+        <div class="modal-overlay" id="articleModal">
+            <div class="modal-content">
+                <button class="modal-close" id="modalClose">&times;</button>
+                <h2 id="modalTitle"></h2>
+                <div class="modal-meta" id="modalMeta"></div>
+                <div class="modal-body" id="modalBody"></div>
+            </div>
+        </div>
+
         <footer>
             <p>&copy; 2026 SK的小站. All rights reserved.</p>
             <p>GitHub: <a href="https://github.com/ShowKin0" target="_blank" rel="noopener">ShowKin</a></p>
             <p><a href="https://github.com/ShowKin0/Html.git" target="_blank" rel="noopener">网站项目源码</a></p>
         </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         <script src="index.js" defer></script>
     </body>
 </html>

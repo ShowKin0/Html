@@ -91,3 +91,111 @@ playBtn.addEventListener('click', () => {
     window.addEventListener('resize', setupMobileWork);        // 窗口缩放时重新判断
 })();
 
+// ===== 学习区：文章展示 =====
+(function initLearn() {
+    const STORAGE_KEY = 'sk_articles';
+    const grid = document.getElementById('articleGrid');
+    const empty = document.getElementById('articleEmpty');
+    const searchInput = document.getElementById('searchArticle');
+    const modal = document.getElementById('articleModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMeta = document.getElementById('modalMeta');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+
+    let allArticles = [];
+
+    // 从 localStorage 读取文章
+    function loadArticles() {
+        const data = localStorage.getItem(STORAGE_KEY);
+        allArticles = data ? JSON.parse(data) : [];
+        renderArticles(allArticles);
+    }
+
+    // 渲染文章卡片到网格
+    function renderArticles(articles) {
+        if (articles.length === 0) {
+            grid.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+
+        grid.innerHTML = articles.map(article => `
+            <div class="article-card" data-id="${article.id}">
+                <div class="card-title">${escapeHtml(article.title)}</div>
+                <div class="card-summary">${escapeHtml(article.summary)}</div>
+                <div class="card-date">${article.date}</div>
+            </div>
+        `).join('');
+    }
+
+    // 搜索过滤（按标题和简介）
+    function filterArticles(keyword) {
+        if (!keyword.trim()) {
+            renderArticles(allArticles);
+            return;
+        }
+        const kw = keyword.trim().toLowerCase();
+        const filtered = allArticles.filter(a =>
+            a.title.toLowerCase().includes(kw) ||
+            a.summary.toLowerCase().includes(kw)
+        );
+        renderArticles(filtered);
+    }
+
+    // 打开文章详情弹窗
+    function openArticle(id) {
+        const article = allArticles.find(a => a.id === id);
+        if (!article) return;
+
+        modalTitle.textContent = article.title;
+        modalMeta.textContent = article.date;
+        modalBody.innerHTML = article.content;
+        modalBody.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    // 转义 HTML 防 XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // 点击卡片 → 打开详情
+    grid.addEventListener('click', e => {
+        const card = e.target.closest('.article-card');
+        if (card) openArticle(card.dataset.id);
+    });
+
+    // 搜索
+    searchInput.addEventListener('input', () => {
+        filterArticles(searchInput.value);
+    });
+
+    // 关闭弹窗
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // 首次加载
+    loadArticles();
+
+    // 每次切换到学习区时重新加载（后台可能发布了新文章）
+    document.querySelector('[data-tab="learn"]').addEventListener('click', () => {
+        setTimeout(loadArticles, 100);
+    });
+})();
+
