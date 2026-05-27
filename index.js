@@ -105,6 +105,72 @@ playBtn.addEventListener('click', () => {
 
     let allArticles = [];
 
+    // ===== 评论系统 =====
+    const COMMENTS_KEY = 'sk_comments';
+
+    // 生成随机 ID
+    function generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    // 获取当前访客 ID（不存在则生成）
+    function getVisitorId() {
+        let id = localStorage.getItem('sk_visitor_id');
+        if (!id) {
+            id = generateId() + generateId();
+            localStorage.setItem('sk_visitor_id', id);
+        }
+        return id;
+    }
+
+    // 获取所有评论
+    function getComments() {
+        const data = localStorage.getItem(COMMENTS_KEY);
+        return data ? JSON.parse(data) : [];
+    }
+
+    // 保存评论
+    function saveComments(comments) {
+        localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+    }
+
+    // 获取某篇文章的评论（按时间正序）
+    function getArticleComments(articleId) {
+        return getComments()
+            .filter(c => c.articleId === articleId)
+            .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    // 添加评论
+    function addComment(articleId, nickname, content) {
+        const comments = getComments();
+        const comment = {
+            id: generateId(),
+            articleId,
+            nickname: nickname.trim(),
+            content: content.trim(),
+            timestamp: Date.now(),
+            visitorId: getVisitorId()
+        };
+        comments.push(comment);
+        saveComments(comments);
+        return comment;
+    }
+
+    // 删除评论（按 ID）
+    function deleteComment(commentId) {
+        let comments = getComments();
+        comments = comments.filter(c => c.id !== commentId);
+        saveComments(comments);
+    }
+
+    // 删除某文章的所有评论
+    function deleteArticleComments(articleId) {
+        let comments = getComments();
+        comments = comments.filter(c => c.articleId !== articleId);
+        saveComments(comments);
+    }
+
     // 从 localStorage 读取文章
     function loadArticles() {
         const data = localStorage.getItem(STORAGE_KEY);
