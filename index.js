@@ -223,9 +223,133 @@ playBtn.addEventListener('click', () => {
         modalTitle.textContent = article.title;
         modalMeta.textContent = article.date;
         modalBody.innerHTML = article.content;
+        // 渲染评论区
+        renderComments(article.id);
         modalBody.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
         modal.classList.add('open');
         document.body.style.overflow = 'hidden';
+    }
+
+    // 渲染评论区
+    function renderComments(articleId) {
+        const container = document.getElementById('modalComments');
+        // 移除旧的评论区
+        const old = modal.querySelector('.comment-section');
+        if (old) old.remove();
+
+        const section = document.createElement('div');
+        section.className = 'comment-section';
+
+        // 分割线
+        const divider = document.createElement('div');
+        divider.className = 'comment-divider';
+        section.appendChild(divider);
+
+        // 评论标题
+        const title = document.createElement('h3');
+        title.className = 'comment-heading';
+        title.textContent = '评论';
+        section.appendChild(title);
+
+        // 评论列表
+        const list = document.createElement('div');
+        list.className = 'comment-list';
+        list.id = 'commentList';
+
+        const comments = getArticleComments(articleId);
+        if (comments.length === 0) {
+            list.innerHTML = '<p class="comment-empty">暂无评论，来说两句吧</p>';
+        } else {
+            const visitorId = getVisitorId();
+            const now = Date.now();
+            comments.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.dataset.id = c.id;
+
+                const canDelete = c.visitorId === visitorId && (now - c.timestamp < 180000);
+
+                item.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-nickname">${escapeHtml(c.nickname)}</span>
+                        <span class="comment-time">${formatCommentTime(c.timestamp)}</span>
+                    </div>
+                    <div class="comment-body">${escapeHtml(c.content)}</div>
+                    ${canDelete ? '<button class="comment-delete" data-id="' + c.id + '">删除</button>' : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+        section.appendChild(list);
+
+        // 评论表单
+        const form = document.createElement('div');
+        form.className = 'comment-form';
+        form.innerHTML = `
+            <input type="text" class="comment-input" id="commentNickname" placeholder="昵称" maxlength="20">
+            <textarea class="comment-textarea" id="commentContent" placeholder="写下你的评论..." rows="2" maxlength="500"></textarea>
+            <button class="comment-submit" id="commentSubmit">发表评论</button>
+        `;
+        section.appendChild(form);
+
+        // 历史昵称回填
+        const savedNick = localStorage.getItem('sk_comment_nickname');
+        if (savedNick) {
+            const nickInput = form.querySelector('#commentNickname');
+            nickInput.value = savedNick;
+        }
+
+        modalBody.appendChild(section);
+
+        // 绑定表单提交
+        form.querySelector('#commentSubmit').addEventListener('click', function() {
+            const nickInput = form.querySelector('#commentNickname');
+            const contentInput = form.querySelector('#commentContent');
+            const nickname = nickInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!nickname) { showCommentToast('请输入昵称'); nickInput.focus(); return; }
+            if (!content) { showCommentToast('请输入评论内容'); contentInput.focus(); return; }
+
+            addComment(articleId, nickname, content);
+            localStorage.setItem('sk_comment_nickname', nickname);
+            contentInput.value = '';
+            renderComments(articleId);
+            showCommentToast('评论发表成功');
+        });
+
+        // 绑定删除按钮事件
+        list.querySelectorAll('.comment-delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (confirm('确定要删除这条评论吗？')) {
+                    deleteComment(id);
+                    renderComments(articleId);
+                }
+            });
+        });
+    }
+
+    // 格式化评论时间
+    function formatCommentTime(timestamp) {
+        const d = new Date(timestamp);
+        const pad = n => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+            + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
+    // 评论提示 Toast
+    function showCommentToast(msg) {
+        let toast = document.querySelector('.comment-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'comment-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
     // 关闭弹窗
