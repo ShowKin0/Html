@@ -1,3 +1,17 @@
+// ===== 密码验证 =====
+const ADMIN_PASSWORD = 'zhang';
+
+(function checkAuth() {
+    if (sessionStorage.getItem('sk_admin_auth')) return;
+    const input = prompt('请输入管理密码：');
+    if (input === ADMIN_PASSWORD) {
+        sessionStorage.setItem('sk_admin_auth', '1');
+    } else {
+        alert('密码错误！');
+        window.location.href = '../index.html';
+    }
+})();
+
 const STORAGE_KEY = 'sk_articles';
 
 // ===== 数据操作 =====
