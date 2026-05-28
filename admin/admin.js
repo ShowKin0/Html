@@ -314,7 +314,7 @@ function renderCommentManagement() {
         html += `<div class="comment-group">`;
         html += `<h3 class="comment-group-title">${articleTitle}</h3>`;
 
-        group.comments.forEach(c => {
+        group.forEach(c => {
             const time = new Date(c.timestamp);
             const pad = n => String(n).padStart(2, '0');
             const timeStr = time.getFullYear() + '-' + pad(time.getMonth() + 1) + '-' + pad(time.getDate())
