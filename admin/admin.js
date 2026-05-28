@@ -37,9 +37,9 @@ function renderArticleList() {
 function deleteArticle(id) {
     if (!confirm('确定要删除这篇文章吗？')) return;
     // 删除关联评论
-    let comments = getAllComments();
+    let comments = getComments();
     comments = comments.filter(c => c.articleId !== id);
-    saveAllComments(comments);
+    saveComments(comments);
     // 删除文章
     let articles = getArticles();
     articles = articles.filter(a => a.id !== id);
@@ -279,18 +279,18 @@ renderArticleList();
 // ===== 评论管理 =====
 const COMMENTS_KEY = 'sk_comments';
 
-function getAllComments() {
+function getComments() {
     const data = localStorage.getItem(COMMENTS_KEY);
     return data ? JSON.parse(data) : [];
 }
 
-function saveAllComments(comments) {
+function saveComments(comments) {
     localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
 }
 
 function renderCommentManagement() {
     const panel = document.getElementById('commentPanel');
-    const comments = getAllComments();
+    const comments = getComments();
     const articles = getArticles();
 
     if (comments.length === 0) {
@@ -301,8 +301,8 @@ function renderCommentManagement() {
     // 按文章分组
     const grouped = {};
     comments.forEach(c => {
-        if (!grouped[c.articleId]) grouped[c.articleId] = { comments: [] };
-        grouped[c.articleId].comments.push(c);
+        if (!grouped[c.articleId]) grouped[c.articleId] = [];
+        grouped[c.articleId].push(c);
     });
 
     let html = '';
@@ -312,7 +312,7 @@ function renderCommentManagement() {
         const group = grouped[articleId];
 
         html += `<div class="comment-group">`;
-        html += `<h3 class="comment-group-title">${escapeHtml(articleTitle)}</h3>`;
+        html += `<h3 class="comment-group-title">${articleTitle}</h3>`;
 
         group.comments.forEach(c => {
             const time = new Date(c.timestamp);
@@ -327,7 +327,7 @@ function renderCommentManagement() {
                         <span>${timeStr}</span>
                     </div>
                     <div class="comment-group-content">${escapeHtml(c.content)}</div>
-                    <button class="btn-danger btn-sm" onclick="adminDeleteComment('${c.id}')">删除</button>
+                    <button class="btn-danger btn-sm" onclick="deleteComment('${c.id}')">删除</button>
                 </div>
             `;
         });
@@ -338,11 +338,11 @@ function renderCommentManagement() {
     panel.innerHTML = html;
 }
 
-function adminDeleteComment(id) {
+function deleteComment(id) {
     if (!confirm('确定要删除这条评论吗？')) return;
-    let comments = getAllComments();
+    let comments = getComments();
     comments = comments.filter(c => c.id !== id);
-    saveAllComments(comments);
+    saveComments(comments);
     renderCommentManagement();
     showToast('评论已删除', 'success');
 }
