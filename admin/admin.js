@@ -33,15 +33,20 @@ function renderArticleList() {
     `).join('');
 }
 
-// ===== 删除文章 =====
+// ===== 删除文章（级联删除关联评论） =====
 function deleteArticle(id) {
     if (!confirm('确定要删除这篇文章吗？')) return;
-
+    // 删除关联评论
+    let comments = getAllComments();
+    comments = comments.filter(c => c.articleId !== id);
+    saveAllComments(comments);
+    // 删除文章
     let articles = getArticles();
     articles = articles.filter(a => a.id !== id);
     saveArticles(articles);
     renderArticleList();
-    showToast('文章已删除', 'success');
+    renderCommentManagement();
+    showToast('文章及关联评论已删除', 'success');
 }
 
 // ===== 发布文章 =====
@@ -270,3 +275,77 @@ function showToast(msg, type) {
 
 // ===== 初始化 =====
 renderArticleList();
+
+// ===== 评论管理 =====
+const COMMENTS_KEY = 'sk_comments';
+
+function getAllComments() {
+    const data = localStorage.getItem(COMMENTS_KEY);
+    return data ? JSON.parse(data) : [];
+}
+
+function saveAllComments(comments) {
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+}
+
+function renderCommentManagement() {
+    const panel = document.getElementById('commentPanel');
+    const comments = getAllComments();
+    const articles = getArticles();
+
+    if (comments.length === 0) {
+        panel.innerHTML = '<p class="empty-tip">暂无评论</p>';
+        return;
+    }
+
+    // 按文章分组
+    const grouped = {};
+    comments.forEach(c => {
+        if (!grouped[c.articleId]) grouped[c.articleId] = { comments: [] };
+        grouped[c.articleId].comments.push(c);
+    });
+
+    let html = '';
+    for (const articleId in grouped) {
+        const article = articles.find(a => a.id === articleId);
+        const articleTitle = article ? escapeHtml(article.title) : '(文章已删除)';
+        const group = grouped[articleId];
+
+        html += `<div class="comment-group">`;
+        html += `<h3 class="comment-group-title">${escapeHtml(articleTitle)}</h3>`;
+
+        group.comments.forEach(c => {
+            const time = new Date(c.timestamp);
+            const pad = n => String(n).padStart(2, '0');
+            const timeStr = time.getFullYear() + '-' + pad(time.getMonth() + 1) + '-' + pad(time.getDate())
+                + ' ' + pad(time.getHours()) + ':' + pad(time.getMinutes());
+
+            html += `
+                <div class="comment-group-item">
+                    <div class="comment-group-meta">
+                        <strong>${escapeHtml(c.nickname)}</strong>
+                        <span>${timeStr}</span>
+                    </div>
+                    <div class="comment-group-content">${escapeHtml(c.content)}</div>
+                    <button class="btn-danger btn-sm" onclick="adminDeleteComment('${c.id}')">删除</button>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+    }
+
+    panel.innerHTML = html;
+}
+
+function adminDeleteComment(id) {
+    if (!confirm('确定要删除这条评论吗？')) return;
+    let comments = getAllComments();
+    comments = comments.filter(c => c.id !== id);
+    saveAllComments(comments);
+    renderCommentManagement();
+    showToast('评论已删除', 'success');
+}
+
+// 初始化时渲染评论管理
+renderCommentManagement();
