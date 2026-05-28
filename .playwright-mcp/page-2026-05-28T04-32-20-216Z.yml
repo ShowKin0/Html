@@ -1,0 +1,54 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - heading "SK的小站 · 后台管理" [level=1] [ref=e3]
+    - link "← 返回前台" [ref=e4] [cursor=pointer]:
+      - /url: ../index.html
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "发布新文章" [level=2] [ref=e7]
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]: 文章标题
+          - textbox "文章标题" [ref=e11]:
+            - /placeholder: 输入文章标题
+        - generic [ref=e12]:
+          - generic [ref=e13]: 文章简介
+          - textbox "文章简介" [ref=e14]:
+            - /placeholder: 简短介绍文章内容
+        - generic [ref=e15]:
+          - generic [ref=e16]: 文章内容
+          - generic [ref=e17]:
+            - button "B" [ref=e18] [cursor=pointer]:
+              - strong [ref=e19]: B
+            - button "I" [ref=e20] [cursor=pointer]:
+              - emphasis [ref=e21]: I
+            - button "U" [ref=e22] [cursor=pointer]:
+              - generic [ref=e23]: U
+            - button "H1" [ref=e25] [cursor=pointer]
+            - button "H2" [ref=e26] [cursor=pointer]
+            - button "H3" [ref=e27] [cursor=pointer]
+            - button "🖼" [ref=e29] [cursor=pointer]
+            - button "🔊" [ref=e30] [cursor=pointer]
+            - button "🔗" [ref=e31] [cursor=pointer]
+            - button "📎" [ref=e32] [cursor=pointer]
+            - button "❝" [ref=e34] [cursor=pointer]
+            - button "</>" [ref=e35] [cursor=pointer]
+            - button "≡" [ref=e36] [cursor=pointer]
+          - generic [ref=e37]: 在这里写文章内容...
+        - generic [ref=e38]:
+          - generic [ref=e39]: 发布日期
+          - textbox "发布日期" [ref=e40]
+        - generic [ref=e41]:
+          - button "发布文章" [active] [ref=e42] [cursor=pointer]
+          - button "清空" [ref=e43] [cursor=pointer]
+    - generic [ref=e44]:
+      - heading "已发布文章" [level=2] [ref=e45]
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - heading "测试文章" [level=3] [ref=e54]
+          - generic [ref=e55]: 2026-05-28 · 这是一篇测试文章，用于验证评论功能
+        - button "删除" [ref=e57] [cursor=pointer]
+    - generic [ref=e48]:
+      - heading "评论管理" [level=2] [ref=e49]
+      - paragraph [ref=e51]: 暂无评论
+  - generic: 文章发布成功！

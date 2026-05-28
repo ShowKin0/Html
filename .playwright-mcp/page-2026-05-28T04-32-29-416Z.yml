@@ -1,0 +1,37 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - button "项目" [ref=e3] [cursor=pointer]
+    - button "学习" [ref=e4] [cursor=pointer]
+    - button "探索" [ref=e5] [cursor=pointer]
+    - button "其它" [ref=e6] [cursor=pointer]
+  - link "后台" [ref=e7] [cursor=pointer]:
+    - /url: admin/admin.html
+  - main [ref=e8]:
+    - list [ref=e11]:
+      - listitem [ref=e12] [cursor=pointer]:
+        - text: Html
+        - link "His" [ref=e13]:
+          - /url: work/his/hisIndex.html
+        - link "imageChange" [ref=e14]:
+          - /url: zu/index.html
+        - link "Xiaomi" [ref=e15]:
+          - /url: work/Xiaomi/index.html
+      - listitem [ref=e16] [cursor=pointer]:
+        - text: Java
+        - link "SRC" [ref=e17]:
+          - /url: https://github.com/ShowKin0/JAVA
+      - listitem [ref=e18] [cursor=pointer]: Godot
+      - listitem [ref=e19] [cursor=pointer]: C++
+      - listitem [ref=e20] [cursor=pointer]: AI Agent
+  - generic [ref=e21]:
+    - generic [ref=e22]: unicorn Phantom - 独角
+    - button "播放" [ref=e23] [cursor=pointer]
+  - contentinfo [ref=e24]:
+    - paragraph [ref=e25]: © 2026 SK的小站. All rights reserved.
+    - paragraph [ref=e26]:
+      - text: "GitHub:"
+      - link "ShowKin" [ref=e27] [cursor=pointer]:
+        - /url: https://github.com/ShowKin0
+    - paragraph [ref=e28]:
+      - link "网站项目源码" [ref=e29] [cursor=pointer]:
+        - /url: https://github.com/ShowKin0/Html.git

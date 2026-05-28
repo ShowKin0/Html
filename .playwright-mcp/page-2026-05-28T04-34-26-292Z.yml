@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - button "项目" [ref=e3] [cursor=pointer]
+    - button "学习" [ref=e4] [cursor=pointer]
+    - button "探索" [ref=e5] [cursor=pointer]
+    - button "其它" [ref=e6] [cursor=pointer]
+  - link "后台" [ref=e7] [cursor=pointer]:
+    - /url: admin/admin.html
+  - main [ref=e8]:
+    - generic [ref=e31]:
+      - textbox "搜索文章..." [ref=e34]
+      - generic [ref=e36] [cursor=pointer]:
+        - generic [ref=e37]: 测试文章
+        - generic [ref=e38]: 这是一篇测试文章，用于验证评论功能
+        - generic [ref=e39]: 2026-05-28
+  - generic [ref=e21]:
+    - generic [ref=e22]: unicorn Phantom - 独角
+    - button "播放" [ref=e23] [cursor=pointer]
+  - generic [ref=e41]:
+    - button "×" [ref=e42] [cursor=pointer]
+    - heading "测试文章" [level=2] [ref=e43]
+    - generic [ref=e44]: 2026-05-28
+    - generic [ref=e45]:
+      - text: 这是文章正文内容，用于测试评论功能是否正常工作。
+      - generic [ref=e46]:
+        - heading "评论" [level=3] [ref=e48]
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]: 测试用户
+            - generic [ref=e53]: 2026-05-28 12:33
+          - generic [ref=e54]: 第二条测试评论
+          - button "删除" [ref=e55] [cursor=pointer]
+        - generic [ref=e56]:
+          - textbox "昵称" [ref=e57]: 测试用户
+          - textbox "写下你的评论..." [ref=e58]
+          - button "发表评论" [ref=e59] [cursor=pointer]
+  - contentinfo [ref=e24]:
+    - paragraph [ref=e25]: © 2026 SK的小站. All rights reserved.
+    - paragraph [ref=e26]:
+      - text: "GitHub:"
+      - link "ShowKin" [ref=e27] [cursor=pointer]:
+        - /url: https://github.com/ShowKin0
+    - paragraph [ref=e28]:
+      - link "网站项目源码" [ref=e29] [cursor=pointer]:
+        - /url: https://github.com/ShowKin0/Html.git

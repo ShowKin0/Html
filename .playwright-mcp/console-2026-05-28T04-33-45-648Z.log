@@ -1,0 +1,3 @@
+[      45ms] TypeError: Cannot read properties of undefined (reading 'forEach')
+    at renderCommentManagement (http://127.0.0.1:8080/admin/admin.js:317:24)
+    at http://127.0.0.1:8080/admin/admin.js:351:1
