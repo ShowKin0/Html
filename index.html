@@ -15,7 +15,7 @@
             <button data-tab="explore">探索</button>
             <button data-tab="other">其它</button>
         </nav>
-        <a href="admin/admin.html" class="admin-corner" target="_blank">后台</a>
+        <a href="admin/admin.html" class="admin-corner" target="_blank" onclick="if(!sessionStorage.getItem('sk_admin_auth')&&prompt('请输入管理密码：')!=='zhang')return false">后台</a>
         <main>
             <section class="content visible" id="work">
                 <div class="work">
